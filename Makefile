@@ -23,6 +23,18 @@ targets:
 	@echo "clean      - removes generated files"
 	@echo "mrclean    - removes generated files and the debootstrap root"
 
+ensure-unmounted:
+	@if [[ -d mount ]]; then \
+		echo "sdcard.img mounted -- unmount first!" >/dev/stderr; \
+		exit 1; \
+	fi
+
+ensure-mounted:
+	@if [[ ! -d mount ]]; then \
+		echo "sdcard.img not mounted -- mount first!" >/dev/stderr; \
+		exit 1; \
+	fi
+
 mount: sdcard.img
 	sudo mkdir -p mount/boot mount/root
 	sudo kpartx -as sdcard.img
@@ -30,7 +42,7 @@ mount: sdcard.img
 	sudo mount /dev/mapper/loop0p2 mount/root
 
 umount: unmount
-unmount:
+unmount: ensure-mounted
 	-[[ -d mount ]] && sudo umount mount/boot mount/root
 	-sudo kpartx -ds sdcard.img
 	sudo rm -rf mount/
@@ -48,7 +60,7 @@ fs/root:
 		--include=$(DEBOOTSTRAP_EXTRA) \
 		stable fs/root
 
-sdcard.img:
+sdcard.img: ensure-unmounted
 	dd if=/dev/zero of=sdcard.img bs=1G count=8
 	parted sdcard.img < partmap.txt
 	sudo kpartx -as sdcard.img
@@ -68,7 +80,7 @@ rsync: fs/root sdcard.img
 	sudo kpartx -ds sdcard.img
 	rm -rf mount/
 
-flash: sdcard.img
+flash: ensure-unmounted sdcard.img
 	@if [[ -z "$(SDCARD_DEVICE)" ]]; then \
 		(
 			echo "Error! Specify which SDCARD_DEVICE to write to like so: "; \
@@ -80,7 +92,7 @@ flash: sdcard.img
 	@for i in $(seq 5 -1 1); do echo -n "$i "; sleep 1; done; echo
 	sudo dd if=sdcard.img of=$(SDCARD_DEVICE) bs=1G
 
-clean:
+clean: ensure-unmounted
 	sudo rm -rf sdcard.img
 
 mrclean: clean
