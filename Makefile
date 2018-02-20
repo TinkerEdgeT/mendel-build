@@ -1,5 +1,7 @@
 SDCARD_DEVICE ?=
 
+all: rsync
+
 fs/root:
 	mkdir -p fs/root
 	sudo qemu-debootstrap \
@@ -7,7 +9,7 @@ fs/root:
 		--keyring /usr/share/keyrings/debian-archive-keyring.gpg \
 		--variant=buildd \
 		--exclude=debfoster \
-		stable root
+		stable fs/root
 
 sdcard.img:
 	dd if=/dev/zero of=sdcard.img bs=1G count=8
