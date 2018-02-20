@@ -1,8 +1,10 @@
 REQUIRED_PACKAGES := \
-	qemu-user-static debootstrap debian-archive-keyring parted kpartx rsync
+	qemu-user-static debootstrap debian-archive-keyring parted kpartx rsync \
+	xz-utils
 
 DEBOOTSTRAP_EXTRA := vim
 
+SDCARD_SIZE ?= 8
 SDCARD_DEVICE ?=
 
 all: rsync
@@ -61,14 +63,20 @@ fs/root:
 		stable fs/root
 
 sdcard.img: ensure-unmounted
-	dd if=/dev/zero of=sdcard.img bs=1G count=8
+	dd if=/dev/zero of=sdcard.img bs=1G count=$(SDCARD_SIZE) status=progress
 	parted sdcard.img < partmap.txt
 	sudo kpartx -as sdcard.img
 	sudo mkdosfs -n BOOT /dev/mapper/loop0p1
 	sudo mkfs.ext4 -L root -j /dev/mapper/loop0p2
 	sudo kpartx -ds sdcard.img
 
-rsync: fs/root sdcard.img 
+sdcard.img.xz: sdcard.img
+	xz sdcard.img
+
+release: rsync sdcard.img.xz
+	mv sdcard.img.xz imx-debian-$$(date +%Y-%m-%d).img.xz
+
+rsync: fs/root sdcard.img
 	mkdir -p mount/boot mount/root
 	sudo kpartx -as sdcard.img
 	sudo mount /dev/mapper/loop0p1 mount/boot
@@ -90,7 +98,7 @@ flash: ensure-unmounted sdcard.img
 	fi
 	@echo "WARNING! This will erase all data on $(SDCARD_DEVICE)! Writing in 5 seconds!"
 	@for i in $(seq 5 -1 1); do echo -n "$i "; sleep 1; done; echo
-	sudo dd if=sdcard.img of=$(SDCARD_DEVICE) bs=1G
+	sudo dd if=sdcard.img of=$(SDCARD_DEVICE) bs=1G status=progress
 
 clean: ensure-unmounted
 	sudo rm -rf sdcard.img
