@@ -1,0 +1,18 @@
+# Lines are applied in order. Blank lines and lines starting with hashes are
+# ignored.
+#
+# Flags include:
+#       recurse -- equivalent to chmod -R and chown -R
+#       -       -- default settings for chmod and chown
+#
+# dentries are relative to the rootfs path provided to the fix-permissions.sh
+# script.
+#
+# dentry            flags   user    group   file_mode
+
+etc/                recurse root    root    0644
+etc/                -       root    root    0755
+etc/apt             -       root    root    0755
+etc/shadow          -       root    root    0600
+home/enterprise/    recurse 1000    1000    0644
+home/enterprise/    -       1000    1000    0755
