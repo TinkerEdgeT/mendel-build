@@ -32,7 +32,7 @@ get_total_with_margin_bytes() {
 }
 
 usage() {
-    echo "Usage: resize_image [-m <margin_size_bytes>] -i <image_file> -r <rootfs_dir>"
+    echo "Usage: resize_image.sh [-m <margin_size_bytes>] -i <image_file> -r <rootfs_dir>"
     exit 1
 }
 
