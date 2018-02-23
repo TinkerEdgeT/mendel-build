@@ -1,20 +1,20 @@
-REQUIRED_PACKAGES := \
-	qemu-user-static debootstrap debian-archive-keyring parted kpartx rsync \
-	xz-utils
+SRC_IMAGE := fsl-source.img
+REQUIRED_PACKAGES := qemu-user-static debootstrap debian-archive-keyring parted	\
+	kpartx rsync xz-utils
 
-DEBOOTSTRAP_EXTRA := vim
+DEBOOTSTRAP_EXTRA := vim wpasupplicant network-manager lxde						\
+	openbox-lxde-session systemd systemd-sysv libpam-systemd dialog				\
+	openssh-server bluez locales dialog debian-archive-keyring parted sudo dbus	\
+	pulseaudio avahi-daemon man-db less xorg xserver-xorg-video-all				\
+	xserver-xorg-input-all tasksel wireless-tools
+
+USER_NAME := enterprise
+USER_PASS := open123
 
 SDCARD_SIZE ?= 8
 SDCARD_DEVICE ?=
 
 all: rootfs
-
-sdcard.img:
-	@echo "Usage: make"
-	@echo
-	@echo "Place a copy of the freescale sdcard image in this directory as 'sdcard.img'"
-	@echo "this makefile will convert the sdcard.img rootfs into a debian root and"
-	@echo "preserve the kernel modules on the disk."
 
 help: targets
 targets:
@@ -28,64 +28,84 @@ targets:
 	@echo "mount      - mounts the sdcard.img to mount/{boot,root}"
 	@echo "unmount    - unmounts a previously mounted sdcard.img"
 
-ensure-unmounted:
-	@if [[ -d rootfs ]]; then \
-		echo "sdcard.img mounted -- unmount first!" >/dev/stderr; \
-		exit 1; \
-	fi
-
-ensure-mounted:
-	@if [[ ! -d rootfs ]]; then \
-		echo "sdcard.img not mounted -- mount first!" >/dev/stderr; \
-		exit 1; \
-	fi
-
-mount: sdcard.img
-	mkdir rootfs
-	sudo kpartx -as sdcard.img
-	sudo mount /dev/mapper/loop0p2 rootfs
-
-umount: unmount
-unmount: ensure-mounted
-	-[[ -d rootfs ]] && sudo umount rootfs
-	-sudo kpartx -ds sdcard.img
-	rmdir rootfs
-
 prereqs:
 	sudo apt-get install $(REQUIRED_PACKAGES)
 
-rootfs: sdcard.img
-	mkdir -p rootfs
-	sudo kpartx -as sdcard.img
-	sudo mount /dev/mapper/loop0p2 rootfs
-	sudo tar cpf modules.tar rootfs/lib/modules/
-	sudo umount rootfs
-	sudo mkfs.ext4 -F -L root -j /dev/mapper/loop0p2
-	sudo mount /dev/mapper/loop0p2 rootfs
+debootstrap:
+	@echo
+	@echo ==================== stage1 debootstrap ====================
 	sudo qemu-debootstrap \
+		--foreign \
 		--arch=arm64 \
 		--keyring /usr/share/keyrings/debian-archive-keyring.gpg \
 		--variant=buildd \
 		--exclude=debfoster \
-		--include=$(DEBOOTSTRAP_EXTRA) \
+		--include=$$(echo $(DEBOOTSTRAP_EXTRA) |tr ' ' ',') \
 		stable rootfs
-	sudo tar xpf modules.tar
-	sudo rsync -ar overlay/ rootfs
-	sudo umount rootfs
-	sudo kpartx -ds sdcard.img
-	rmdir rootfs
-	rm -f modules.tar
 
-flash: ensure-unmounted sdcard.img
-	@if [[ -z "$(SDCARD_DEVICE)" ]]; then \
-		{
-			echo "Error! Specify which SDCARD_DEVICE to write to like so: "; \
-			echo "  make SDCARD_DEVICE=/dev/mmcblk0 flash";
-		} >/dev/stderr; \
-		exit 1; \
-	fi
-	@echo "WARNING! This will erase all data on $(SDCARD_DEVICE)! Writing in 5 seconds!"
-	@for i in $(seq 5 -1 1); do echo -n "$i "; sleep 1; done; echo
-	sudo dd if=sdcard.img of=$(SDCARD_DEVICE) status=progress
+overlay: blobs.tar
+	@echo
+	@echo ==================== overlay ===============================
+	sudo tar xpf blobs.tar
+	sudo rsync -ar overlay/ rootfs/
 
-.PHONY: prereqs rootfs flash clean mrclean help targets mount unmount umount all ensure-unmounted ensure-mounted
+adjustments:
+	@echo
+	@echo ==================== adjustments ===========================
+	sudo cp /etc/resolv.conf rootfs/etc/
+	sudo mount -o bind /proc rootfs/proc
+	sudo mount -o bind /sys rootfs/sys
+	sudo mount -o bind /dev rootfs/dev
+	sudo mount -o bind /dev/pts rootfs/dev/pts
+	sudo chroot rootfs locale-gen
+	sudo chroot rootfs systemctl enable ssh
+	sudo chroot rootfs systemctl enable bluetooth
+	sudo chroot rootfs systemctl enable avahi-daemon
+	sudo chroot rootfs systemctl enable NetworkManager
+	sudo chroot rootfs apt-get update
+	sudo chroot rootfs tasksel install standard
+	sudo chroot rootfs apt-get clean
+	sudo chroot rootfs apt-get dist-upgrade -y
+	sudo chroot rootfs apt-get clean
+	echo "enterprise	ALL=(ALL) ALL" |sudo tee -a rootfs/etc/sudoers
+	sudo umount -R rootfs/{dev,sys,proc}
+
+clean:
+	-sudo umount source/ dest/
+	-sudo kpartx -ds $(SRC_IMAGE)
+	-sudo kpartx -ds sdcard.img
+	-rmdir source/ dest/
+	sudo rm -rf rootfs/ sdcard.img sdcard.img.xz blobs.tar
+
+.PHONY: debootstrap overlay adjustments
+
+### Non-phony targets below this line #################################
+
+rootfs:
+	mkdir rootfs
+	make debootstrap
+	make overlay
+	make adjustments
+
+blobs.tar:
+	mkdir source
+	sudo kpartx -as $(SRC_IMAGE)
+	sudo mount /dev/mapper/loop0p2 source
+	tar cpf blobs.tar source/lib/{modules/,firmware/}
+	sudo umount source
+	sudo kpartx -ds $(SRC_IMAGE)
+	rmdir source
+
+sdcard.img: rootfs tools/resize_image.sh
+	cp $(SRC_IMAGE) sdcard.img
+	tools/resize_image.sh -i sdcard.img -r rootfs/
+	mkdir dest
+	sudo kpartx -as sdcard.img
+	sudo mkfs.ext3 -F -j -L root /dev/mapper/loop0p2
+	sudo mount /dev/mapper/loop0p2 dest/
+	sudo rsync -ar rootfs/ dest
+	sudo umount dest
+	rmdir dest
+
+sdcard.img.xz: sdcard.img
+	xz -k -T0 -0 sdcard.img
