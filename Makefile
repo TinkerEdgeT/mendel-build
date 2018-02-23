@@ -46,7 +46,7 @@ debootstrap:
 overlay: blobs.tar
 	@echo
 	@echo ==================== overlay ===============================
-	sudo tar xpf blobs.tar
+	sudo tar -xpf blobs.tar -C rootfs/
 	sudo rsync -ar overlay/ rootfs/
 
 adjustments:
@@ -91,7 +91,7 @@ blobs.tar:
 	mkdir source
 	sudo kpartx -as $(SRC_IMAGE)
 	sudo mount /dev/mapper/loop0p2 source
-	tar cpf blobs.tar source/lib/{modules/,firmware/}
+	tar -cpf blobs.tar -C source lib/{modules/,firmware/}
 	sudo umount source
 	sudo kpartx -ds $(SRC_IMAGE)
 	rmdir source
