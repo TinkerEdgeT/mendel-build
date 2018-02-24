@@ -47,7 +47,7 @@ overlay: blobs.tar
 	@echo
 	@echo ==================== overlay ===============================
 	sudo tar -xpf blobs.tar -C rootfs/
-	sudo rsync -ar overlay/ rootfs/
+	sudo rsync -r overlay/ rootfs/
 	sudo tools/fix_permissions.sh -p permissions.txt -t rootfs/
 
 adjustments:
@@ -73,6 +73,7 @@ adjustments:
 
 clean:
 	-sudo umount source/ dest/
+	-sudo umount -R rootfs/{dev,sys,proc}
 	-sudo kpartx -ds $(SRC_IMAGE)
 	-sudo kpartx -ds sdcard.img
 	-rmdir source/ dest/
