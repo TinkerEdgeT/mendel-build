@@ -48,6 +48,7 @@ overlay: blobs.tar
 	@echo ==================== overlay ===============================
 	sudo tar -xpf blobs.tar -C rootfs/
 	sudo rsync -ar overlay/ rootfs/
+	sudo tools/fix_permissions.sh -p permissions.txt -t rootfs/
 
 adjustments:
 	@echo
