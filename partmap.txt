@@ -1,4 +1,0 @@
-unit s
-mklabel msdos
-mkpart primary fat32 16384 81919
-mkpart primary ext4  81920 100%
