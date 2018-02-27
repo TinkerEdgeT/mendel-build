@@ -14,6 +14,8 @@ USER_PASS := open123
 SDCARD_SIZE ?= 8
 SDCARD_DEVICE ?=
 
+GPU_BIN_DIR ?= imx-gpu-viv-6.2.4.p0.2-aarch64
+
 all: rootfs
 
 help: targets
@@ -49,6 +51,13 @@ overlay: blobs.tar
 	sudo tar -xpf blobs.tar -C rootfs/
 	sudo rsync -r overlay/ rootfs/
 	sudo tools/fix_permissions.sh -p permissions.txt -t rootfs/
+
+imx-gpu-viv: $(GPU_BIN_DIR)
+	@echo
+	@echo ==================== imx-gpu-viv ===========================
+	sudo rsync -rl $(GPU_BIN_DIR)/gpu-core/ rootfs/
+	sudo rsync -rl $(GPU_BIN_DIR)/gpu-demos/ rootfs/
+	sudo rsync -rl $(GPU_BIN_DIR)/gpu-tools/gmem-info/ rootfs/
 
 adjustments:
 	@echo
@@ -86,6 +95,7 @@ clean:
 rootfs:
 	mkdir rootfs
 	make debootstrap
+	make imx-gpu-viv
 	make overlay
 	make adjustments
 

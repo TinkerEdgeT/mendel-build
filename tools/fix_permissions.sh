@@ -43,9 +43,14 @@ apply_permissions() {
             esac
         done
 
+        if [[ -L $dentry ]]; then
+            echo skipping symlink $dentry
+            continue
+        fi
+
         echo chmod $opts $file_mode $dentry
-        echo chown $opts $user:$group $dentry
         chmod $opts $file_mode $dentry
+        echo chown $opts $user:$group $dentry
         chown $opts $user:$group $dentry
     done
 }
