@@ -1,0 +1,39 @@
+{
+  "settings": {
+    "ab_suffixes": ["_a", "_b"],
+    "partitions_offset_begin": 0,
+    "disk_size": 12884901888,
+    "disk_alignment": 8388608,
+    "disk_guid": "85b83f23-51c4-4403-8bac-906ff5800f4e"
+  },
+  "partitions": [
+    {
+      "label": "boot",
+      "offset": 8388608,
+      "size": 33554432,
+      "grow": false,
+      "guid": "595059e1-7b18-4e71-98f8-86b0ef75fe34",
+      "type_guid": "bb499290-b57e-49f6-bf41-190386693794",
+      "flags": "0x0000000000000000",
+      "persist": false,
+      "ignore": false,
+      "ab": false,
+      "ab_expanded": false,
+      "position": 1
+    },
+    {
+      "label": "rootfs",
+      "offset": 41943040,
+      "size": 12834570240,
+      "grow": true,
+      "guid": "70672ec3-5eee-49ff-b3b1-eb1fbd406bf5",
+      "type_guid": "0f2778c4-5cc1-4300-8670-6c88b7e57ed6",
+      "flags": "0x0000000000000000",
+      "persist": false,
+      "ignore": false,
+      "ab": false,
+      "ab_expanded": false,
+      "position": 2
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+fdt_addr=0x43000000
+fdt_file=fsl-imx8mq-phanbell.dtb
+image=Image
+script=boot.scr
+cmdline="console=ttymxc0,115200 earlycon=ec_imx6q,0x30860000,115200 root=/dev/mmcblk${bootdev}p2 rootfstype=ext4 rw rootwait init=/sbin/init"
+
+fatload mmc ${bootdev}:1 ${loadaddr} ${image}
+fatload mmc ${bootdev}:1 ${fdt_addr} ${fdt_file}
+setenv bootargs ${cmdline}
+booti ${loadaddr} - ${fdt_addr}
