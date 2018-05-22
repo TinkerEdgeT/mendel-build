@@ -71,7 +71,7 @@ IMG2SIMG_INCLUDES := \
 	system/core/libsparse/include
 IMG2SIMG_INCLUDES := $(addprefix -I,$(IMG2SIMG_INCLUDES))
 
-all: u-boot kernel partition-table boot
+all: u-boot kernel partition-table rootfs boot
 
 u-boot: $(PRODUCT_OUT)/u-boot.imx
 kernel: $(PRODUCT_OUT)/kernel
@@ -163,7 +163,7 @@ adjustments:
 	sudo chroot $(PRODUCT_OUT)/rootfs mkdir -p /home/enterprise
 	sudo chroot $(PRODUCT_OUT)/rootfs adduser enterprise --home /home/enterprise --shell /bin/bash --disabled-password --gecos ""
 	sudo chroot $(PRODUCT_OUT)/rootfs chown enterprise:enterprise /home/enterprise
-	sudo chroot $(PRODUCT_OUT)/rootfs bash -c "echo 'enterprise:open123' | chpasswd"
+	sudo chroot $(PRODUCT_OUT)/rootfs bash -c "echo 'enterprise:enterprise' | chpasswd"
 	echo "nameserver 8.8.8.8" | sudo tee $(PRODUCT_OUT)/rootfs/etc/resolv.conf
 	sudo mount -o bind /proc $(PRODUCT_OUT)/rootfs/proc
 	sudo mount -o bind /sys $(PRODUCT_OUT)/rootfs/sys
