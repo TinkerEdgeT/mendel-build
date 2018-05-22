@@ -19,8 +19,6 @@ etc/hosts                                                            -       roo
 etc/locale.gen                                                       -       root    root    0644
 etc/passwd                                                           -       root    root    0644
 etc/shadow                                                           -       root    root    0600
-home/enterprise/                                                     -       1000    1000    0755
-home/enterprise/                                                     recurse 1000    1000    0644
 
 ## Vivante drivers from the imx-gpu-viv-6.2.4.p0.2-aarch64.bin sharfile #########################
 # TODO(jtgans): Make these modes actually reflect file vs. library vs. directory
