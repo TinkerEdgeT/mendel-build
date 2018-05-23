@@ -10,6 +10,7 @@ DEBOOTSTRAP_EXTRA := \
 	dbus \
 	debian-archive-keyring \
 	dialog \
+	firmware-atheros \
 	isc-dhcp-client \
 	less \
 	libpam-systemd \
@@ -59,11 +60,13 @@ make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
 
 make-bootstrap-tarball: $(ROOTDIR)/build/debootstrap.mk
 	mkdir -p $(PRODUCT_OUT)/obj/DEBOOTSTRAP
+	mkdir -p $(ROOTDIR)/cache
 	debootstrap \
 		--foreign \
 		--arch=arm64 \
 		--keyring /usr/share/keyrings/debian-archive-keyring.gpg \
 		--variant=buildd \
+		--components=main,non-free \
 		--exclude=debfoster \
 		--include=$$(echo $(DEBOOTSTRAP_EXTRA) |tr ' ' ',') \
 		--make-tarball=$(DEBOOTSTRAP_TARBALL) \
