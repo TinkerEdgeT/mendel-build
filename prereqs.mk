@@ -5,6 +5,7 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 REQUIRED_PACKAGES := \
+	mtools \
 	device-tree-compiler \
 	qemu-user-static \
 	debootstrap \
