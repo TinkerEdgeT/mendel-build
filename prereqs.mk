@@ -5,6 +5,7 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 REQUIRED_PACKAGES := \
+	device-tree-compiler \
 	qemu-user-static \
 	debootstrap \
 	debian-archive-keyring \
