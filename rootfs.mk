@@ -4,35 +4,6 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-DEBOOTSTRAP_EXTRA := \
-	avahi-daemon \
-	bluez \
-	dbus \
-	debian-archive-keyring \
-	dialog \
-	isc-dhcp-client \
-	less \
-	libpam-systemd \
-	locales \
-	lxde \
-	man-db \
-	net-tools \
-	network-manager \
-	openbox-lxde-session \
-	openssh-server \
-	parted \
-	pulseaudio \
-	sudo \
-	systemd \
-	systemd-sysv \
-	tasksel \
-	vim \
-	wireless-tools \
-	xorg \
-	xserver-xorg-video-all \
-	xserver-xorg-input-all \
-	wpasupplicant \
-
 GPU_VERSION := imx-gpu-viv-6.2.4.p0.2-aarch64
 GPU_DIR := $(ROOTDIR)/imx-gpu-viv/$(GPU_VERSION)
 
@@ -78,18 +49,17 @@ adjustments:
 	sudo umount -R $(ROOTFS_DIR)/{dev,proc,sys}
 
 $(ROOTFS_RAW_IMG):
+	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
+
 	mkdir -p $(ROOTFS_DIR)
 	fallocate -l 12G $(ROOTFS_RAW_IMG)
 	mkfs.ext4 -j $(ROOTFS_RAW_IMG)
 	tune2fs -o discard $(ROOTFS_RAW_IMG)
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
 	sudo qemu-debootstrap \
-		--foreign \
 		--arch=arm64 \
 		--keyring /usr/share/keyrings/debian-archive-keyring.gpg \
-		--variant=buildd \
-		--exclude=debfoster \
-		--include=$$(echo $(DEBOOTSTRAP_EXTRA) |tr ' ' ',') \
+		--unpack-tarball=$(DEBOOTSTRAP_TARBALL) \
 		stretch $(ROOTFS_DIR)
 
 	+make -f $(ROOTDIR)/build/rootfs.mk gpu
