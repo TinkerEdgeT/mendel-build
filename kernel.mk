@@ -8,7 +8,12 @@ include $(ROOTDIR)/build/preamble.mk
 KERNEL_SRC_DIR := $(ROOTDIR)/hardware/bsp/kernel/nxp/imx-v4.9
 KERNEL_OUT_DIR := $(PRODUCT_OUT)/obj/KERNEL_OBJ
 
-kernel: $(KERNEL_OUT_DIR)/.config $(PRODUCT_OUT)/kernel $(PRODUCT_OUT)/fsl-imx8mq-phanbell.dtb
+# Explicit sequencing here since u-boot and the kernel seriously hate each other
+# in parallel.
+kernel:
+	+make -f $(ROOTDIR)/build/kernel.mk $(KERNEL_OUT_DIR)/.config
+	+make -f $(ROOTDIR)/build/kernel.mk $(PRODUCT_OUT)/kernel
+	+make -f $(ROOTDIR)/build/kernel.mk $(PRODUCT_OUT)/fsl-imx8mq-phanbell.dtb
 
 targets::
 	@echo "kernel - builds the kernel and boot partition"
