@@ -1,31 +1,39 @@
-# i.MXn Debian Root Generator
+# i.MXn Debian System
 
-From an existing boot filesystem provided by the i.MXn Yocto Linux tree, this
-makefile and related scripts will create an sdcard.img file which will boot into
-Debian proper.
-
-This set of scripts currently has the ability to apply a simple overlay to the
-generated rootfs before creating the sdcard image.
+These files comprise the build system to produce both an eMMC and SD card image
+of Debian Squeeze for the i.MX8M SoC.
 
 ## Building
+
+The first step to using this build system is to source the environment setup
+script:
+
+```
+host:~/Projects/imx-debian$ source build/setup.sh
+```
+
+This will add the host tool binaries directory to your path, add the build
+directory to your path, and setup some helpful environment variables as well.
+Once this is done, you'll have a new `m` script to run to build the system.
 
 First, install any required packages for the scripts to do their jobs by doing
 the following at a shell prompt:
 
 ```
-host:~/Projects/imx-debian$ make prereqs
+host:~/Projects/imx-debian$ m prereqs
 ```
 
-This will call out to `apt-get` to install any required packages. Once this is
-done, a simple
+This will call out to `apt-get` to install any required packages via `sudo`.
+Once this is done, a simple
 
 ```
-host:~/Projects/imx-debian$ make
+host:~/Projects/imx-debian$ m
 ```
 
-Will suffice to build the sdcard.img file.
+Will suffice to build the sdcard.img file. Note that you may want to provide a
+`-j` option with as many cores as you have in your system.
 
 ## Examining the results
 
-The `make mount` target will happily open up the generated sdcard.img file and
-mount it in the `mount` subdirectory. To unmount simply `make unmount`.
+Output files are located in the `out/` directory by default, and it's super easy
+to get to that location by typing in `cd $PRODUCT_OUT` or `j product`.
