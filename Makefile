@@ -4,6 +4,10 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
+precheck:
+	+make -f $(ROOTDIR)/build/Makefile validate-bootstrap-tarball
+	+make -f $(ROOTDIR)/build/Makefile all
+
 all: boot-targets partition-table rootfs
 
 # We explicitly sequence these since they cannot be properly parallelized. The
@@ -19,14 +23,15 @@ targets::
 	@echo "Tagets available for building in this Makefile:"
 	@echo
 
-include $(ROOTDIR)/build/prereqs.mk
-include $(ROOTDIR)/build/u-boot.mk
-include $(ROOTDIR)/build/kernel.mk
 include $(ROOTDIR)/build/boot.mk
-include $(ROOTDIR)/build/partition-table.mk
+include $(ROOTDIR)/build/debootstrap.mk
 include $(ROOTDIR)/build/img2simg.mk
+include $(ROOTDIR)/build/kernel.mk
+include $(ROOTDIR)/build/partition-table.mk
+include $(ROOTDIR)/build/prereqs.mk
 include $(ROOTDIR)/build/rootfs.mk
 include $(ROOTDIR)/build/sdcard.mk
+include $(ROOTDIR)/build/u-boot.mk
 
 clean::
 	rm -rf $(ROOTDIR)/out
