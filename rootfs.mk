@@ -57,8 +57,7 @@ $(ROOTFS_RAW_IMG):
 	tune2fs -o discard $(ROOTFS_RAW_IMG)
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
 	sudo qemu-debootstrap \
-		--arch=arm64 \
-		--keyring /usr/share/keyrings/debian-archive-keyring.gpg \
+		$(DEBOOTSTRAP_ARGS) \
 		--unpack-tarball=$(DEBOOTSTRAP_TARBALL) \
 		stretch $(ROOTFS_DIR)
 

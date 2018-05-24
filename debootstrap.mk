@@ -4,36 +4,6 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-DEBOOTSTRAP_EXTRA := \
-	avahi-daemon \
-	bluez \
-	dbus \
-	debian-archive-keyring \
-	dialog \
-	firmware-atheros \
-	isc-dhcp-client \
-	less \
-	libpam-systemd \
-	locales \
-	lxde \
-	man-db \
-	net-tools \
-	network-manager \
-	openbox-lxde-session \
-	openssh-server \
-	parted \
-	pulseaudio \
-	sudo \
-	systemd \
-	systemd-sysv \
-	tasksel \
-	vim \
-	wireless-tools \
-	xorg \
-	xserver-xorg-video-all \
-	xserver-xorg-input-all \
-	wpasupplicant
-
 validate-bootstrap-tarball:
 	@if [[ ! -f $(DEBOOTSTRAP_TARBALL) ]]; then \
 		echo ""; \
@@ -63,12 +33,7 @@ make-bootstrap-tarball: $(ROOTDIR)/build/debootstrap.mk
 	mkdir -p $(ROOTDIR)/cache
 	debootstrap \
 		--foreign \
-		--arch=arm64 \
-		--keyring /usr/share/keyrings/debian-archive-keyring.gpg \
-		--variant=buildd \
-		--components=main,non-free \
-		--exclude=debfoster \
-		--include=$$(echo $(DEBOOTSTRAP_EXTRA) |tr ' ' ',') \
+		$(DEBOOTSTRAP_ARGS) \
 		--make-tarball=$(DEBOOTSTRAP_TARBALL) \
 		stretch $(PRODUCT_OUT)/obj/DEBOOTSTRAP
 	+make -f $(ROOTDIR)/build/debootstrap.mk make-bootstrap-sha256sum
