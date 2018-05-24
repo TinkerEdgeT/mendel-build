@@ -52,7 +52,7 @@ $(ROOTFS_RAW_IMG):
 	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
 
 	mkdir -p $(ROOTFS_DIR)
-	fallocate -l 12834570240 $(ROOTFS_RAW_IMG)
+	fallocate -l 2G $(ROOTFS_RAW_IMG)
 	mkfs.ext4 -j $(ROOTFS_RAW_IMG)
 	tune2fs -o discard $(ROOTFS_RAW_IMG)
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
