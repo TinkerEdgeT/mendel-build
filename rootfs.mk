@@ -19,7 +19,7 @@ gpu:
 	echo "vivante" | sudo tee -a $(ROOTFS_DIR)/etc/modules
 
 firmware:
-	sudo mkdir $(ROOTFS_DIR)/lib/firmware
+	sudo mkdir -p $(ROOTFS_DIR)/lib/firmware
 	sudo rsync -rl $(ROOTDIR)/imx-firmware/ $(ROOTFS_DIR)/lib/firmware
 
 adjustments:
