@@ -26,7 +26,7 @@ validate-bootstrap-tarball:
 
 make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
 	cd $(ROOTDIR)/cache && \
-		sha256sum $(DEBOOTSTRAP_TARBALL) > $(DEBOOTSTRAP_TARBALL_SHA256)
+		sha256sum $(notdir $(DEBOOTSTRAP_TARBALL)) > $(DEBOOTSTRAP_TARBALL_SHA256)
 
 make-bootstrap-tarball: $(ROOTDIR)/build/debootstrap.mk
 	mkdir -p $(PRODUCT_OUT)/obj/DEBOOTSTRAP
