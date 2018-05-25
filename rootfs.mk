@@ -10,6 +10,19 @@ GPU_DIR := $(ROOTDIR)/imx-gpu-viv/$(GPU_VERSION)
 ROOTFS_DIR := $(PRODUCT_OUT)/obj/ROOTFS/rootfs
 ROOTFS_RAW_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.raw.img
 
+USER_GROUPS := \
+	adm \
+	audio \
+	bluetooth \
+	disk \
+	games \
+	input \
+	plugdev \
+	staff \
+	sudo \
+	users \
+	video
+
 rootfs: $(PRODUCT_OUT)/rootfs.img
 
 gpu:
@@ -29,6 +42,9 @@ adjustments:
 	echo "127.0.0.1 enterprise" | sudo tee -a $(ROOTFS_DIR)/etc/hosts
 	sudo chroot $(ROOTFS_DIR) mkdir -p /home/enterprise
 	sudo chroot $(ROOTFS_DIR) adduser enterprise --home /home/enterprise --shell /bin/bash --disabled-password --gecos ""
+	for group in $(USER_GROUPS); do \
+		sudo chroot $(ROOTFS_DIR) adduser enterprise $$group; \
+	done
 	sudo chroot $(ROOTFS_DIR) chown enterprise:enterprise /home/enterprise
 	sudo chroot $(ROOTFS_DIR) bash -c "echo 'enterprise:enterprise' | chpasswd"
 	echo "nameserver 8.8.8.8" | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
