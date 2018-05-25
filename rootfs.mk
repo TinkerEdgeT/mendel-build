@@ -64,10 +64,11 @@ adjustments:
 	sudo $(ROOTDIR)/build/fix_permissions.sh -p $(ROOTDIR)/build/permissions.txt -t $(ROOTFS_DIR)
 	sudo umount -R $(ROOTFS_DIR)/{dev,proc,sys}
 
-$(ROOTFS_RAW_IMG):
+$(ROOTFS_RAW_IMG): $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
 	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
 
 	mkdir -p $(ROOTFS_DIR)
+	rm -f $(ROOTFS_RAW_IMG)
 	fallocate -l 2G $(ROOTFS_RAW_IMG)
 	mkfs.ext4 -j $(ROOTFS_RAW_IMG)
 	tune2fs -o discard $(ROOTFS_RAW_IMG)
