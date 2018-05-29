@@ -72,7 +72,7 @@ $(ROOTFS_RAW_IMG): $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOT
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
 	fallocate -l 2G $(ROOTFS_RAW_IMG)
-	mkfs.ext4 -j $(ROOTFS_RAW_IMG)
+	mkfs.ext4 -F -j $(ROOTFS_RAW_IMG)
 	tune2fs -o discard $(ROOTFS_RAW_IMG)
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
 	sudo qemu-debootstrap \
