@@ -22,9 +22,23 @@
       "position": 1
     },
     {
-      "label": "rootfs",
+      "label": "misc",
       "offset": 41943040,
-      "size": 12834570240,
+      "size": 1048576,
+      "grow": false,
+      "guid": "8d34ae73-b586-4f9a-b0e8-ec448b882071",
+      "type_guid": "6b2378b0-0fbc-4aa9-a4f6-4d6e17281c47",
+      "flags": "0x0000000000000000",
+      "persist": false,
+      "ignore": false,
+      "ab": false,
+      "ab_expanded": false,
+      "position": 2
+    },
+    {
+      "label": "rootfs",
+      "offset": 50331648,
+      "size": 12826181632,
       "grow": true,
       "guid": "70672ec3-5eee-49ff-b3b1-eb1fbd406bf5",
       "type_guid": "0f2778c4-5cc1-4300-8670-6c88b7e57ed6",
@@ -33,7 +47,7 @@
       "ignore": false,
       "ab": false,
       "ab_expanded": false,
-      "position": 2
+      "position": 3
     }
   ]
 }
