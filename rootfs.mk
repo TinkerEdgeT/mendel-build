@@ -83,7 +83,7 @@ $(ROOTFS_RAW_IMG): $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOT
 	sudo rmdir $(ROOTFS_DIR)
 	sudo sync $(ROOTFS_RAW_IMG)
 	sudo chown ${USER} $(ROOTFS_RAW_IMG)
-	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG)/rootfs.raw.img.sha256sum
+	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 
 $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG)
 	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
