@@ -16,7 +16,7 @@ REQUIRED_PACKAGES := \
 	xz-utils
 
 prereqs:
-	sudo apt-get install $(REQUIRED_PACKAGES)
+	sudo apt-get install -y $(REQUIRED_PACKAGES)
 
 targets::
 	@echo "prereqs    - installs packages required by this Makefile"

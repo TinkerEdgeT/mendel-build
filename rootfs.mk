@@ -9,6 +9,7 @@ GPU_DIR := $(ROOTDIR)/imx-gpu-viv/$(GPU_VERSION)
 
 ROOTFS_DIR := $(PRODUCT_OUT)/obj/ROOTFS/rootfs
 ROOTFS_RAW_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.raw.img
+ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img
 
 USER_GROUPS := \
 	adm \
@@ -24,6 +25,7 @@ USER_GROUPS := \
 	video
 
 rootfs: $(PRODUCT_OUT)/rootfs.img
+rootfs_raw: $(ROOTFS_RAW_IMG)
 
 gpu:
 	sudo rsync -rl $(GPU_DIR)/gpu-core/ $(ROOTFS_DIR)
@@ -77,6 +79,16 @@ $(ROOTFS_RAW_IMG): $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOT
 		$(DEBOOTSTRAP_ARGS) \
 		--unpack-tarball=$(DEBOOTSTRAP_TARBALL) \
 		stretch $(ROOTFS_DIR)
+	sudo umount -R $(ROOTFS_DIR)
+	sudo rmdir $(ROOTFS_DIR)
+	sudo sync $(ROOTFS_RAW_IMG)
+	sudo chown ${USER} $(ROOTFS_RAW_IMG)
+	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG)/rootfs.raw.img.sha256sum
+
+$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG)
+	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
+	mkdir -p $(ROOTFS_DIR)
+	sudo mount -o loop $(ROOTFS_PATCHED_IMG) $(ROOTFS_DIR)
 
 	+make -f $(ROOTDIR)/build/rootfs.mk gpu
 	+make -f $(ROOTDIR)/build/rootfs.mk firmware
@@ -85,18 +97,18 @@ $(ROOTFS_RAW_IMG): $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOT
 
 	sudo umount -R $(ROOTFS_DIR)
 	sudo rmdir $(ROOTFS_DIR)
-	sudo sync $(ROOTFS_RAW_IMG)
-	sudo chown ${USER} $(ROOTFS_RAW_IMG)
+	sudo sync $(ROOTFS_PATCHED_IMG)
+	sudo chown ${USER} $(ROOTFS_PATCHED_IMG)
 
-$(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_RAW_IMG)
-	$(HOST_OUT)/bin/img2simg $(ROOTFS_RAW_IMG) $(PRODUCT_OUT)/rootfs.img
+$(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
+	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(PRODUCT_OUT)/rootfs.img
 
 clean::
 	if mount |grep -q $(ROOTFS_DIR); then sudo umount -R $(ROOTFS_DIR); fi
 	if [[ -d $(ROOTFS_DIR) ]]; then rmdir $(ROOTFS_DIR); fi
-	rm -f $(ROOTFS_RAW_IMG) $(PRODUCT_OUT)/rootfs.img
+	rm -f $(ROOTFS_PATCHED_IMG) $(ROOTFS_RAW_IMG) $(PRODUCT_OUT)/rootfs.img
 
 targets::
 	@echo "rootfs - runs debootstrap to build the rootfs tree"
 
-.PHONY:: rootfs gpu firmware adjustments
+.PHONY:: rootfs rootfs_raw gpu firmware adjustments
