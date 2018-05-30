@@ -11,6 +11,9 @@ ROOTFS_DIR := $(PRODUCT_OUT)/obj/ROOTFS/rootfs
 ROOTFS_RAW_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.raw.img
 ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img
 
+ROOTFS_FETCH_TARBALL ?= true
+ROOTFS_REVISION ?= latest
+
 USER_GROUPS := \
 	adm \
 	audio \
@@ -67,9 +70,15 @@ adjustments:
 	sudo umount $(ROOTFS_DIR)/dev/pts
 	sudo umount $(ROOTFS_DIR)/{dev,proc,sys}
 
-$(ROOTFS_RAW_IMG): $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
-	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
+$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
+ifeq ($(ROOTFS_FETCH_TARBALL),true)
+		make -f $(ROOTDIR)/build/rootfs.mk fetch-rootfs
+else
+		make -f $(ROOTDIR)/build/rootfs.mk build-rootfs
+endif
 
+build-rootfs: $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
+	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
 	fallocate -l 2G $(ROOTFS_RAW_IMG)
@@ -103,6 +112,12 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG)
 
 $(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
 	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(PRODUCT_OUT)/rootfs.img
+
+fetch-rootfs:
+	mkdir -p $(dir $(ROOTFS_RAW_IMG))
+	cp \
+		$(TARBALL_FETCH_ROOT_DIRECTORY)/rootfs/$(ROOTFS_REVISION)/rootfs.raw.img{,.sha256sum} \
+		$(dir $(ROOTFS_RAW_IMG))
 
 clean::
 	if mount |grep -q $(ROOTFS_DIR); then sudo umount -R $(ROOTFS_DIR); fi

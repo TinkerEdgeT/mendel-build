@@ -4,25 +4,23 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
+DEBOOTSTRAP_TARBALL_REVISION ?= latest
+DEBOOTSTRAP_FETCH_TARBALL ?= true
+
 validate-bootstrap-tarball:
-	@if [[ ! -f $(DEBOOTSTRAP_TARBALL) ]]; then \
-		echo ""; \
-		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"; \
-		echo ""; \
-		echo "Please run the make-bootstrap-tarball target first like this:"; \
-		echo "  m make-bootstrap-tarball"; \
-		echo ""; \
-		echo "or this:"; \
-		echo "  mm debootstrap make-bootstrap-tarball"; \
-		echo ""; \
-		echo "This will be automated in the future."; \
-		echo ""; \
-		echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"; \
-		echo ""; \
-		exit 1; \
-	fi
+ifeq ($(DEBOOTSTRAP_FETCH_TARBALL),true)
+		make -f $(ROOTDIR)/build/debootstrap.mk fetch-bootstrap-tarball
+else
+		make -f $(ROOTDIR)/build/debootstrap.mk make-bootstrap-tarball
+endif
 	cd $(ROOTDIR)/cache && \
 		sha256sum -c $(DEBOOTSTRAP_TARBALL_SHA256)
+
+fetch-bootstrap-tarball:
+	mkdir -p $(ROOTDIR)/cache
+	cp \
+		$(TARBALL_FETCH_ROOT_DIRECTORY)/rootfs/$(DEBOOTSTRAP_TARBALL_REVISION)/debootstrap.tgz{,.sha256sum} \
+		$(ROOTDIR)/cache
 
 make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
 	cd $(ROOTDIR)/cache && \
@@ -46,4 +44,4 @@ targets::
 clean::
 	sudo rm -rf $(PRODUCT_OUT)/obj/DEBOOTSTRAP
 
-.PHONY:: validate-bootstrap-tarball make-bootstrap-sha256sum make-bootstrap-tarball
+.PHONY:: fetch-bootstrap-tarball validate-bootstrap-tarball make-bootstrap-sha256sum make-bootstrap-tarball
