@@ -6,7 +6,7 @@ include $(ROOTDIR)/build/preamble.mk
 
 partition-table: $(PRODUCT_OUT)/partition-table.img
 
-$(PRODUCT_OUT)/partition-table.img:
+$(PRODUCT_OUT)/partition-table.img: $(ROOTDIR)/build/partition-table.bpt
 	mkdir -p $(PRODUCT_OUT)
 	$(ROOTDIR)/system/tools/bpt/bpttool make_table --input $(ROOTDIR)/build/partition-table.bpt --output_gpt $(PRODUCT_OUT)/partition-table.img
 
