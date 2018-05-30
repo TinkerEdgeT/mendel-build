@@ -64,7 +64,8 @@ adjustments:
 	echo "enterprise	ALL=(ALL) ALL" |sudo tee -a $(ROOTFS_DIR)/etc/sudoers
 
 	sudo $(ROOTDIR)/build/fix_permissions.sh -p $(ROOTDIR)/build/permissions.txt -t $(ROOTFS_DIR)
-	sudo umount -R $(ROOTFS_DIR)/{dev,proc,sys}
+	sudo umount $(ROOTFS_DIR)/dev/pts
+	sudo umount $(ROOTFS_DIR)/{dev,proc,sys}
 
 $(ROOTFS_RAW_IMG): $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
 	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
@@ -79,7 +80,7 @@ $(ROOTFS_RAW_IMG): $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOT
 		$(DEBOOTSTRAP_ARGS) \
 		--unpack-tarball=$(DEBOOTSTRAP_TARBALL) \
 		stretch $(ROOTFS_DIR)
-	sudo umount -R $(ROOTFS_DIR)
+	sudo umount $(ROOTFS_DIR)
 	sudo rmdir $(ROOTFS_DIR)
 	sudo sync $(ROOTFS_RAW_IMG)
 	sudo chown ${USER} $(ROOTFS_RAW_IMG)
@@ -95,7 +96,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG)
 	+make -f $(ROOTDIR)/build/kernel.mk modules_install
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
-	sudo umount -R $(ROOTFS_DIR)
+	sudo umount $(ROOTFS_DIR)
 	sudo rmdir $(ROOTFS_DIR)
 	sudo sync $(ROOTFS_PATCHED_IMG)
 	sudo chown ${USER} $(ROOTFS_PATCHED_IMG)
