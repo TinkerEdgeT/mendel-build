@@ -107,9 +107,8 @@ JUMP_TARGETS[product]="${PRODUCT_OUT}"
 JUMP_TARGETS[host]="${HOST_OUT}"
 JUMP_TARGETS[root]="${ROOT_OUT}"
 JUMP_TARGETS[build]="${ROOTDIR}/build"
-JUMP_TARGETS[kernel]="${ROOTDIR}/hardware/bsp/kernel/nxp/imx-v4.9"
-JUMP_TARGETS[uboot]="${ROOTDIR}/hardware/bsp/bootloader/nxp/uboot-imx/"
-JUMP_TARGETS[device]="${ROOTDIR}/device/nxp/imx8m/"
+JUMP_TARGETS[kernel]="${ROOTDIR}/linux-imx/"
+JUMP_TARGETS[uboot]="${ROOTDIR}/uboot-imx/"
 
 function j
 {
