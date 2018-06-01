@@ -29,7 +29,7 @@ make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
 make-bootstrap-tarball: $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
 	mkdir -p $(PRODUCT_OUT)/obj/DEBOOTSTRAP
 	mkdir -p $(ROOTDIR)/cache
-	debootstrap \
+	/usr/sbin/debootstrap \
 		--foreign \
 		$(DEBOOTSTRAP_ARGS) \
 		--make-tarball=$(DEBOOTSTRAP_TARBALL) \

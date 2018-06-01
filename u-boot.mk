@@ -5,8 +5,8 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 # U-boot directories
-NXP_MKIMAGE_DIR := $(ROOTDIR)/device/nxp/imx8m/imx-mkimage
-UBOOT_SRC_DIR := $(ROOTDIR)/hardware/bsp/bootloader/nxp/uboot-imx
+NXP_MKIMAGE_DIR := $(ROOTDIR)/tools/imx-mkimage
+UBOOT_SRC_DIR := $(ROOTDIR)/uboot-imx
 UBOOT_OUT_DIR := $(PRODUCT_OUT)/obj/UBOOT_OBJ
 
 u-boot: $(PRODUCT_OUT)/u-boot.imx
