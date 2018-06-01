@@ -1,3 +1,5 @@
+SHELL := $(shell which /bin/bash)
+
 ifeq ($(ROOTDIR),)
 $(error $$ROOTDIR IS NOT DEFINED -- don\'t forget to source setup.sh)
 endif
