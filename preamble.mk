@@ -88,5 +88,5 @@ DEBOOTSTRAP_ARGS := \
 		--exclude=debfoster \
 		--include=$$(echo $(DEBOOTSTRAP_EXTRA) |tr ' ' ',') \
 
-GFS_ROOT_DIRECTORY := \
+TARBALL_FETCH_ROOT_DIRECTORY := \
 	/google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise
