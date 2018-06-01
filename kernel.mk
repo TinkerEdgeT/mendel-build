@@ -5,7 +5,7 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 # Kernel directories
-KERNEL_SRC_DIR := $(ROOTDIR)/hardware/bsp/kernel/nxp/imx-v4.9
+KERNEL_SRC_DIR := $(ROOTDIR)/linux-imx
 KERNEL_OUT_DIR := $(PRODUCT_OUT)/obj/KERNEL_OBJ
 
 # Explicit sequencing here since u-boot and the kernel seriously hate each other

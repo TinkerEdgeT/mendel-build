@@ -2,7 +2,7 @@
 # common header where useful global vars go.
 
 # Globally useful directories
-TOOLCHAIN := $(ROOTDIR)/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin/aarch64-linux-android-
+TOOLCHAIN := $(ROOTDIR)/toolchain/bin/aarch64-linux-android-
 
 # Used by debootstrap and rootfs both
 DEBOOTSTRAP_TARBALL := $(ROOTDIR)/cache/debootstrap.tgz
