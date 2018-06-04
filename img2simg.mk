@@ -4,38 +4,45 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-IMG2SIMG_SRCS_CXX := \
-	system/core/base/stringprintf.cpp \
-	system/core/libsparse/sparse_read.cpp
+LIBSPARSE_DIR := $(ROOTDIR)/tools/img2simg/libsparse
+LIBSPARSE_OUT := $(HOST_OUT)/obj/LIBSPARSE
 
-IMG2SIMG_SRCS_C := \
-	system/core/libsparse/backed_block.c \
-	system/core/libsparse/img2simg.c \
-	system/core/libsparse/output_file.c \
-	system/core/libsparse/sparse.c \
-	system/core/libsparse/sparse_crc32.c \
-	system/core/libsparse/sparse_err.c
+IMG2SIMG_SOURCES := img2simg.c
+IMG2SIMG_SOURCES := $(foreach source, $(IMG2SIMG_SOURCES), $(LIBSPARSE_DIR)/$(source))
 
-IMG2SIMG_INCLUDES := \
-	system/core/base/include \
-	system/core/libsparse/include
+SIMG2IMG_SOURCES := simg2img.c
+SIMG2IMG_SOURCES := $(foreach source, $(SIMG2IMG_SOURCES), $(LIBSPARSE_DIR)/$(source))
 
-IMG2SIMG_INCLUDES := $(addprefix -I,$(IMG2SIMG_INCLUDES))
+LIBSPARSE_SOURCES := backed_block.c output_file.c sparse.c sparse_crc32.c sparse_err.c sparse_read.c
+LIBSPARSE_OBJS    := $(patsubst %.c,%.o,$(LIBSPARSE_SOURCES))
+
+# Fixup the paths to fit our output locations
+LIBSPARSE_SOURCES := $(foreach source, $(LIBSPARSE_SOURCES), $(LIBSPARSE_DIR)/$(source))
+LIBSPARSE_OBJS    := $(foreach obj, $(LIBSPARSE_OBJS), $(LIBSPARSE_OUT)/$(obj))
 
 img2simg: $(HOST_OUT)/bin/img2simg
 
-$(HOST_OUT)/bin/img2simg:
-	mkdir -p $(HOST_OUT)/bin
-	mkdir -p $(HOST_OUT)/obj/IMG2SIMG
-	$(foreach infile, $(IMG2SIMG_SRCS_CXX), g++ -include string.h $(IMG2SIMG_INCLUDES) -c $(infile) -o $(HOST_OUT)/obj/IMG2SIMG/$(notdir $(patsubst %.cpp,%.o,$(infile))); )
-	$(foreach infile, $(IMG2SIMG_SRCS_C), gcc $(IMG2SIMG_INCLUDES) -c $(infile) -o $(HOST_OUT)/obj/IMG2SIMG/$(notdir $(patsubst %.c,%.o,$(infile))); )
-	gcc -o $(HOST_OUT)/bin/img2simg $(HOST_OUT)/obj/IMG2SIMG/* -lz -lstdc++
+simg2img: $(HOST_OUT)/bin/simg2img
 
-clean::
-	rm -rf $(HOST_OUT)/obj/IMG2SIMG
-	rm -f $(HOST_OUT)/bin/img2simg
+$(HOST_OUT)/bin/img2simg: $(IMG2SIMG_SOURCES) $(LIBSPARSE_OBJS)
+	mkdir -p $(dir $@)
+	$(CXX) $^ -o $@ -I$(LIBSPARSE_DIR)/include -lz
+
+$(HOST_OUT)/bin/simg2img: $(SIMG2IMG_SOURCES) $(LIBSPARSE_OBJS)
+	mkdir -p $(dir $@)
+	$(CXX) $^ -o $@ -I$(LIBSPARSE_DIR)/include -lz
+
+$(LIBSPARSE_OUT)/%.o: $(LIBSPARSE_DIR)/%.c
+	mkdir -p $(LIBSPARSE_OUT)
+	$(CC) $< -c -o $@ -I$(LIBSPARSE_DIR)/include -I$(dir $(LIBSPARSE_DIR))/include
 
 targets::
-	@echo "img2simg - builds a copy of the img2simg utility"
+	@echo "img2simg - builds the sparse image conversion tool"
+	@echo "simg2img - builds the unsparse image conversion tool"
 
-.PHONY:: img2simg
+clean::
+	rm -f $(HOST_OUT)/bin/img2simg
+	rm -f $(HOST_OUT)/bin/simg2img
+	rm -rf $(LIBSPARSE_OUT)
+
+.PHONY:: img2simg simg2img
