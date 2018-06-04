@@ -5,13 +5,16 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 REQUIRED_PACKAGES := \
-	mtools \
-	device-tree-compiler \
-	qemu-user-static \
-	debootstrap \
+	bc \
+	build-essential \
+	binfmt-support \
 	debian-archive-keyring \
-	parted \
+	debootstrap \
+	device-tree-compiler \
 	kpartx \
+	mtools \
+	parted \
+	qemu-user-static \
 	rsync \
 	xz-utils
 
