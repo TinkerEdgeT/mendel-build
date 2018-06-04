@@ -12,6 +12,9 @@ echo "deb http://archive.ubuntu.com/ubuntu xenial main restricted universe multi
 sudo apt-get update
 sudo apt-get install debootstrap/xenial
 
+export DEBOOTSTRAP_FETCH_TARBALL=false
+export ROOTFS_FETCH_TARBALL=false
+
 m prereqs
 mm debootstrap make-bootstrap-tarball
 mm rootfs rootfs_raw
