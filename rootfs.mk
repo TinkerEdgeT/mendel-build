@@ -45,6 +45,8 @@ adjustments:
 	sudo rm -f $(ROOTFS_DIR)/var/log/bootstrap.log
 	echo "enterprise" | sudo tee $(ROOTFS_DIR)/etc/hostname
 	echo "127.0.0.1 enterprise" | sudo tee -a $(ROOTFS_DIR)/etc/hosts
+	echo "en_US.UTF-8 UTF-8" | sudo tee -a $(ROOTFS_DIR)/etc/locale.gen
+	sudo chroot $(ROOTFS_DIR) locale-gen
 	sudo chroot $(ROOTFS_DIR) mkdir -p /home/enterprise
 	sudo chroot $(ROOTFS_DIR) adduser enterprise --home /home/enterprise --shell /bin/bash --disabled-password --gecos ""
 	for group in $(USER_GROUPS); do \
@@ -53,13 +55,7 @@ adjustments:
 	sudo chroot $(ROOTFS_DIR) chown enterprise:enterprise /home/enterprise
 	sudo chroot $(ROOTFS_DIR) bash -c "echo 'enterprise:enterprise' | chpasswd"
 	echo "nameserver 8.8.8.8" | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
-	sudo mount -o bind /proc $(ROOTFS_DIR)/proc
-	sudo mount -o bind /sys $(ROOTFS_DIR)/sys
-	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
-	sudo mount -o bind /dev/pts $(ROOTFS_DIR)/dev/pts
 
-	echo "en_US.UTF-8 UTF-8" | sudo tee -a $(ROOTFS_DIR)/etc/locale.gen
-	sudo chroot $(ROOTFS_DIR) locale-gen
 	sudo chroot $(ROOTFS_DIR) systemctl enable ssh
 	sudo chroot $(ROOTFS_DIR) systemctl enable bluetooth
 	sudo chroot $(ROOTFS_DIR) systemctl enable avahi-daemon
@@ -67,8 +63,6 @@ adjustments:
 	echo "enterprise	ALL=(ALL) ALL" |sudo tee -a $(ROOTFS_DIR)/etc/sudoers
 
 	sudo $(ROOTDIR)/build/fix_permissions.sh -p $(ROOTDIR)/build/permissions.txt -t $(ROOTFS_DIR)
-	sudo umount $(ROOTFS_DIR)/dev/pts
-	sudo umount $(ROOTFS_DIR)/{dev,proc,sys}
 
 $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
 ifeq ($(ROOTFS_FETCH_TARBALL),true)
