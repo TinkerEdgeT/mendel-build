@@ -1,6 +1,0 @@
-/dev/mmcblk1p1	/boot	vfat	defaults	0	0
-PARTUUID=70672ec3-5eee-49ff-b3b1-eb1fbd406bf5	/	ext4	defaults,discard,noatime,nodiratime	0	1
-
-none	/proc	proc	defaults	0	0
-none	/sys	sysfs	defaults	0	0
-none    /tmp    tmpfs   nodev		0	0
