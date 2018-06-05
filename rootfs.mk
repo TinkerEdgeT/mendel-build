@@ -78,6 +78,7 @@ build-rootfs: $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/
 	fallocate -l 2G $(ROOTFS_RAW_IMG)
 	mkfs.ext4 -F -j $(ROOTFS_RAW_IMG)
 	tune2fs -o discard $(ROOTFS_RAW_IMG)
+	-sudo umount $(ROOTFS_DIR)
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
 	sudo qemu-debootstrap \
 		$(DEBOOTSTRAP_ARGS) \
@@ -92,6 +93,7 @@ build-rootfs: $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/
 $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG)
 	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
 	mkdir -p $(ROOTFS_DIR)
+	-sudo umount $(ROOTFS_DIR)
 	sudo mount -o loop $(ROOTFS_PATCHED_IMG) $(ROOTFS_DIR)
 
 	+make -f $(ROOTDIR)/build/rootfs.mk gpu
