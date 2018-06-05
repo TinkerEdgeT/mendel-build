@@ -28,6 +28,8 @@ DEBOOTSTRAP_EXTRA := \
 	firmware-atheros \
 	gettext-base \
 	gnupg \
+	gstreamer1.0-plugins-good \
+	gstreamer1.0-tools \
 	hdparm \
 	ifupdown \
 	init \
@@ -70,6 +72,7 @@ DEBOOTSTRAP_EXTRA := \
 	tasksel \
 	telnet \
 	traceroute \
+	v4l-utils \
 	vim \
 	wamerican \
 	wget \
