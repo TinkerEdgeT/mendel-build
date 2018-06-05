@@ -110,7 +110,7 @@ $(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
 fetch-rootfs:
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
 	cp \
-		$(TARBALL_FETCH_ROOT_DIRECTORY)/rootfs/$(ROOTFS_REVISION)/rootfs.raw.img{,.sha256sum} \
+		$(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw.img{,.sha256sum} \
 		$(dir $(ROOTFS_RAW_IMG))
 
 clean::
