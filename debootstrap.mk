@@ -7,27 +7,21 @@ include $(ROOTDIR)/build/preamble.mk
 DEBOOTSTRAP_TARBALL_REVISION ?= latest
 DEBOOTSTRAP_FETCH_TARBALL ?= true
 
-validate-bootstrap-tarball:
 ifeq ($(DEBOOTSTRAP_FETCH_TARBALL),true)
-		make -f $(ROOTDIR)/build/debootstrap.mk fetch-bootstrap-tarball
+validate-bootstrap-tarball: fetch-bootstrap-tarball
 else
-		make -f $(ROOTDIR)/build/debootstrap.mk make-bootstrap-tarball
+validate-bootstrap-tarball: $(DEBOOTSTRAP_TARBALL)
 endif
 	cd $(ROOTDIR)/cache && \
 		sha256sum -c $(DEBOOTSTRAP_TARBALL_SHA256)
 
-fetch-bootstrap-tarball:
+fetch-bootstrap-tarball: $(TARBALL_FETCH_ROOT_DIRECTORY)/$(DEBOOTSTRAP_TARBALL_REVISION)/debootstrap.tgz
 	mkdir -p $(ROOTDIR)/cache
-	cp \
-		$(TARBALL_FETCH_ROOT_DIRECTORY)/$(DEBOOTSTRAP_TARBALL_REVISION)/debootstrap.tgz \
-		$(TARBALL_FETCH_ROOT_DIRECTORY)/$(DEBOOTSTRAP_TARBALL_REVISION)/debootstrap.tgz.sha256sum
-		$(ROOTDIR)/cache
+	cp $< $<.sha256sum $(ROOTDIR)/cache
 
-make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
-	cd $(ROOTDIR)/cache && \
-		sha256sum $(notdir $(DEBOOTSTRAP_TARBALL)) > $(DEBOOTSTRAP_TARBALL_SHA256)
+make-bootstrap-tarball: $(DEBOOTSTRAP_TARBALL)
 
-make-bootstrap-tarball: $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
+$(DEBOOTSTRAP_TARBALL): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
 	mkdir -p $(PRODUCT_OUT)/obj/DEBOOTSTRAP
 	mkdir -p $(ROOTDIR)/cache
 	/usr/sbin/debootstrap \
@@ -36,6 +30,10 @@ make-bootstrap-tarball: $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preambl
 		--make-tarball=$(DEBOOTSTRAP_TARBALL) \
 		stretch $(PRODUCT_OUT)/obj/DEBOOTSTRAP
 	+make -f $(ROOTDIR)/build/debootstrap.mk make-bootstrap-sha256sum
+
+make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
+	cd $(ROOTDIR)/cache && \
+		sha256sum $(notdir $(DEBOOTSTRAP_TARBALL)) > $(DEBOOTSTRAP_TARBALL_SHA256)
 
 targets::
 	@echo "validate-bootstrap-tarball - validates the bootstrap tarball matches the SHA-256 sums"

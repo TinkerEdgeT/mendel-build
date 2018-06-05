@@ -28,7 +28,12 @@ USER_GROUPS := \
 	video
 
 rootfs: $(PRODUCT_OUT)/rootfs.img
-rootfs_raw: $(ROOTFS_RAW_IMG)
+
+ifeq ($(ROOTFS_FETCH_TARBALL),true)
+rootfs_raw: fetch-rootfs
+else
+rootfs_raw: build-rootfs
+endif
 
 gpu:
 	sudo rsync -rl $(GPU_DIR)/gpu-core/ $(ROOTFS_DIR)
@@ -64,14 +69,9 @@ adjustments:
 
 	sudo $(ROOTDIR)/build/fix_permissions.sh -p $(ROOTDIR)/build/permissions.txt -t $(ROOTFS_DIR)
 
-$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
-ifeq ($(ROOTFS_FETCH_TARBALL),true)
-		make -f $(ROOTDIR)/build/rootfs.mk fetch-rootfs
-else
-		make -f $(ROOTDIR)/build/rootfs.mk build-rootfs
-endif
+build-rootfs: $(ROOTFS_RAW_IMG)
 
-build-rootfs: $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
+$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk $(DEBOOTSTRAP_TARBALL)
 	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
@@ -90,7 +90,11 @@ build-rootfs: $(DEBOOTSTRAP_TARBALL) $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/
 	sudo chown ${USER} $(ROOTFS_RAW_IMG)
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 
+ifeq ($(ROOTFS_FETCH_TARBALL),true)
+$(ROOTFS_PATCHED_IMG): fetch-rootfs
+else
 $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG)
+endif
 	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)
@@ -109,12 +113,9 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG)
 $(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
 	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(PRODUCT_OUT)/rootfs.img
 
-fetch-rootfs:
+fetch-rootfs: $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw.img
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
-	cp \
-		$(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw.img \
-		$(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw.img.sha256sum \
-		$(dir $(ROOTFS_RAW_IMG))
+	cp $< $<.sha256sum $(dir $(ROOTFS_RAW_IMG))
 
 clean::
 	if mount |grep -q $(ROOTFS_DIR); then sudo umount -R $(ROOTFS_DIR); fi
