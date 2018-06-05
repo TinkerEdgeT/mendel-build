@@ -19,7 +19,8 @@ endif
 fetch-bootstrap-tarball:
 	mkdir -p $(ROOTDIR)/cache
 	cp \
-		$(TARBALL_FETCH_ROOT_DIRECTORY)/$(DEBOOTSTRAP_TARBALL_REVISION)/debootstrap.tgz{,.sha256sum} \
+		$(TARBALL_FETCH_ROOT_DIRECTORY)/$(DEBOOTSTRAP_TARBALL_REVISION)/debootstrap.tgz \
+		$(TARBALL_FETCH_ROOT_DIRECTORY)/$(DEBOOTSTRAP_TARBALL_REVISION)/debootstrap.tgz.sha256sum
 		$(ROOTDIR)/cache
 
 make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
