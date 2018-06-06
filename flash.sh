@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ROOTDIR=$(dirname $0)/..
-PRODUCT_OUT=${ROOTDIR}/out/target/product/imx8m_phanbell
+PRODUCT_OUT=${PRODUCT_OUT:=${ROOTDIR}/out/target/product/imx8m_phanbell}
 
 set -e
 
