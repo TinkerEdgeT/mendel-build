@@ -18,9 +18,11 @@ export ROOTFS_REVISION=.
 
 m
 
+pushd ${ROOTDIR}
 python3 ${ROOTDIR}/build/create_release_manifest.py \
   -i ${ROOTDIR}/manifest/default.xml \
   -o ${KOKORO_ARTIFACTS_DIR}/manifest.xml
+popd
 
 cp ${PRODUCT_OUT}/u-boot.imx ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/boot.img ${KOKORO_ARTIFACTS_DIR}
