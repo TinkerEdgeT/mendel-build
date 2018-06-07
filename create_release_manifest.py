@@ -18,8 +18,8 @@ def main():
     if 'aarch64-linux-android' in project.get('path'):
       continue
     path = project.get('path')
-    git_output = subprocess.run(['git', '-C', path, 'rev-parse', 'HEAD'], stdout=subprocess.PIPE)
-    revision = git_output.stdout.decode('utf-8').strip()
+    git_output = subprocess.check_output(['git', '-C', path, 'rev-parse', 'HEAD'])
+    revision = git_output.decode('utf-8').strip()
     project.set('revision', revision)
 
   tree.write(args.output)
