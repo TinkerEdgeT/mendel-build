@@ -92,20 +92,26 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk 
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 
 ifeq ($(ROOTFS_FETCH_TARBALL),true)
-$(ROOTFS_PATCHED_IMG): fetch-rootfs
+$(ROOTFS_PATCHED_IMG): fetch-rootfs $(ROOTDIR)/build/boot.mk
 else
-$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG)
+$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) $(ROOTDIR)/build/boot.mk
 endif
 	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
 	mkdir -p $(ROOTFS_DIR)
+	-sudo umount $(ROOTFS_DIR)/boot
 	-sudo umount $(ROOTFS_DIR)
 	sudo mount -o loop $(ROOTFS_PATCHED_IMG) $(ROOTFS_DIR)
+	sudo mount -o loop $(PRODUCT_OUT)/boot.img $(ROOTFS_DIR)/boot
 
 	+make -f $(ROOTDIR)/build/rootfs.mk gpu
 	+make -f $(ROOTDIR)/build/rootfs.mk firmware
-	+make -f $(ROOTDIR)/build/kernel.mk modules_install
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
+	sudo cp $(PRODUCT_OUT)/*.deb $(ROOTFS_DIR)/root/
+	sudo chroot $(ROOTFS_DIR) bash -c 'dpkg -i /root/*.deb'
+	sudo rm -rf $(ROOTFS_DIR)/root/*.deb
+
+	sudo umount $(ROOTFS_DIR)/boot
 	sudo umount $(ROOTFS_DIR)
 	sudo rmdir $(ROOTFS_DIR)
 	sudo sync $(ROOTFS_PATCHED_IMG)

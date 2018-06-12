@@ -10,7 +10,7 @@
     {
       "label": "boot",
       "offset": 8388608,
-      "size": 33554432,
+      "size": 134217728,
       "grow": false,
       "guid": "595059e1-7b18-4e71-98f8-86b0ef75fe34",
       "type_guid": "bb499290-b57e-49f6-bf41-190386693794",
@@ -23,7 +23,7 @@
     },
     {
       "label": "misc",
-      "offset": 41943040,
+      "offset": 142606336,
       "size": 1048576,
       "grow": false,
       "guid": "8d34ae73-b586-4f9a-b0e8-ec448b882071",
@@ -37,8 +37,8 @@
     },
     {
       "label": "rootfs",
-      "offset": 50331648,
-      "size": 12826181632,
+      "offset": 150994944,
+      "size": 12725518336,
       "grow": true,
       "guid": "70672ec3-5eee-49ff-b3b1-eb1fbd406bf5",
       "type_guid": "0f2778c4-5cc1-4300-8670-6c88b7e57ed6",

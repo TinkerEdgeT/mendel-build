@@ -11,10 +11,11 @@ KERNEL_OUT_DIR := $(PRODUCT_OUT)/obj/KERNEL_OBJ
 # Explicit sequencing here since u-boot and the kernel seriously hate each other
 # in parallel.
 kernel:
-	+make -f $(ROOTDIR)/build/kernel.mk $(KERNEL_OUT_DIR)/.config
-	+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) ARCH=arm64 CROSS_COMPILE=$(TOOLCHAIN) Image modules dtbs
+	+make -f $(ROOTDIR)/build/kernel.mk kpkg
 	+make -f $(ROOTDIR)/build/kernel.mk $(PRODUCT_OUT)/kernel
 	+make -f $(ROOTDIR)/build/kernel.mk $(PRODUCT_OUT)/fsl-imx8mq-phanbell.dtb
+
+kpkg: $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb
 
 $(KERNEL_OUT_DIR)/.config: $(ROOTDIR)/build/defconfig
 	mkdir -p $(KERNEL_OUT_DIR)
@@ -36,4 +37,14 @@ targets::
 clean::
 	+make -C $(KERNEL_SRC_DIR) mrproper
 
-.PHONY:: kernel modules_install
+$(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb:
+	mkdir -p $(KERNEL_OUT_DIR)
+	cp -afs $(ROOTDIR)/linux-imx/* $(KERNEL_OUT_DIR)
+	make -f $(ROOTDIR)/build/kernel.mk $(KERNEL_OUT_DIR)/.config
+	cd $(KERNEL_OUT_DIR); make-kpkg --rootcmd fakeroot --arch arm64 \
+		--cross-compile $(TOOLCHAIN) --revision 1 --append-to-version=-aiy \
+		-j $(shell nproc) --overlay-dir=$(ROOTDIR)/build/kernel-overlay \
+		kernel_image kernel_headers
+	mv $(KERNEL_OUT_DIR)/../*.deb $(PRODUCT_OUT)
+
+.PHONY:: kernel kpkg

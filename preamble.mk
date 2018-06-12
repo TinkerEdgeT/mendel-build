@@ -65,6 +65,7 @@ DEBOOTSTRAP_EXTRA := \
 	python2.7 \
 	python3-reportbug \
 	reportbug \
+	rsync \
 	rsyslog \
 	sudo \
 	systemd \

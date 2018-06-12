@@ -11,6 +11,8 @@ REQUIRED_PACKAGES := \
 	debian-archive-keyring \
 	debootstrap \
 	device-tree-compiler \
+	fakeroot \
+	kernel-package \
 	kpartx \
 	mtools \
 	parted \
