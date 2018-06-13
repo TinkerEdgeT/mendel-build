@@ -28,12 +28,7 @@ USER_GROUPS := \
 	video
 
 rootfs: $(PRODUCT_OUT)/rootfs.img
-
-ifeq ($(ROOTFS_FETCH_TARBALL),true)
-rootfs_raw: fetch-rootfs
-else
-rootfs_raw: build-rootfs
-endif
+rootfs_raw: $(ROOTFS_RAW_IMG)
 
 gpu:
 	sudo rsync -rl $(GPU_DIR)/gpu-core/ $(ROOTFS_DIR)
@@ -70,8 +65,11 @@ adjustments:
 
 	sudo $(ROOTDIR)/build/fix_permissions.sh -p $(ROOTDIR)/build/permissions.txt -t $(ROOTFS_DIR)
 
-build-rootfs: $(ROOTFS_RAW_IMG)
-
+ifeq ($(ROOTFS_FETCH_TARBALL),true)
+$(ROOTFS_RAW_IMG): $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw.img
+	mkdir -p $(dir $(ROOTFS_RAW_IMG))
+	cp $< $<.sha256sum $(dir $(ROOTFS_RAW_IMG))
+else
 $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk $(DEBOOTSTRAP_TARBALL)
 	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
 	mkdir -p $(ROOTFS_DIR)
@@ -90,12 +88,9 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk 
 	sudo sync $(ROOTFS_RAW_IMG)
 	sudo chown ${USER} $(ROOTFS_RAW_IMG)
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
-
-ifeq ($(ROOTFS_FETCH_TARBALL),true)
-$(ROOTFS_PATCHED_IMG): fetch-rootfs $(ROOTDIR)/build/boot.mk
-else
-$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) $(ROOTDIR)/build/boot.mk
 endif
+
+$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) $(ROOTDIR)/build/boot.mk
 	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
@@ -119,10 +114,6 @@ endif
 
 $(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
 	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(PRODUCT_OUT)/rootfs.img
-
-fetch-rootfs: $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw.img
-	mkdir -p $(dir $(ROOTFS_RAW_IMG))
-	cp $< $<.sha256sum $(dir $(ROOTFS_RAW_IMG))
 
 clean::
 	if mount |grep -q $(ROOTFS_DIR); then sudo umount -R $(ROOTFS_DIR); fi
