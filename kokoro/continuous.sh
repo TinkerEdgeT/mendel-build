@@ -18,6 +18,11 @@ export ROOTFS_REVISION=.
 
 m prereqs
 
+# kernel-package in 14.04 is pre-arm64 . Update to the 16.04 version.
+echo "deb http://archive.ubuntu.com/ubuntu xenial main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
+sudo apt-get update
+sudo apt-get install --no-install-recommends -y kernel-package/xenial
+
 m
 m sdcard
 
