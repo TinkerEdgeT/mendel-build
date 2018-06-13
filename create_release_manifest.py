@@ -13,9 +13,8 @@ def main():
   tree = ET.parse(args.input)
   root = tree.getroot()
   for project in root.findall('project'):
-    # This repo gives 'fatal: no matching remote head' if you specify a rev.
-    # May be able to remove this when/if we fork the project.
-    if 'aarch64-linux-android' in project.get('path'):
+    if project.get('remote'):
+      print('We don\'t currently handle projects with non-default remotes: ', project.get('name'))
       continue
     path = project.get('path')
     git_output = subprocess.check_output(['git', '-C', path, 'rev-parse', 'HEAD'])
