@@ -90,7 +90,7 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk 
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 endif
 
-$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) $(ROOTDIR)/build/boot.mk
+$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) $(ROOTDIR)/build/boot.mk $(PRODUCT_OUT)/boot.img
 	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
@@ -103,6 +103,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) $(ROOTDIR)/build/boot.mk
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
 	sudo cp $(PRODUCT_OUT)/*.deb $(ROOTFS_DIR)/root/
+	sudo cp $(PRODUCT_OUT)/fsl-imx8mq-phanbell.dtb $(ROOTFS_DIR)/boot/
 	sudo chroot $(ROOTFS_DIR) bash -c 'dpkg -i /root/*.deb'
 	sudo rm -rf $(ROOTFS_DIR)/root/*.deb
 

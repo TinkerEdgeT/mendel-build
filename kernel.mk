@@ -19,13 +19,14 @@ kpkg: $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb
 
 $(KERNEL_OUT_DIR)/.config: $(ROOTDIR)/build/defconfig
 	mkdir -p $(KERNEL_OUT_DIR)
+	cp -afs $(ROOTDIR)/linux-imx/* $(KERNEL_OUT_DIR)
 	+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) ARCH=arm64 CROSS_COMPILE=$(TOOLCHAIN) mrproper defconfig
 	cat $(ROOTDIR)/build/defconfig | tee -a $(KERNEL_OUT_DIR)/.config
 
 $(PRODUCT_OUT)/kernel: $(KERNEL_OUT_DIR)/.config $(KERNEL_OUT_DIR)/arch/arm64/boot/Image
 	cp $(KERNEL_OUT_DIR)/arch/arm64/boot/Image $(PRODUCT_OUT)/kernel
 
-$(PRODUCT_OUT)/fsl-imx8mq-phanbell.dtb: $(KERNEL_OUT_DIR)/.config $(KERNEL_OUT_DIR)/arch/arm64/boot/dts/freescale/fsl-imx8mq-phanbell.dtb
+$(PRODUCT_OUT)/fsl-imx8mq-phanbell.dtb: $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb
 	cp $(KERNEL_OUT_DIR)/arch/arm64/boot/dts/freescale/fsl-imx8mq-phanbell.dtb $(PRODUCT_OUT)/fsl-imx8mq-phanbell.dtb
 
 modules_install: $(PRODUCT_OUT)/kernel
@@ -37,10 +38,7 @@ targets::
 clean::
 	+make -C $(KERNEL_SRC_DIR) mrproper
 
-$(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb:
-	mkdir -p $(KERNEL_OUT_DIR)
-	cp -afs $(ROOTDIR)/linux-imx/* $(KERNEL_OUT_DIR)
-	make -f $(ROOTDIR)/build/kernel.mk $(KERNEL_OUT_DIR)/.config
+$(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb: $(KERNEL_OUT_DIR)/.config
 	cd $(KERNEL_OUT_DIR); MFLAGS="" MAKEFLAGS="" make-kpkg --rootcmd fakeroot --arch arm64 \
 		--cross-compile $(TOOLCHAIN) --revision 1 --append-to-version=-aiy \
 		-j $(shell nproc) --overlay-dir=$(ROOTDIR)/build/kernel-overlay \
