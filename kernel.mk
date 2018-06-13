@@ -41,7 +41,7 @@ $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb:
 	mkdir -p $(KERNEL_OUT_DIR)
 	cp -afs $(ROOTDIR)/linux-imx/* $(KERNEL_OUT_DIR)
 	make -f $(ROOTDIR)/build/kernel.mk $(KERNEL_OUT_DIR)/.config
-	cd $(KERNEL_OUT_DIR); make-kpkg --rootcmd fakeroot --arch arm64 \
+	cd $(KERNEL_OUT_DIR); MFLAGS="" MAKEFLAGS="" make-kpkg --rootcmd fakeroot --arch arm64 \
 		--cross-compile $(TOOLCHAIN) --revision 1 --append-to-version=-aiy \
 		-j $(shell nproc) --overlay-dir=$(ROOTDIR)/build/kernel-overlay \
 		kernel_image kernel_headers
