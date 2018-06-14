@@ -10,15 +10,17 @@ precheck:
 	+make -f $(ROOTDIR)/build/Makefile validate-bootstrap-tarball
 	+make -f $(ROOTDIR)/build/Makefile all
 
-all: boot-targets partition-table rootfs
+all: boot-targets
 
 # We explicitly sequence these since they cannot be properly parallelized. The
-# u-boot and kernel build systems, in particular, do not play well as they share
-# some files.
+# u-boot and kernel build systems, in particular, do not play well together for
+# various odd reasons (duplicate targets such as depcheck, etc.)
 boot-targets:
 	+make -f $(ROOTDIR)/build/Makefile u-boot
 	+make -f $(ROOTDIR)/build/Makefile kernel
 	+make -f $(ROOTDIR)/build/Makefile boot
+	+make -f $(ROOTDIR)/build/Makefile partition-table
+	+make -f $(ROOTDIR)/build/Makefile rootfs
 
 help: targets
 targets::
