@@ -21,6 +21,7 @@ REQUIRED_PACKAGES := \
 	xz-utils
 
 prereqs:
+	sudo apt-get update
 	sudo apt-get install -y $(REQUIRED_PACKAGES)
 
 targets::
