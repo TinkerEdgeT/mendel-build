@@ -10,7 +10,7 @@ popd
 # Debootstrap on 14.04 is very old and buggy. Update to the 16.04 version.
 echo "deb http://archive.ubuntu.com/ubuntu xenial main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
 sudo apt-get update
-sudo apt-get install -y debootstrap/xenial
+sudo apt-get install --no-install-recommends -y debootstrap/xenial
 
 export DEBOOTSTRAP_FETCH_TARBALL=false
 export ROOTFS_FETCH_TARBALL=false
