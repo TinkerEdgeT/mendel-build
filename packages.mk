@@ -1,3 +1,9 @@
+ifeq ($(ROOTDIR),)
+$(error $$ROOTDIR IS NOT DEFINED -- don\'t forget to source setup.sh)
+endif
+
+include $(ROOTDIR)/build/preamble.mk
+
 PACKAGES_DIRS := $(wildcard $(ROOTDIR)/packages/*)
 PACKAGES := $(foreach package,$(PACKAGES_DIRS),$(notdir $(package)))
 

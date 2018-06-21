@@ -34,6 +34,7 @@ include $(ROOTDIR)/build/boot.mk
 include $(ROOTDIR)/build/debootstrap.mk
 include $(ROOTDIR)/build/img2simg.mk
 include $(ROOTDIR)/build/kernel.mk
+include $(ROOTDIR)/build/kernel-modules.mk
 include $(ROOTDIR)/build/partition-table.mk
 include $(ROOTDIR)/build/packages.mk
 include $(ROOTDIR)/build/prereqs.mk

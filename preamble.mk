@@ -4,6 +4,11 @@
 # Globally useful directories
 TOOLCHAIN := $(ROOTDIR)/toolchain/bin/aarch64-linux-android-
 
+# Kernel directories and options
+KERNEL_SRC_DIR := $(ROOTDIR)/linux-imx
+KERNEL_OUT_DIR := $(PRODUCT_OUT)/obj/KERNEL_OBJ
+KERNEL_OPTIONS := ARCH=arm64 CROSS_COMPILE=$(TOOLCHAIN) LOCALVERSION=-aiy
+
 # Used by debootstrap and rootfs both
 DEBOOTSTRAP_TARBALL := $(ROOTDIR)/cache/debootstrap.tgz
 DEBOOTSTRAP_TARBALL_SHA256 := $(ROOTDIR)/cache/debootstrap.tgz.sha256sum
