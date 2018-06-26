@@ -2,7 +2,7 @@
 # common header where useful global vars go.
 
 # Globally useful directories
-TOOLCHAIN := $(ROOTDIR)/toolchain/bin/aarch64-linux-android-
+TOOLCHAIN := $(ROOTDIR)/toolchain/aarch64-linux-android/bin/aarch64-linux-android-
 
 # Kernel directories and options
 KERNEL_SRC_DIR := $(ROOTDIR)/linux-imx
