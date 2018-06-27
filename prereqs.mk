@@ -19,7 +19,8 @@ REQUIRED_PACKAGES := \
 	parted \
 	qemu-user-static \
 	rsync \
-	xz-utils
+	xz-utils \
+	zlib1g-dev
 
 prereqs:
 	sudo apt-get update
