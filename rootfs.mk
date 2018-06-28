@@ -90,7 +90,10 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk 
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 endif
 
-$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) $(ROOTDIR)/build/boot.mk $(PRODUCT_OUT)/boot.img
+$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
+                       $(ROOTDIR)/build/boot.mk \
+                       $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb \
+                       | $(PRODUCT_OUT)/boot.img
 	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
@@ -103,7 +106,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) $(ROOTDIR)/build/boot.mk $(PRODUCT_OUT)
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
 	sudo cp $(PRODUCT_OUT)/*.deb $(ROOTFS_DIR)/root/
-	sudo cp $(PRODUCT_OUT)/fsl-imx8mq-phanbell.dtb $(ROOTFS_DIR)/boot/
+	sudo cp $(ROOTDIR)/build/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 	sudo chroot $(ROOTFS_DIR) bash -c 'dpkg -i /root/*.deb'
 	sudo rm -rf $(ROOTFS_DIR)/root/*.deb
 
