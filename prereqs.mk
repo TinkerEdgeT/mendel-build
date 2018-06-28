@@ -12,6 +12,7 @@ REQUIRED_PACKAGES := \
 	debootstrap \
 	device-tree-compiler \
 	fakeroot \
+	genext2fs \
 	kernel-package \
 	kpartx \
 	mtools \
