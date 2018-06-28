@@ -22,7 +22,7 @@ REQUIRED_PACKAGES := \
 
 prereqs:
 	sudo apt-get update
-	sudo apt-get install -y $(REQUIRED_PACKAGES)
+	sudo apt-get install --no-install-recommends -y $(REQUIRED_PACKAGES)
 
 targets::
 	@echo "prereqs    - installs packages required by this Makefile"
