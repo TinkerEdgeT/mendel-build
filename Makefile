@@ -10,6 +10,9 @@ precheck:
 	+make -f $(ROOTDIR)/build/Makefile validate-bootstrap-tarball
 	+make -f $(ROOTDIR)/build/Makefile all
 
+$(PRODUCT_OUT):
+	mkdir -p $(PRODUCT_OUT)
+
 all: boot-targets
 
 # We explicitly sequence these since they cannot be properly parallelized. The
