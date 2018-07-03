@@ -1,0 +1,8 @@
+Origin: Google LLC
+Label: Google
+Suite: stable
+Codename: stable
+Version: 1.0
+Architectures: arm64
+Components: main
+Description: Google AIY Board Debian repository

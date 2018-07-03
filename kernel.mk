@@ -14,6 +14,8 @@ $(KERNEL_OUT_DIR)/.config: $(ROOTDIR)/build/defconfig | $(KERNEL_OUT_DIR)
 $(KERNEL_OUT_DIR)/arch/arm64/boot/Image: $(KERNEL_OUT_DIR)/.config
 		+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) $(KERNEL_OPTIONS) Image modules dtbs
 
+kernel-deb: $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb
+
 kernel: $(KERNEL_OUT_DIR)/arch/arm64/boot/Image $(KERNEL_OUT_DIR)/arch/arm64/boot/dts/freescale/fsl-imx8mq-phanbell.dtb
 
 $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb: $(KERNEL_OUT_DIR)/.config
@@ -27,8 +29,11 @@ targets::
 
 clean::
 	+make -C $(KERNEL_SRC_DIR) mrproper
+
+.NOTPARALLEL: kernel kernel-deb
 # Mark the deb as phony so we ensure that we rely on the kbuild system for
 # incremental builds.
 .PHONY:: kernel \
+         kernel-deb \
          $(KERNEL_OUT_DIR)/arch/arm64/boot/dts/freescale/fsl-imx8mq-phanbell.dtb \
          $(KERNEL_OUT_DIR)/arch/arm64/boot/Image \

@@ -20,9 +20,11 @@ $(PRODUCT_OUT)/.$1: $(shell find $(ROOTDIR)/modules/$1 -type f) $(KERNEL_OUT_DIR
 		KSRC=$(KERNEL_SRC_DIR) \
 		KOUT=$(KERNEL_OUT_DIR) \
 		debian/rules kdist_image
+	touch $(PRODUCT_OUT)/.$1
 endef
 
 $(foreach module,$(MODULES),$(eval $(call make-module-target,$(module))))
 
 modules:: $(foreach module,$(MODULES),$(PRODUCT_OUT)/.$(module))
+.NOTPARALLEL: modules
 .PHONY:: modules

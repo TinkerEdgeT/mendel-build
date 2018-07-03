@@ -18,6 +18,7 @@ REQUIRED_PACKAGES := \
 	mtools \
 	parted \
 	qemu-user-static \
+	reprepro \
 	rsync \
 	xz-utils \
 	zlib1g-dev
