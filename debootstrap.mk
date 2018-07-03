@@ -7,20 +7,15 @@ include $(ROOTDIR)/build/preamble.mk
 DEBOOTSTRAP_TARBALL_REVISION ?= latest
 DEBOOTSTRAP_FETCH_TARBALL ?= true
 
-ifeq ($(DEBOOTSTRAP_FETCH_TARBALL),true)
-validate-bootstrap-tarball: fetch-bootstrap-tarball
-else
 validate-bootstrap-tarball: $(DEBOOTSTRAP_TARBALL)
-endif
 	cd $(ROOTDIR)/cache && \
 		sha256sum -c $(DEBOOTSTRAP_TARBALL_SHA256)
 
-fetch-bootstrap-tarball: $(TARBALL_FETCH_ROOT_DIRECTORY)/$(DEBOOTSTRAP_TARBALL_REVISION)/debootstrap.tgz
+ifeq ($(DEBOOTSTRAP_FETCH_TARBALL),true)
+$(DEBOOTSTRAP_TARBALL): $(TARBALL_FETCH_ROOT_DIRECTORY)/$(DEBOOTSTRAP_TARBALL_REVISION)/debootstrap.tgz
 	mkdir -p $(ROOTDIR)/cache
 	cp $< $<.sha256sum $(ROOTDIR)/cache
-
-make-bootstrap-tarball: $(DEBOOTSTRAP_TARBALL)
-
+else
 $(DEBOOTSTRAP_TARBALL): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk
 	mkdir -p $(PRODUCT_OUT)/obj/DEBOOTSTRAP
 	mkdir -p $(ROOTDIR)/cache
@@ -30,6 +25,7 @@ $(DEBOOTSTRAP_TARBALL): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preambl
 		--make-tarball=$(DEBOOTSTRAP_TARBALL) \
 		stretch $(PRODUCT_OUT)/obj/DEBOOTSTRAP
 	+make -f $(ROOTDIR)/build/debootstrap.mk make-bootstrap-sha256sum
+endif
 
 make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
 	cd $(ROOTDIR)/cache && \
@@ -43,4 +39,4 @@ targets::
 clean::
 	sudo rm -rf $(PRODUCT_OUT)/obj/DEBOOTSTRAP
 
-.PHONY:: fetch-bootstrap-tarball validate-bootstrap-tarball make-bootstrap-sha256sum make-bootstrap-tarball
+.PHONY:: validate-bootstrap-tarball make-bootstrap-sha256sum make-bootstrap-tarball
