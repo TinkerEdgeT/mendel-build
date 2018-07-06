@@ -8,6 +8,7 @@ REQUIRED_PACKAGES := \
 	bc \
 	build-essential \
 	binfmt-support \
+	debhelper \
 	debian-archive-keyring \
 	debootstrap \
 	device-tree-compiler \
