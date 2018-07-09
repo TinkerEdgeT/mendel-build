@@ -29,6 +29,7 @@ DEBOOTSTRAP_EXTRA := \
 	dialog \
 	dmidecode \
 	doc-debian \
+	ethtool \
 	file \
 	firmware-atheros \
 	gettext-base \
@@ -36,6 +37,7 @@ DEBOOTSTRAP_EXTRA := \
 	gstreamer1.0-plugins-good \
 	gstreamer1.0-tools \
 	hdparm \
+	i2ctools \
 	ifupdown \
 	init \
 	iptables \
@@ -50,6 +52,7 @@ DEBOOTSTRAP_EXTRA := \
 	libswitch-perl \
 	locales \
 	logrotate \
+	lrzsz \
 	lsof \
 	lxde \
 	man-db \
