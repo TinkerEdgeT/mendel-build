@@ -13,7 +13,6 @@ REQUIRED_PACKAGES := \
 	device-tree-compiler \
 	fakeroot \
 	genext2fs \
-	kernel-package \
 	kpartx \
 	mtools \
 	parted \
