@@ -27,6 +27,8 @@ $(DEBOOTSTRAP_TARBALL): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preambl
 	+make -f $(ROOTDIR)/build/debootstrap.mk make-bootstrap-sha256sum
 endif
 
+make-bootstrap-tarball: $(DEBOOTSTRAP_TARBALL)
+
 make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
 	cd $(ROOTDIR)/cache && \
 		sha256sum $(notdir $(DEBOOTSTRAP_TARBALL)) > $(DEBOOTSTRAP_TARBALL_SHA256)
