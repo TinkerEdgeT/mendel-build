@@ -46,6 +46,8 @@ DEBOOTSTRAP_EXTRA := \
 	isc-dhcp-common \
 	krb5-locales \
 	less \
+	libc++1 \
+	libc++abi1 \
 	libclass-isa-perl \
 	liblockfile-bin \
 	libpam-systemd \
