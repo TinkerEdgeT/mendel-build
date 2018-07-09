@@ -37,7 +37,7 @@ DEBOOTSTRAP_EXTRA := \
 	gstreamer1.0-plugins-good \
 	gstreamer1.0-tools \
 	hdparm \
-	i2ctools \
+	i2c-tools \
 	ifupdown \
 	init \
 	iptables \
