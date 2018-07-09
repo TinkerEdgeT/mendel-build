@@ -5,7 +5,6 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 ARM64_BUILDER_FETCH_TARBALL ?= true
-PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker
 
 GPU_VERSION := imx-gpu-viv-6.2.4.p1.0-aarch64
 GPU_DIR := $(ROOTDIR)/imx-gpu-viv/$(GPU_VERSION)
@@ -45,6 +44,7 @@ $(PRODUCT_OUT)/wayland-protocols-imx_1.13-0_all.deb:
 	cd $(WAYLAND_PROTO_DIR)/wayland-protocols-imx-1.13; dpkg-buildpackage -uc -us -tc
 	mv $(WAYLAND_PROTO_DIR)/wayland-protocols-imx_1.13-0_all.deb $(PRODUCT_OUT)
 
+docker-build-arm64: $(ROOTDIR)/cache/arm64-builder.tar
 ifeq ($(ARM64_BUILDER_FETCH_TARBALL),true)
 $(ROOTDIR)/cache/arm64-builder.tar: $(PREBUILT_DOCKER_ROOT)/arm64-builder.tar
 	mkdir -p $(ROOTDIR)/cache

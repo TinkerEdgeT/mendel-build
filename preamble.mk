@@ -109,3 +109,5 @@ DEBOOTSTRAP_ARGS := \
 
 TARBALL_FETCH_ROOT_DIRECTORY ?= \
 	/google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/rootfs
+
+PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker

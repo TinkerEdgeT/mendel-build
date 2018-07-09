@@ -18,10 +18,8 @@ export PREBUILT_DOCKER_ROOT=${KOKORO_GFILE_DIR}
 export DEBOOTSTRAP_TARBALL_REVISION=.
 export ROOTFS_REVISION=.
 
-m prereqs
-
-m
-m sdcard
+m docker-all
+m docker-sdcard
 
 pushd ${ROOTDIR}
 python3 ${ROOTDIR}/build/create_release_manifest.py \

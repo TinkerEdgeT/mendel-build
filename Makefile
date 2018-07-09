@@ -43,6 +43,8 @@ include $(ROOTDIR)/build/sdcard.mk
 include $(ROOTDIR)/build/signing.mk
 include $(ROOTDIR)/build/u-boot.mk
 
+include $(ROOTDIR)/build/docker.mk
+
 clean::
 	rm -rf $(ROOTDIR)/out
 

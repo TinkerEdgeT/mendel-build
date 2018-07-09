@@ -6,8 +6,10 @@ include $(ROOTDIR)/build/preamble.mk
 
 REQUIRED_PACKAGES := \
 	bc \
+	binutils-aarch64-linux-gnu \
 	build-essential \
 	binfmt-support \
+	coreutils \
 	debhelper \
 	debian-archive-keyring \
 	debootstrap \
@@ -15,8 +17,13 @@ REQUIRED_PACKAGES := \
 	fakeroot \
 	genext2fs \
 	kpartx \
+	libwayland-dev \
 	mtools \
 	parted \
+	pkg-config \
+	python-minimal \
+	python2.7 \
+	python3 \
 	qemu-user-static \
 	reprepro \
 	rsync \

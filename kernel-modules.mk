@@ -19,7 +19,7 @@ $(PRODUCT_OUT)/.$1: $(PRODUCT_OUT)
 	$$(warning "No source for $1")
 	cp $(PREBUILT_MODULES_ROOT)/$1.deb $(PRODUCT_OUT)
 else
-$(PRODUCT_OUT)/.$1: $(shell find $(ROOTDIR)/modules/$1 -type f) $(KERNEL_OUT_DIR)/.config $(KERNEL_OUT_DIR)/arch/arm64/boot/Image
+$(PRODUCT_OUT)/.$1: $$(shell find $(ROOTDIR)/modules/$1 -type f) $(KERNEL_OUT_DIR)/.config $(KERNEL_OUT_DIR)/arch/arm64/boot/Image
 	mkdir -p $(PRODUCT_OUT)/obj/MODULE_OBJ/$1/debian
 	cp -afs $(ROOTDIR)/modules/$1/* $(PRODUCT_OUT)/obj/MODULE_OBJ/$1
 	cp -r $(ROOTDIR)/build/$1-debian/* $(PRODUCT_OUT)/obj/MODULE_OBJ/$1/debian/
