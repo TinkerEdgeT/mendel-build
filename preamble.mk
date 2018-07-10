@@ -69,6 +69,7 @@ DEBOOTSTRAP_EXTRA := \
 	openssh-server \
 	parted \
 	pciutils \
+	psmisc \
 	pulseaudio \
 	python \
 	python-minimal \
