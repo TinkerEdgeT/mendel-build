@@ -10,7 +10,7 @@ MODULES_DIRS := $(wildcard $(ROOTDIR)/modules/*)
 MODULES := $(foreach module,$(MODULES_DIRS),$(notdir $(module)))
 MODULES := $(sort $(MODULES) $(REQUIRED_MODULES))
 
-PREBUILT_MODULES_ROOT ?= /google/data/ro/teams/spacepark/enterprise/debs
+PREBUILT_MODULES_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/debs
 
 define make-module-target
 $1: $(PRODUCT_OUT)/.$1
