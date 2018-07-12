@@ -17,6 +17,7 @@ DEBOOTSTRAP_EXTRA := \
 	alsa-utils \
 	apt-listchanges \
 	apt-utils \
+	aptitude \
 	avahi-daemon \
 	bash-completion \
 	bluez \
@@ -44,14 +45,18 @@ DEBOOTSTRAP_EXTRA := \
 	iputils-ping \
 	isc-dhcp-client \
 	isc-dhcp-common \
+	kbd \
 	krb5-locales \
 	less \
 	libc++1 \
 	libc++abi1 \
 	libclass-isa-perl \
+	libinput10 \
 	liblockfile-bin \
 	libpam-systemd \
 	libswitch-perl \
+	libxcb-composite0 \
+	libxcb-shape0 \
 	locales \
 	logrotate \
 	lrzsz \
@@ -91,9 +96,8 @@ DEBOOTSTRAP_EXTRA := \
 	whiptail \
 	wireless-tools \
 	wpasupplicant \
-	xorg \
-	xserver-xorg-input-all \
-	xserver-xorg-video-all
+	xdg-user-dirs \
+	xwayland
 
 DEBOOTSTRAP_ARGS := \
 		--arch=arm64 \
