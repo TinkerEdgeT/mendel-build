@@ -5,7 +5,7 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 make-repo: $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release
-$(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release: $(ROOTDIR)/build/distributions | kernel-deb modules packages
+$(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release: $(ROOTDIR)/build/distributions | kernel-deb modules packages gpu-packages
 	mkdir -p $(PRODUCT_OUT)/repo
 	mkdir -p $(PRODUCT_OUT)/repo/debian_repo
 	mkdir -p $(PRODUCT_OUT)/repo/deb_repo_config
@@ -16,7 +16,7 @@ $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release: $(ROOTDIR)/build/distribut
 	         includedeb stable $(PRODUCT_OUT)/*.deb
 
 sign-repo: $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release.gpg
-$(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release.gpg: $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release
+$(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release.gpg:
 ifneq (,$(wildcard /escalated_sign/escalated_sign.py))
 	/escalated_sign/escalated_sign.py \
 	  --tool=linux_gpg_sign \

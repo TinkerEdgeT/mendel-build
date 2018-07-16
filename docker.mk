@@ -4,8 +4,10 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
+ARM64_BUILDER_FETCH_TARBALL ?= true
 DOCKER_FETCH_TARBALL ?= true
 
+docker-build: $(ROOTDIR)/cache/aiy-board-builder.tar
 ifeq ($(DOCKER_FETCH_TARBALL),true)
 $(ROOTDIR)/cache/aiy-board-builder.tar: $(PREBUILT_DOCKER_ROOT)/aiy-board-builder.tar
 	mkdir -p $(ROOTDIR)/cache
@@ -18,7 +20,21 @@ $(ROOTDIR)/cache/aiy-board-builder.tar:
 	docker rmi aiy-board-builder:latest
 endif
 
-docker-build: $(ROOTDIR)/cache/aiy-board-builder.tar
+docker-build-arm64: $(ROOTDIR)/cache/arm64-builder.tar
+ifeq ($(ARM64_BUILDER_FETCH_TARBALL),true)
+$(ROOTDIR)/cache/arm64-builder.tar: $(PREBUILT_DOCKER_ROOT)/arm64-builder.tar
+	mkdir -p $(ROOTDIR)/cache
+	cp $< $(ROOTDIR)/cache
+else
+$(ROOTDIR)/cache/arm64-builder.tar:
+	mkdir -p $(ROOTDIR)/cache
+	mkdir -p $(PRODUCT_OUT)/obj/ARM64_BUILDER
+	cp $(ROOTDIR)/build/Dockerfile.arm64 $(PRODUCT_OUT)/obj/ARM64_BUILDER/Dockerfile
+	cp $(shell which qemu-aarch64-static) $(PRODUCT_OUT)/obj/ARM64_BUILDER
+	docker build -t arm64-builder $(PRODUCT_OUT)/obj/ARM64_BUILDER
+	docker image save -o $@ arm64-builder:latest
+	docker rmi arm64-builder:latest
+endif
 
 define docker-run
 docker-$1: docker-build;
@@ -54,6 +70,7 @@ $(call docker-run,rootfs,rootfs_raw)
 $(call docker-run,boot,boot)
 $(call docker-run,all,boot-targets)
 $(call docker-run,sdcard,sdcard)
+$(call docker-run,make-repo,make-repo)
 
 .DEFAULT_GOAL:=docker-all
 

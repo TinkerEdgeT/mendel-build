@@ -32,6 +32,7 @@ targets::
 
 include $(ROOTDIR)/build/boot.mk
 include $(ROOTDIR)/build/debootstrap.mk
+include $(ROOTDIR)/build/gpu.mk
 include $(ROOTDIR)/build/img2simg.mk
 include $(ROOTDIR)/build/kernel.mk
 include $(ROOTDIR)/build/kernel-modules.mk
