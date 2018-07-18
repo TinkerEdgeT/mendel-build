@@ -14,6 +14,8 @@ $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release: $(ROOTDIR)/build/distribut
 	         --outdir $(PRODUCT_OUT)/repo/debian_repo \
 	         --confdir $(PRODUCT_OUT)/repo/deb_repo_config \
 	         includedeb stable $(PRODUCT_OUT)/*.deb
+	find $(PRODUCT_OUT)/repo/debian_repo -type d | xargs chmod 777
+	find $(PRODUCT_OUT)/repo/debian_repo -type f | xargs chmod 666
 
 sign-repo: $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release.gpg
 $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release.gpg:
