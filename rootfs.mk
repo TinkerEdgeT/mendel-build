@@ -100,10 +100,12 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	+make -f $(ROOTDIR)/build/rootfs.mk firmware
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
-	sudo cp $(PRODUCT_OUT)/*.deb $(ROOTFS_DIR)/root/
 	sudo cp $(ROOTDIR)/build/fstab.emmc $(ROOTFS_DIR)/etc/fstab
-	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --no-install-recommends -y /root/*.deb'
-	sudo rm -rf $(ROOTFS_DIR)/root/*.deb
+
+	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp
+	sudo cp $(PRODUCT_OUT)/*.deb $(ROOTFS_DIR)/tmp/
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --no-install-recommends -y /tmp/*.deb'
+	sudo umount $(ROOTFS_DIR)/tmp
 
 	sudo umount $(ROOTFS_DIR)/boot
 	sudo umount $(ROOTFS_DIR)
