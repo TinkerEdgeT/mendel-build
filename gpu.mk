@@ -19,8 +19,8 @@ gpu-packages: weston wayland-protocols imx-gpu-viv
 $(PRODUCT_OUT)/weston-imx_3.0.0-0_arm64.deb: $(ROOTDIR)/cache/arm64-builder.tar $(PRODUCT_OUT)/wayland-protocols-imx_1.13-0_all.deb
 	mkdir -p $(WESTON_DIR)/weston-imx-3.0.0
 	cp -r $(ROOTDIR)/weston-imx/* $(WESTON_DIR)/weston-imx-3.0.0
-	mkdir -p $(WESTON_DIR)/weston-imx-3.0.0/etc/systemd/system
-	cp $(ROOTDIR)/build/weston.service $(WESTON_DIR)/weston-imx-3.0.0/etc/systemd/system
+	mkdir -p $(WESTON_DIR)/weston-imx-3.0.0/lib/systemd/system
+	cp $(ROOTDIR)/build/weston.service $(WESTON_DIR)/weston-imx-3.0.0/lib/systemd/system
 	tar -C $(WESTON_DIR) -cJf $(WESTON_DIR)/weston-imx_3.0.0.orig.tar.xz weston-imx-3.0.0
 	cp -r $(ROOTDIR)/build/weston-imx-debian $(WESTON_DIR)/weston-imx-3.0.0/debian
 	docker load -i $(ROOTDIR)/cache/arm64-builder.tar
