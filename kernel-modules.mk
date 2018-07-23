@@ -4,7 +4,7 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-REQUIRED_MODULES := apex
+REQUIRED_MODULES :=
 
 MODULES_DIRS := $(wildcard $(ROOTDIR)/modules/*)
 MODULES := $(foreach module,$(MODULES_DIRS),$(notdir $(module)))
