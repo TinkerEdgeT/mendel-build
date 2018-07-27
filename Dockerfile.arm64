@@ -3,8 +3,10 @@ MAINTAINER support-aiyprojects@google.com
 COPY qemu-aarch64-static /usr/bin
 RUN apt-get update && apt-get install -y \
     automake \
+    checkinstall \
     debhelper \
     dpkg-dev \
+    libcap-dev \
     libcairo2-dev \
     libdrm-dev \
     libegl1-mesa-dev \

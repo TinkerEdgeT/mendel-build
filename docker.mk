@@ -36,6 +36,7 @@ $(ROOTDIR)/cache/arm64-builder.tar:
 	docker rmi arm64-builder:latest
 endif
 
+# Macro for running make target in x86 docker image
 define docker-run
 docker-$1: docker-build;
 	docker load -i $(ROOTDIR)/cache/aiy-board-builder.tar
@@ -72,6 +73,48 @@ $(call docker-run,boot,boot)
 $(call docker-run,all,boot-targets)
 $(call docker-run,sdcard,sdcard)
 $(call docker-run,make-repo,make-repo)
+
+
+# Macro for running make target in arm64 docker image
+define docker-arm64-run
+docker-arm64-$1: docker-build-arm64;
+	docker load -i $(ROOTDIR)/cache/arm64-builder.tar; \
+	docker run --rm --tty \
+	    -v /dev\:/dev \
+	    -v $(ROOTDIR)\:/build \
+	    -v $(TARBALL_FETCH_ROOT_DIRECTORY)\:/tarballs \
+	    -v $(PREBUILT_DOCKER_ROOT)\:/docker \
+	    -v $(PREBUILT_MODULES_ROOT)\:/modules \
+	    -w /build \
+	      -e "DEBOOTSTRAP_FETCH_TARBALL=$(DEBOOTSTRAP_FETCH_TARBALL)" \
+	      -e "ROOTFS_FETCH_TARBALL=$(ROOTFS_FETCH_TARBALL)" \
+	      -e "ARM64_BUILDER_FETCH_TARBALL=$(ARM64_BUILDER_FETCH_TARBALL)" \
+	      -e "TARBALL_FETCH_ROOT_DIRECTORY=/tarballs" \
+	      -e "PREBUILT_DOCKER_ROOT=/docker" \
+	      -e "ROOTFS_REVISION=$(ROOTFS_REVISION)" \
+	      -e "DEBOOTSTRAP_TARBALL_REVISION=$(DEBOOTSTRAP_TARBALL_REVISION)" \
+	      -e "PREBUILT_MODULES_ROOT=/modules" \
+	   arm64-builder \
+	   /bin/bash -c \
+		'groupadd --gid $$(shell id -g) $$(shell id -g -n); \
+	     useradd -m -e "" -s /bin/bash --gid $$(shell id -g) --uid $$(shell id -u) $$(shell id -u -n); \
+	     passwd -d $$(shell id -u -n); \
+	     echo "$$(shell id -u -n) ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
+	     source build/setup.sh; m -j$(shell nproc) $2'
+endef
+
+test-docker:
+	@echo "Docker architecture: $(shell uname -a)"
+	@echo "Compiler version: $(shell gcc --version)"
+	@echo -e '#include <stdio.h>\nint main() {printf("\\nHello Docker gcc test\\n\\n");\n return 0;\n}' > hello.c
+	@make hello
+	@./hello
+	@rm -f hello.c hello
+
+# Test arm64 docker 'm docker-arm64-test-docker'
+$(call docker-arm64-run,test-docker,test-docker)
+# Test x86 docker 'm docker-test-docker'
+$(call docker-run,test-docker,test-docker)
 
 .DEFAULT_GOAL:=docker-all
 

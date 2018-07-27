@@ -3,8 +3,11 @@ $(error $$ROOTDIR IS NOT DEFINED -- don\'t forget to source setup.sh)
 endif
 
 include $(ROOTDIR)/build/preamble.mk
-
-PACKAGES_DIRS := $(wildcard $(ROOTDIR)/packages/*)
+PACKAGE_NAMES := aiy-board-audio \
+		 aiy-board-gadget \
+		 aiy-board-keyring \
+		 aiy-board-wlan
+PACKAGES_DIRS := $(addprefix $(ROOTDIR)/packages/, $(PACKAGE_NAMES))
 PACKAGES := $(foreach package,$(PACKAGES_DIRS),$(notdir $(package)))
 
 define make-package-target
@@ -18,4 +21,5 @@ endef
 $(foreach package,$(PACKAGES),$(eval $(call make-package-target,$(package))))
 
 packages:: $(foreach package,$(PACKAGES),$(PRODUCT_OUT)/.$(package))
+
 .PHONY:: packages

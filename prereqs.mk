@@ -17,6 +17,7 @@ REQUIRED_PACKAGES := \
 	fakeroot \
 	genext2fs \
 	kpartx \
+	libcap-dev \
 	libwayland-dev \
 	mtools \
 	parted \
