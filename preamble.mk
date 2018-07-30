@@ -29,6 +29,7 @@ DEBOOTSTRAP_EXTRA := \
 	debian-faq \
 	dialog \
 	dmidecode \
+	dnsmasq \
 	doc-debian \
 	ethtool \
 	file \
