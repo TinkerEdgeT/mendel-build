@@ -82,6 +82,7 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk 
 endif
 
 $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
+                       $(ROOTDIR)/board/fstab.emmc \
                        $(ROOTDIR)/build/boot.mk \
                        $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb \
                        $(PRODUCT_OUT)/wayland-protocols-imx_1.13-0_all.deb \
@@ -100,7 +101,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	+make -f $(ROOTDIR)/build/rootfs.mk firmware
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
-	sudo cp $(ROOTDIR)/build/fstab.emmc $(ROOTFS_DIR)/etc/fstab
+	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
 	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp
 	sudo cp $(PRODUCT_OUT)/*.deb $(ROOTFS_DIR)/tmp/

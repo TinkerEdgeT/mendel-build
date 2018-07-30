@@ -7,9 +7,9 @@ include $(ROOTDIR)/build/preamble.mk
 $(KERNEL_OUT_DIR):
 	mkdir -p $(KERNEL_OUT_DIR)
 
-$(KERNEL_OUT_DIR)/.config: $(ROOTDIR)/build/defconfig | $(KERNEL_OUT_DIR)
+$(KERNEL_OUT_DIR)/.config: $(ROOTDIR)/board/defconfig | $(KERNEL_OUT_DIR)
 	+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) $(KERNEL_OPTIONS) mrproper defconfig
-	cat $(ROOTDIR)/build/defconfig | tee -a $(KERNEL_OUT_DIR)/.config
+	cat $(ROOTDIR)/board/defconfig | tee -a $(KERNEL_OUT_DIR)/.config
 
 $(KERNEL_OUT_DIR)/arch/arm64/boot/Image: $(KERNEL_OUT_DIR)/.config
 		+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) $(KERNEL_OPTIONS) Image modules dtbs

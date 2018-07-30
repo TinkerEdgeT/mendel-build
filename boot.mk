@@ -19,7 +19,7 @@ $(PRODUCT_OUT)/boot.img: $(PRODUCT_OUT)/u-boot.imx \
 
 $(PRODUCT_OUT)/obj/BOOT_OBJ/boot.scr: $(HOST_OUT)/bin/mkimage
 	mkdir -p $(PRODUCT_OUT)/obj/BOOT_OBJ
-	$(HOST_OUT)/bin/mkimage -A arm -T script -O linux -d $(ROOTDIR)/build/boot.txt $(PRODUCT_OUT)/obj/BOOT_OBJ/boot.scr
+	$(HOST_OUT)/bin/mkimage -A arm -T script -O linux -d $(ROOTDIR)/board/boot.txt $(PRODUCT_OUT)/obj/BOOT_OBJ/boot.scr
 
 targets::
 	@echo "boot - builds the kernel and boot partition"

@@ -14,6 +14,7 @@ $(PRODUCT_OUT)/sdcard.img: sdcard-allocate \
                            $(ROOTDIR)/build/rootfs.mk \
                            $(ROOTDIR)/build/boot.mk \
                            $(ROOTDIR)/build/u-boot.mk \
+                           $(ROOTDIR)/board/fstab.sdcard \
                            | $(PRODUCT_OUT)/u-boot.imx \
                            $(PRODUCT_OUT)/boot.img \
                            $(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img
@@ -36,7 +37,7 @@ $(PRODUCT_OUT)/sdcard.img: sdcard-allocate \
 	sudo mount $(LOOP)p2 $(ROOTFS_DIR)
 	sudo mount $(LOOP)p1 $(ROOTFS_DIR)/boot
 
-	sudo cp $(ROOTDIR)/build/fstab.sdcard $(ROOTFS_DIR)/etc/fstab
+	sudo cp $(ROOTDIR)/board/fstab.sdcard $(ROOTFS_DIR)/etc/fstab
 
 	sudo umount $(ROOTFS_DIR)/boot
 	sudo umount $(ROOTFS_DIR)

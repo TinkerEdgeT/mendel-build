@@ -34,7 +34,7 @@ export PRODUCT_OUT="${OUT}/target/product/imx8m_phanbell"
 export HOST_OUT="${OUT}/host/linux-x86"
 export ROOT_OUT="${OUT}/root"
 
-export PATH="${PATH}:${HOST_OUT}/bin:${ROOTDIR}/build"
+export PATH="${PATH}:${HOST_OUT}/bin:${ROOTDIR}/build:${ROOTDIR}/board"
 
 function m
 {
