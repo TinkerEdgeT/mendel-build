@@ -100,6 +100,8 @@ fi
 
 unset JUMP_TARGETS
 declare -Ax JUMP_TARGETS
+JUMP_TARGETS[.]="."
+JUMP_TARGETS[board]="${ROOTDIR}/board"
 JUMP_TARGETS[top]="${ROOTDIR}"
 JUMP_TARGETS[rootdir]="${ROOTDIR}"
 JUMP_TARGETS[out]="${OUT}"
