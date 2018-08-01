@@ -27,7 +27,7 @@ python3 ${ROOTDIR}/build/create_release_manifest.py \
   -o ${KOKORO_ARTIFACTS_DIR}/manifest.xml
 popd
 
-cp ${ROOTDIR}/build/flash.sh ${KOKORO_ARTIFACTS_DIR}
+cp ${ROOTDIR}/board/flash.sh ${KOKORO_ARTIFACTS_DIR}
 chmod -x ${KOKORO_ARTIFACTS_DIR}/flash.sh
 cp ${PRODUCT_OUT}/u-boot.imx ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/boot.img ${KOKORO_ARTIFACTS_DIR}
