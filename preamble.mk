@@ -58,6 +58,7 @@ DEBOOTSTRAP_EXTRA := \
 	libswitch-perl \
 	libxcb-composite0 \
 	libxcb-shape0 \
+	lm-sensors \
 	locales \
 	logrotate \
 	lrzsz \
