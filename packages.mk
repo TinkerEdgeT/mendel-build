@@ -3,23 +3,48 @@ $(error $$ROOTDIR IS NOT DEFINED -- don\'t forget to source setup.sh)
 endif
 
 include $(ROOTDIR)/build/preamble.mk
-PACKAGE_NAMES := aiy-board-audio \
+
+# Packages which will run on any architecture.
+ALLARCH_PACKAGE_NAMES := \
+		 aiy-board-audio \
 		 aiy-board-gadget \
 		 aiy-board-keyring \
 		 aiy-board-wlan
-PACKAGES_DIRS := $(addprefix $(ROOTDIR)/packages/, $(PACKAGE_NAMES))
-PACKAGES := $(foreach package,$(PACKAGES_DIRS),$(notdir $(package)))
+
+# Packages which require ARM64 binaries to be built.
+ARM64_PACKAGE_NAMES := \
+
+
+ALL_PACKAGE_NAMES := $(ALLARCH_PACKAGE_NAMES) $(ARM64_PACKAGE_NAMES)
+
+BUILDPACKAGE_CMD := dpkg-buildpackage -b -rfakeroot -us -uc -tc
 
 define make-package-target
-$1: $(PRODUCT_OUT)/.$1
-$(PRODUCT_OUT)/.$1: $(shell find $(ROOTDIR)/packages/$1 -type f)
-	cd $(ROOTDIR)/packages/$1; dpkg-buildpackage -b -rfakeroot -us -uc -tc
-	mv $(ROOTDIR)/packages/$1_* $(PRODUCT_OUT)/
+	find $(ROOTDIR)/packages -maxdepth 1 -type f -name '$1*' -exec mv -f {} $(PRODUCT_OUT) \;
 	touch $(PRODUCT_OUT)/.$1
 endef
 
-$(foreach package,$(PACKAGES),$(eval $(call make-package-target,$(package))))
+define make-allarch-package-target
+$(PRODUCT_OUT)/.$1: $$(shell find $(ROOTDIR)/packages/$1 -type f)
+	cd $(ROOTDIR)/packages/$1; $(BUILDPACKAGE_CMD)
+$(call make-package-target,$1)
+endef
 
-packages:: $(foreach package,$(PACKAGES),$(PRODUCT_OUT)/.$(package))
+define make-arm64-package-target
+$(PRODUCT_OUT)/.$1: $$(shell find $(ROOTDIR)/packages/$1 -type f) $(ROOTDIR)/cache/arm64-builder.tar
+	docker load -i $(ROOTDIR)/cache/arm64-builder.tar
+	docker run --rm --tty \
+	  -v $(ROOTDIR)/packages:/packages arm64-builder \
+	  /bin/bash -c 'cd /packages/$1; $(BUILDPACKAGE_CMD);'
+$(call make-package-target,$1)
+endef
+
+# Generate ARM64 targets
+$(foreach package,$(ARM64_PACKAGE_NAMES),$(eval $(call make-arm64-package-target,$(package))))
+
+# Generate ALL arch targets
+$(foreach package,$(ALLARCH_PACKAGE_NAMES),$(eval $(call make-allarch-package-target,$(package))))
+
+packages:: $(foreach package,$(ALL_PACKAGE_NAMES),$(PRODUCT_OUT)/.$(package))
 
 .PHONY:: packages
