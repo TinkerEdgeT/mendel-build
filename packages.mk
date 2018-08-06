@@ -13,7 +13,7 @@ ALLARCH_PACKAGE_NAMES := \
 
 # Packages which require ARM64 binaries to be built.
 ARM64_PACKAGE_NAMES := \
-
+		imx-gpu-viv
 
 ALL_PACKAGE_NAMES := $(ALLARCH_PACKAGE_NAMES) $(ARM64_PACKAGE_NAMES)
 
