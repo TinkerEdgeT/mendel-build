@@ -104,7 +104,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 
 	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp
 	sudo cp $(PRODUCT_OUT)/*.deb $(ROOTFS_DIR)/tmp/
-	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --no-install-recommends -y /tmp/*.deb'
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y /tmp/*.deb'
 	sudo umount $(ROOTFS_DIR)/tmp
 
 	sudo umount $(ROOTFS_DIR)/boot

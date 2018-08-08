@@ -14,6 +14,7 @@ REQUIRED_PACKAGES := \
 	debian-archive-keyring \
 	debootstrap \
 	device-tree-compiler \
+	equivs \
 	fakeroot \
 	genext2fs \
 	kpartx \
