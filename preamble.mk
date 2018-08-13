@@ -56,15 +56,18 @@ DEBOOTSTRAP_EXTRA := \
 	liblockfile-bin \
 	libpam-systemd \
 	libswitch-perl \
+	libwayland-cursor0 \
+	libwayland-egl1-mesa \
 	libxcb-composite0 \
 	libxcb-shape0 \
+	libxcursor1 \
+	libxkbcommon0 \
 	linux-base \
 	lm-sensors \
 	locales \
 	logrotate \
 	lrzsz \
 	lsof \
-	lxde \
 	man-db \
 	manpages \
 	nano \
@@ -73,7 +76,6 @@ DEBOOTSTRAP_EXTRA := \
 	netbase \
 	netcat-traditional \
 	network-manager \
-	openbox-lxde-session \
 	openssh-server \
 	parted \
 	pciutils \
