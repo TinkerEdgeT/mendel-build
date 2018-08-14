@@ -10,6 +10,7 @@ $(KERNEL_OUT_DIR):
 $(KERNEL_OUT_DIR)/.config: $(ROOTDIR)/board/defconfig | $(KERNEL_OUT_DIR)
 	+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) $(KERNEL_OPTIONS) mrproper defconfig
 	cat $(ROOTDIR)/board/defconfig | tee -a $(KERNEL_OUT_DIR)/.config
+	+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) $(KERNEL_OPTIONS) olddefconfig
 
 $(KERNEL_OUT_DIR)/arch/arm64/boot/Image: $(KERNEL_OUT_DIR)/.config
 		+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) $(KERNEL_OPTIONS) Image modules dtbs
