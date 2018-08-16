@@ -9,6 +9,7 @@ ALLARCH_PACKAGE_NAMES := \
 		 aiy-board-audio \
 		 aiy-board-gadget \
 		 aiy-board-keyring \
+		 aiy-board-tools \
 		 aiy-board-wlan
 
 # Packages which require ARM64 binaries to be built.
