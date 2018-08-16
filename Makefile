@@ -33,6 +33,7 @@ targets::
 include $(ROOTDIR)/build/boot.mk
 include $(ROOTDIR)/build/debootstrap.mk
 include $(ROOTDIR)/build/gpu.mk
+include $(ROOTDIR)/build/vpu.mk
 include $(ROOTDIR)/build/img2simg.mk
 include $(ROOTDIR)/build/kernel.mk
 include $(ROOTDIR)/build/kernel-modules.mk
@@ -44,6 +45,7 @@ include $(ROOTDIR)/build/signing.mk
 include $(ROOTDIR)/build/u-boot.mk
 
 include $(ROOTDIR)/build/docker.mk
+include $(ROOTDIR)/build/gst.mk
 include $(ROOTDIR)/build/packages.mk
 
 clean::

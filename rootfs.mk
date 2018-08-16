@@ -89,7 +89,8 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
                        $(PRODUCT_OUT)/weston-imx_3.0.0-0_arm64.deb \
                        | $(PRODUCT_OUT)/boot.img \
                          modules \
-                         packages
+                         packages \
+                         gst-packages
 	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
