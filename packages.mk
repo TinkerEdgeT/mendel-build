@@ -48,6 +48,35 @@ $(PRODUCT_OUT)/.$1: $(ROOTDIR)/packages/equivs/$1
 	touch $$@
 endef
 
+ifeq ($(FETCH_PBUILDER_BASE),true)
+$(ROOTDIR)/cache/base.tgz: $(FETCH_PBUILDER_DIRECTORY)/base.tgz
+	mkdir -p $(ROOTDIR)/cache
+	cp $< $(ROOTDIR)/cache
+else
+$(ROOTDIR)/cache/base.tgz:
+	mkdir -p $(ROOTDIR)/cache
+	sudo pbuilder create \
+		--basetgz $@ \
+		--mirror http://http.us.debian.org/debian \
+		--distribution stretch \
+		--architecture arm64 \
+		--extrapackages debhelper
+endif
+
+define make-pbuilder-package-target
+$1: $(PRODUCT_OUT)/.$1-pbuilder
+$(PRODUCT_OUT)/.$1-pbuilder: \
+	$(foreach package,$2,$(PRODUCT_OUT)/.$(package)-pbuilder) \
+	$(shell find $(ROOTDIR)/packages/$1 -type f) \
+	| $(ROOTDIR)/cache/base.tgz
+	mkdir -p $(PRODUCT_OUT)
+	cd $(ROOTDIR)/packages/$1; pdebuild \
+		--buildresult $(PRODUCT_OUT) -- \
+		--basetgz $(ROOTDIR)/cache/base.tgz
+	sudo touch $(PRODUCT_OUT)/.$1-pbuilder
+.PHONY:: $1
+endef
+
 # Generate ARM64 targets
 $(foreach package,$(ARM64_PACKAGE_NAMES),$(eval $(call make-arm64-package-target,$(package))))
 

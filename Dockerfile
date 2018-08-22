@@ -13,6 +13,13 @@ RUN curl -sSL https://get.docker.com/ | sh
 
 # Install the prerequisite packages into the image.
 ADD . /build
-RUN /bin/bash -c 'apt-get update && apt-get install sudo make && ln -sfr /build/Makefile /Makefile && source /build/setup.sh && make -C /build prereqs'
+RUN /bin/bash -c '\
+apt-get update && \
+apt-get install sudo make && \
+ln -sfr /build/Makefile /Makefile && \
+source /build/setup.sh && \
+make -C /build prereqs'
+ADD pbuilderrc /etc/pbuilderrc
+ADD D05deps /var/cache/pbuilder/hooks/D05deps
 
 VOLUME /var/lib/docker

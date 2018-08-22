@@ -22,6 +22,7 @@ REQUIRED_PACKAGES := \
 	libwayland-dev \
 	mtools \
 	parted \
+	pbuilder \
 	pkg-config \
 	python-minimal \
 	python2.7 \

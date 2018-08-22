@@ -13,6 +13,9 @@ KERNEL_OPTIONS := ARCH=arm64 CROSS_COMPILE=$(TOOLCHAIN) LOCALVERSION=-aiy
 DEBOOTSTRAP_TARBALL := $(ROOTDIR)/cache/debootstrap.tgz
 DEBOOTSTRAP_TARBALL_SHA256 := $(ROOTDIR)/cache/debootstrap.tgz.sha256sum
 
+FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder
+FETCH_PBUILDER_BASE ?= true
+
 DEBOOTSTRAP_EXTRA := \
 	alsa-utils \
 	apt-listchanges \

@@ -46,15 +46,18 @@ docker-$1: docker-build;
 	   -v $(TARBALL_FETCH_ROOT_DIRECTORY)\:/tarballs \
 	   -v $(PREBUILT_DOCKER_ROOT)\:/docker \
 	   -v $(PREBUILT_MODULES_ROOT)\:/modules \
+		 -v $(FETCH_PBUILDER_DIRECTORY)\:/pbuilder \
 	   -w /build \
 		 -e "DEBOOTSTRAP_FETCH_TARBALL=$(DEBOOTSTRAP_FETCH_TARBALL)" \
 		 -e "ROOTFS_FETCH_TARBALL=$(ROOTFS_FETCH_TARBALL)" \
 		 -e "ARM64_BUILDER_FETCH_TARBALL=$(ARM64_BUILDER_FETCH_TARBALL)" \
+		 -e "FETCH_PBUILDER_BASE=$(FETCH_PBUILDER_BASE)" \
 		 -e "TARBALL_FETCH_ROOT_DIRECTORY=/tarballs" \
 		 -e "PREBUILT_DOCKER_ROOT=/docker" \
 		 -e "ROOTFS_REVISION=$(ROOTFS_REVISION)" \
 		 -e "DEBOOTSTRAP_TARBALL_REVISION=$(DEBOOTSTRAP_TARBALL_REVISION)" \
 		 -e "PREBUILT_MODULES_ROOT=/modules" \
+		 -e "FETCH_PBUILDER_DIRECTORY=/pbuilder" \
 	   aiy-board-builder \
 	   /bin/bash -c \
 	   'groupadd --gid $$(shell id -g) $$(shell id -g -n); \
