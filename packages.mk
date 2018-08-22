@@ -63,14 +63,22 @@ $(ROOTDIR)/cache/base.tgz:
 		--extrapackages debhelper
 endif
 
+# $1: package name
+# $2: source location (relative to ROOTDIR)
+# $3: space separated list of dependencies (may be empty)
 define make-pbuilder-package-target
 $1: $(PRODUCT_OUT)/.$1-pbuilder
+PBUILDER_TARGETS += $1
 $(PRODUCT_OUT)/.$1-pbuilder: \
-	$(foreach package,$2,$(PRODUCT_OUT)/.$(package)-pbuilder) \
+	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder) \
 	$(shell find $(ROOTDIR)/packages/$1 -type f) \
 	| $(ROOTDIR)/cache/base.tgz
-	mkdir -p $(PRODUCT_OUT)
-	cd $(ROOTDIR)/packages/$1; pdebuild \
+
+	mkdir -p $(PRODUCT_OUT)/obj/$1
+	rsync -rl --exclude .git/ $(ROOTDIR)/$2/* $(PRODUCT_OUT)/obj/$1
+	cp -r $(ROOTDIR)/packages/$1/debian $(PRODUCT_OUT)/obj/$1
+
+	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT) -- \
 		--basetgz $(ROOTDIR)/cache/base.tgz
 	sudo touch $(PRODUCT_OUT)/.$1-pbuilder
@@ -86,6 +94,11 @@ $(foreach package,$(ALLARCH_PACKAGE_NAMES),$(eval $(call make-allarch-package-ta
 # Generate EQUIVS targets
 $(foreach package,$(EQUIVS_PACKAGE_NAMES),$(eval $(call make-equivs-package-target,$(package))))
 
-packages:: $(foreach package,$(ALL_PACKAGE_NAMES),$(PRODUCT_OUT)/.$(package))
+$(eval $(call make-pbuilder-package-target,imx-atf,imx-atf))
+$(eval $(call make-pbuilder-package-target,imx-firmware,imx-firmware))
+$(eval $(call make-pbuilder-package-target,imx-mkimage,tools/imx-mkimage))
+$(eval $(call make-pbuilder-package-target,uboot-imx,uboot-imx,imx-atf imx-firmware imx-mkimage))
+
+packages:: $(foreach package,$(ALL_PACKAGE_NAMES),$(PRODUCT_OUT)/.$(package)) $(PBUILDER_TARGETS)
 
 .PHONY:: packages

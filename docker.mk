@@ -42,12 +42,12 @@ docker-$1: docker-build;
 	docker load -i $(ROOTDIR)/cache/aiy-board-builder.tar
 	docker run --rm --privileged --tty \
 	   -v /dev\:/dev \
-	   -v $(ROOTDIR)\:/build \
+	   -v $(ROOTDIR)\:/rootdir \
 	   -v $(TARBALL_FETCH_ROOT_DIRECTORY)\:/tarballs \
 	   -v $(PREBUILT_DOCKER_ROOT)\:/docker \
 	   -v $(PREBUILT_MODULES_ROOT)\:/modules \
 		 -v $(FETCH_PBUILDER_DIRECTORY)\:/pbuilder \
-	   -w /build \
+	   -w /rootdir \
 		 -e "DEBOOTSTRAP_FETCH_TARBALL=$(DEBOOTSTRAP_FETCH_TARBALL)" \
 		 -e "ROOTFS_FETCH_TARBALL=$(ROOTFS_FETCH_TARBALL)" \
 		 -e "ARM64_BUILDER_FETCH_TARBALL=$(ARM64_BUILDER_FETCH_TARBALL)" \
