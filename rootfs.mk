@@ -11,6 +11,8 @@ ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img
 ROOTFS_FETCH_TARBALL ?= true
 ROOTFS_REVISION ?= latest
 
+ROOTFS_PUSH_DEBS ?= false
+
 USER_GROUPS := \
 	adm \
 	audio \
@@ -117,6 +119,21 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 $(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
 	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(PRODUCT_OUT)/rootfs.img
 
+fetch_debs:
+	$(info Fetching debs from cache...)
+	mkdir -p $(PRODUCT_OUT)
+	rsync -rv $(DEBCACHE_ROOT)/ $(PRODUCT_OUT)/
+	find $(PRODUCT_OUT) -name *.deb | xargs touch -d "-1337 days ago"
+
+ifeq ($(ROOTFS_PUSH_DEBS),true)
+push_debs:
+	$(info Pushing debs to cache...)
+	rsync -rvm --exclude="aiy*.deb" --include="*.deb" --include="*/" --exclude="*"  $(PRODUCT_OUT)/ $(DEBCACHE_ROOT)/
+else
+push_debs:
+	$(error Pushing debs to cache disabled)
+endif
+
 clean::
 	if mount |grep -q $(ROOTFS_DIR); then sudo umount -R $(ROOTFS_DIR); fi
 	if [[ -d $(ROOTFS_DIR) ]]; then rmdir $(ROOTFS_DIR); fi
@@ -125,4 +142,4 @@ clean::
 targets::
 	@echo "rootfs - runs debootstrap to build the rootfs tree"
 
-.PHONY:: rootfs rootfs_raw gpu firmware adjustments
+.PHONY:: rootfs rootfs_raw gpu firmware adjustments fetch_debs push_debs

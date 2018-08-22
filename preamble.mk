@@ -114,3 +114,5 @@ TARBALL_FETCH_ROOT_DIRECTORY ?= \
 	/google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/rootfs
 
 PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker
+
+DEBCACHE_ROOT ?= /google/data/rw/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/debcache
