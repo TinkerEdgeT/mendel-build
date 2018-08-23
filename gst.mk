@@ -135,7 +135,7 @@ endif
 	cp $(addprefix $(GST_DIR)/,$(GST_P_GOOD_DEBS)) $(PRODUCT_OUT)
 	cp $(addprefix $(GST_DIR)/,$(GST_P_GOOD_DEBS_AUX)) $(PRODUCT_OUT)/aux
 
-$(GST_P_BAD_TARGETS): $(LIBDRM_TARGETS) $(GST_P_BASE_TARGETS) $(KERNEL_DEB) wayland-protocols-imx $(ROOTDIR)/cache/arm64-builder.tar
+$(GST_P_BAD_TARGETS): libdrm-imx $(GST_P_BASE_TARGETS) $(KERNEL_DEB) wayland-protocols-imx $(ROOTDIR)/cache/arm64-builder.tar
 ifeq ($(call stat_files,$(addprefix $(GST_DIR)/,$(GST_P_BAD_DEBS) $(GST_P_BAD_DEBS_DEV) $(GST_P_BAD_DEBS_AUX))),0)
 	$(info $@ already built, not rebuilding)
 else
@@ -154,7 +154,7 @@ else
 	  /bin/bash -c '\
 		dpkg -i /out/wayland-protocols-imx_1.13-0_all.deb; \
 		dpkg -i /out/libdrm2_2.4.84+imx-0_arm64.deb /out/libdrm-vivante_2.4.84+imx-0_arm64.deb; \
-		dpkg -i /out/dev/libdrm-dev_2.4.84+imx-0_arm64.deb; \
+		dpkg -i /out/libdrm-dev_2.4.84+imx-0_arm64.deb; \
 		dpkg -i /out/linux-headers-4.9.51-aiy_1_arm64.deb; \
 		dpkg -i /out/libgstreamer1.0-0_1.12.2+imx-0_arm64.deb; \
 		dpkg -i /out/aux/gir1.2-gstreamer-1.0_1.12.2+imx-0_arm64.deb; \
@@ -174,7 +174,7 @@ endif
 	cp $(addprefix $(GST_DIR)/,$(GST_P_BAD_DEBS_DEV)) $(PRODUCT_OUT)/dev
 	cp $(addprefix $(GST_DIR)/,$(GST_P_BAD_DEBS_AUX)) $(PRODUCT_OUT)/aux
 
-$(GST_P_IMX_TARGETS): $(LIBDRM_TARGETS) $(WRAP_TARGETS) $(HANTRO_TARGETS) $(GST_P_BASE_TARGETS) $(GST_P_BAD_TARGETS) $(KERNEL_DEB) $(ROOTDIR)/cache/arm64-builder.tar
+$(GST_P_IMX_TARGETS): libdrm-imx $(WRAP_TARGETS) $(HANTRO_TARGETS) $(GST_P_BASE_TARGETS) $(GST_P_BAD_TARGETS) $(KERNEL_DEB) $(ROOTDIR)/cache/arm64-builder.tar
 ifeq ($(call stat_files,$(addprefix $(GST_DIR)/,$(GST_P_IMX_DEBS))),0)
 	$(info $@ already built, not rebuilding)
 else
@@ -191,7 +191,7 @@ else
 	  -v $(GST_DIR):/gst arm64-builder \
 	  /bin/bash -c '\
 		dpkg -i /out/libdrm2_2.4.84+imx-0_arm64.deb /out/libdrm-vivante_2.4.84+imx-0_arm64.deb; \
-		dpkg -i /out/dev/libdrm-dev_2.4.84+imx-0_arm64.deb; \
+		dpkg -i /out/libdrm-dev_2.4.84+imx-0_arm64.deb; \
 		dpkg -i /out/imx-vpu-hantro_1.6.0-0_arm64.deb out/dev/imx-vpu-hantro-dev_1.6.0-0_arm64.deb; \
 		dpkg -i /out/imx-vpuwrap_4.3.4-0_arm64.deb out/dev/imx-vpuwrap-dev_4.3.4-0_arm64.deb; \
 		dpkg -i /out/linux-headers-4.9.51-aiy_1_arm64.deb; \

@@ -82,6 +82,7 @@ $(eval $(call make-pbuilder-package-target,wayland-protocols-imx,wayland-protoco
 $(eval $(call make-pbuilder-package-target,weston-imx,weston-imx,wayland-protocols-imx))
 
 $(eval $(call make-pbuilder-package-target,imx-gpu-viv,packages/imx-gpu-viv))
+$(eval $(call make-pbuilder-package-target,libdrm-imx,libdrm-imx))
 
 $(eval $(call make-pbuilder-package-target,aiy-board-audio,packages/aiy-board-audio))
 $(eval $(call make-pbuilder-package-target,aiy-board-gadget,packages/aiy-board-gadget))

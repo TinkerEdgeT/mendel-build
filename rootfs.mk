@@ -140,4 +140,4 @@ clean::
 targets::
 	@echo "rootfs - runs debootstrap to build the rootfs tree"
 
-.PHONY:: rootfs rootfs_raw gpu firmware adjustments fetch_debs push_debs
+.PHONY:: rootfs rootfs_raw firmware adjustments fetch_debs push_debs
