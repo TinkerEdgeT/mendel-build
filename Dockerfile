@@ -18,7 +18,5 @@ apt-get install sudo make && \
 ln -sfr /build/Makefile /Makefile && \
 source /build/setup.sh && \
 make -C /build prereqs'
-ADD pbuilderrc /etc/pbuilderrc
-ADD D05deps /var/cache/pbuilder/hooks/D05deps
 
 VOLUME /var/lib/docker

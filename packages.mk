@@ -95,7 +95,9 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT) -- \
-		--basetgz $(ROOTDIR)/cache/base.tgz
+		--basetgz $(ROOTDIR)/cache/base.tgz \
+		--configfile $(ROOTDIR)/build/pbuilderrc \
+		--hookdir $(ROOTDIR)/build/pbuilder-hooks
 	sudo touch $(PRODUCT_OUT)/.$1-pbuilder
 .PHONY:: $1
 endef

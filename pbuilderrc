@@ -6,6 +6,5 @@
 # read pbuilderrc.5 document for notes on specific options.
 MIRRORSITE=http://http.us.debian.org/debian
 PBUILDERSATISFYDEPENDSCMD=/usr/lib/pbuilder/pbuilder-satisfydepends-apt
-HOOKDIR="/var/cache/pbuilder/hooks"
 export DEPSBASE=$PRODUCT_OUT
 BINDMOUNTS="$DEPSBASE $ROOTDIR"
