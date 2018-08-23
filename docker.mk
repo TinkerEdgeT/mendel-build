@@ -36,38 +36,46 @@ $(ROOTDIR)/cache/arm64-builder.tar:
 	docker rmi arm64-builder:latest
 endif
 
-# Macro for running make target in x86 docker image
-define docker-run
-docker-$1: docker-build;
+# Macros for running make target in x86 docker image
+define docker_body
 	docker load -i $(ROOTDIR)/cache/aiy-board-builder.tar
 	docker run --rm --privileged --tty \
-	   -v /dev\:/dev \
-	   -v $(ROOTDIR)\:/rootdir \
-	   -v $(TARBALL_FETCH_ROOT_DIRECTORY)\:/tarballs \
-	   -v $(PREBUILT_DOCKER_ROOT)\:/docker \
-	   -v $(PREBUILT_MODULES_ROOT)\:/modules \
-		 -v $(FETCH_PBUILDER_DIRECTORY)\:/pbuilder \
-	   -w /rootdir \
-		 -e "DEBOOTSTRAP_FETCH_TARBALL=$(DEBOOTSTRAP_FETCH_TARBALL)" \
-		 -e "ROOTFS_FETCH_TARBALL=$(ROOTFS_FETCH_TARBALL)" \
-		 -e "ARM64_BUILDER_FETCH_TARBALL=$(ARM64_BUILDER_FETCH_TARBALL)" \
-		 -e "FETCH_PBUILDER_BASE=$(FETCH_PBUILDER_BASE)" \
-		 -e "TARBALL_FETCH_ROOT_DIRECTORY=/tarballs" \
-		 -e "PREBUILT_DOCKER_ROOT=/docker" \
-		 -e "ROOTFS_REVISION=$(ROOTFS_REVISION)" \
-		 -e "DEBOOTSTRAP_TARBALL_REVISION=$(DEBOOTSTRAP_TARBALL_REVISION)" \
-		 -e "PREBUILT_MODULES_ROOT=/modules" \
-		 -e "FETCH_PBUILDER_DIRECTORY=/pbuilder" \
-	   aiy-board-builder \
-	   /bin/bash -c \
-	   'groupadd --gid $$(shell id -g) $$(shell id -g -n); \
-	   useradd -m -e "" -s /bin/bash --gid $$(shell id -g) --uid $$(shell id -u) $$(shell id -u -n); \
-	   passwd -d $$(shell id -u -n); \
-	   echo "$$(shell id -u -n) ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
-	   adduser $$(shell id -u -n) docker; \
-	   /etc/init.d/docker start; \
-	   sudo -E -u $$(shell id -u -n) /bin/bash -c "source build/setup.sh; m \
-		  -j$(shell nproc) $2";'
+		-v /dev\:/dev \
+		-v $(ROOTDIR)\:/rootdir \
+		-v $(TARBALL_FETCH_ROOT_DIRECTORY)\:/tarballs \
+		-v $(PREBUILT_DOCKER_ROOT)\:/docker \
+		-v $(PREBUILT_MODULES_ROOT)\:/modules \
+		-v $(FETCH_PBUILDER_DIRECTORY)\:/pbuilder \
+		-w /rootdir \
+		-e "DEBOOTSTRAP_FETCH_TARBALL=$(DEBOOTSTRAP_FETCH_TARBALL)" \
+		-e "ROOTFS_FETCH_TARBALL=$(ROOTFS_FETCH_TARBALL)" \
+		-e "ARM64_BUILDER_FETCH_TARBALL=$(ARM64_BUILDER_FETCH_TARBALL)" \
+		-e "FETCH_PBUILDER_BASE=$(FETCH_PBUILDER_BASE)" \
+		-e "TARBALL_FETCH_ROOT_DIRECTORY=/tarballs" \
+		-e "PREBUILT_DOCKER_ROOT=/docker" \
+		-e "ROOTFS_REVISION=$(ROOTFS_REVISION)" \
+		-e "DEBOOTSTRAP_TARBALL_REVISION=$(DEBOOTSTRAP_TARBALL_REVISION)" \
+		-e "PREBUILT_MODULES_ROOT=/modules" \
+		-e "FETCH_PBUILDER_DIRECTORY=/pbuilder" \
+		aiy-board-builder \
+		/bin/bash -c \
+			'groupadd --gid $(shell id -g) $(shell id -g -n); \
+			useradd -m -e "" -s /bin/bash --gid $(shell id -g) --uid $(shell id -u) $(shell id -u -n); \
+			passwd -d $(shell id -u -n); \
+			echo "$(shell id -u -n) ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
+			adduser $(shell id -u -n) docker; \
+			/etc/init.d/docker start; \
+			sudo -E -u $(shell id -u -n) /bin/bash -c "source build/setup.sh; m \
+			-j$(shell nproc)
+endef
+
+define docker_tail
+	";'
+endef
+
+define docker-run
+docker-$1: docker-build;
+	$(call docker_body) $2 $(call docker_tail)
 endef
 
 $(call docker-run,bootstrap,make-bootstrap-tarball)
@@ -77,6 +85,8 @@ $(call docker-run,all,boot-targets)
 $(call docker-run,sdcard,sdcard)
 $(call docker-run,make-repo,make-repo)
 
+docker-%: docker-build;
+	$(call docker_body) $* $(call docker_tail)
 
 # Macro for running make target in arm64 docker image
 define docker-arm64-run
