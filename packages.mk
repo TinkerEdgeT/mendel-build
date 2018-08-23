@@ -114,6 +114,9 @@ $(eval $(call make-pbuilder-package-target,imx-firmware,imx-firmware))
 $(eval $(call make-pbuilder-package-target,imx-mkimage,tools/imx-mkimage))
 $(eval $(call make-pbuilder-package-target,uboot-imx,uboot-imx,imx-atf imx-firmware imx-mkimage))
 
+$(eval $(call make-pbuilder-package-target,wayland-protocols-imx,wayland-protocols-imx))
+$(eval $(call make-pbuilder-package-target,weston-imx,weston-imx,wayland-protocols-imx))
+
 packages:: $(foreach package,$(ALL_PACKAGE_NAMES),$(PRODUCT_OUT)/.$(package)) $(PBUILDER_TARGETS)
 
 .PHONY:: packages

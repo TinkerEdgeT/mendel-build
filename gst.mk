@@ -5,7 +5,6 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 KERNEL_DEB := $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb
-WP_DEB := $(PRODUCT_OUT)/wayland-protocols-imx_1.13-0_all.deb
 
 GST_DIR := $(PRODUCT_OUT)/obj/GST
 
@@ -136,7 +135,7 @@ endif
 	cp $(addprefix $(GST_DIR)/,$(GST_P_GOOD_DEBS)) $(PRODUCT_OUT)
 	cp $(addprefix $(GST_DIR)/,$(GST_P_GOOD_DEBS_AUX)) $(PRODUCT_OUT)/aux
 
-$(GST_P_BAD_TARGETS): $(LIBDRM_TARGETS) $(GST_P_BASE_TARGETS) $(KERNEL_DEB) $(WP_DEB) $(ROOTDIR)/cache/arm64-builder.tar
+$(GST_P_BAD_TARGETS): $(LIBDRM_TARGETS) $(GST_P_BASE_TARGETS) $(KERNEL_DEB) wayland-protocols-imx $(ROOTDIR)/cache/arm64-builder.tar
 ifeq ($(call stat_files,$(addprefix $(GST_DIR)/,$(GST_P_BAD_DEBS) $(GST_P_BAD_DEBS_DEV) $(GST_P_BAD_DEBS_AUX))),0)
 	$(info $@ already built, not rebuilding)
 else

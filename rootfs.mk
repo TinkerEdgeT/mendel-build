@@ -87,8 +87,6 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/board/fstab.emmc \
                        $(ROOTDIR)/build/boot.mk \
                        $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb \
-                       $(PRODUCT_OUT)/wayland-protocols-imx_1.13-0_all.deb \
-                       $(PRODUCT_OUT)/weston-imx_3.0.0-0_arm64.deb \
                        | $(PRODUCT_OUT)/boot.img \
                          modules \
                          packages \
