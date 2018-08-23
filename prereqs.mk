@@ -17,6 +17,7 @@ REQUIRED_PACKAGES := \
 	equivs \
 	fakeroot \
 	genext2fs \
+	git \
 	kpartx \
 	libcap-dev \
 	libwayland-dev \
@@ -28,6 +29,7 @@ REQUIRED_PACKAGES := \
 	python2.7 \
 	python3 \
 	qemu-user-static \
+	quilt \
 	reprepro \
 	rsync \
 	xz-utils \
