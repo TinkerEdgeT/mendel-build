@@ -49,14 +49,16 @@ endef
 
 # $1: package name
 # $2: source location (relative to ROOTDIR)
-# $3: space separated list of dependencies (may be empty)
+# $3: space separated list of package dependencies (may be empty)
+# $4: space separated list of external dependencies (may be empty)
 define make-pbuilder-package-target
 $1: $(PRODUCT_OUT)/.$1-pbuilder
 PBUILDER_TARGETS += $1
 $(PRODUCT_OUT)/.$1-pbuilder: \
 	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder) \
 	$(shell find $(ROOTDIR)/packages/$1 -type f) \
-	| $(ROOTDIR)/cache/base.tgz
+	| $(ROOTDIR)/cache/base.tgz \
+	$4
 
 	mkdir -p $(PRODUCT_OUT)/obj/$1
 	rsync -rl --exclude .git/ $(ROOTDIR)/$2/* $(PRODUCT_OUT)/obj/$1
@@ -90,6 +92,8 @@ $(eval $(call make-pbuilder-package-target,weston-imx,weston-imx,wayland-protoco
 
 $(eval $(call make-pbuilder-package-target,imx-gpu-viv,packages/imx-gpu-viv))
 $(eval $(call make-pbuilder-package-target,libdrm-imx,libdrm-imx))
+$(eval $(call make-pbuilder-package-target,imx-vpu-hantro,imx-vpu-hantro,,kernel-deb))
+$(eval $(call make-pbuilder-package-target,imx-vpuwrap,imx-vpuwrap,imx-vpu-hantro))
 
 $(eval $(call make-pbuilder-package-target,aiy-board-audio,packages/aiy-board-audio))
 $(eval $(call make-pbuilder-package-target,aiy-board-gadget,packages/aiy-board-gadget))
