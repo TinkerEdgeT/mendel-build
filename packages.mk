@@ -63,6 +63,15 @@ $(ROOTDIR)/cache/base.tgz:
 		--extrapackages debhelper
 endif
 
+# $1 package name
+define get-deb-version-orig
+$(shell head -n1 $(ROOTDIR)/packages/$1/debian/changelog | awk '{split ($$2,a,"-"); print a[1]}' | tr -d '()')
+endef
+
+define get-deb-version-full
+$(shell head -n1 $(ROOTDIR)/packages/$1/debian/changelog | awk '{print $$2}' | tr -d '()')
+endef
+
 # $1: package name
 # $2: source location (relative to ROOTDIR)
 # $3: space separated list of dependencies (may be empty)
@@ -77,6 +86,12 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 	mkdir -p $(PRODUCT_OUT)/obj/$1
 	rsync -rl --exclude .git/ $(ROOTDIR)/$2/* $(PRODUCT_OUT)/obj/$1
 	cp -r $(ROOTDIR)/packages/$1/debian $(PRODUCT_OUT)/obj/$1
+	tar -C $(PRODUCT_OUT)/obj --exclude=debian/ -cJf \
+		$(PRODUCT_OUT)/obj/$1_$(call get-deb-version-orig,$1).orig.tar.xz \
+		$1
+	tar -C $(PRODUCT_OUT)/obj/$1 -cJf \
+		$(PRODUCT_OUT)/obj/$1_$(call get-deb-version-full,$1).debian.tar.xz \
+		debian
 
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT) -- \
