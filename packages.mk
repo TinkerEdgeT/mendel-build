@@ -60,6 +60,7 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 	| $(ROOTDIR)/cache/base.tgz \
 	$4
 
+	cd $(ROOTDIR)/$2; git submodule init; git submodule update;
 	mkdir -p $(PRODUCT_OUT)/obj/$1
 	rsync -rl --exclude .git/ $(ROOTDIR)/$2/* $(PRODUCT_OUT)/obj/$1
 	cp -r $(ROOTDIR)/packages/$1/debian $(PRODUCT_OUT)/obj/$1
@@ -75,6 +76,7 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
+		--debbuildopts -d \
 		--host-arch arm64
 	touch $(PRODUCT_OUT)/.$1-pbuilder
 .PHONY:: $1
@@ -95,6 +97,13 @@ $(eval $(call make-pbuilder-package-target,imx-gpu-viv,packages/imx-gpu-viv))
 $(eval $(call make-pbuilder-package-target,libdrm-imx,libdrm-imx))
 $(eval $(call make-pbuilder-package-target,imx-vpu-hantro,imx-vpu-hantro,,kernel-deb))
 $(eval $(call make-pbuilder-package-target,imx-vpuwrap,imx-vpuwrap,imx-vpu-hantro))
+$(eval $(call make-pbuilder-package-target,imx-gstreamer,imx-gstreamer))
+$(eval $(call make-pbuilder-package-target,imx-gst-plugins-base,imx-gst-plugins-base,imx-gstreamer))
+$(eval $(call make-pbuilder-package-target,imx-gst-plugins-good,imx-gst-plugins-good,imx-gst-plugins-base))
+$(eval $(call make-pbuilder-package-target,imx-gst-plugins-bad,imx-gst-plugins-bad,\
+	libdrm-imx imx-gst-plugins-base,kernel-deb))
+$(eval $(call make-pbuilder-package-target,imx-gst1.0-plugin,imx-gst1.0-plugin,\
+	imx-vpuwrap imx-gst-plugins-bad))
 
 $(eval $(call make-pbuilder-package-target,aiy-board-audio,packages/aiy-board-audio))
 $(eval $(call make-pbuilder-package-target,aiy-board-gadget,packages/aiy-board-gadget))

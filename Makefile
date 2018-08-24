@@ -43,7 +43,6 @@ include $(ROOTDIR)/build/signing.mk
 include $(ROOTDIR)/build/u-boot.mk
 
 include $(ROOTDIR)/build/docker.mk
-include $(ROOTDIR)/build/gst.mk
 include $(ROOTDIR)/build/packages.mk
 
 clean::
