@@ -21,7 +21,7 @@ $(ROOTDIR)/cache/base.tgz: $(FETCH_PBUILDER_DIRECTORY)/base.tgz
 	mkdir -p $(ROOTDIR)/cache
 	cp $< $(ROOTDIR)/cache
 else
-$(ROOTDIR)/cache/base.tgz:
+$(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static
 	mkdir -p $(ROOTDIR)/cache
 	sudo pbuilder create \
 		--basetgz $@ \
@@ -29,6 +29,13 @@ $(ROOTDIR)/cache/base.tgz:
 		--distribution stretch \
 		--architecture arm64 \
 		--extrapackages debhelper
+	mkdir -p $(ROOTDIR)/cache/base-tmp
+	cd $(ROOTDIR)/cache/base-tmp; \
+	sudo tar xf $@; \
+	sudo cp /usr/bin/qemu-aarch64-static usr/bin; \
+	sudo tar cf base.tar .; \
+	gzip base.tar; mv -f base.tar.gz $@
+	sudo rm -rf $(ROOTDIR)/cache/base-tmp
 endif
 
 # $1 package name
