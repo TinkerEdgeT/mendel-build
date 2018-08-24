@@ -27,8 +27,8 @@ $(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static
 		--basetgz $@ \
 		--mirror http://http.us.debian.org/debian \
 		--distribution stretch \
-		--architecture arm64 \
-		--extrapackages debhelper
+		--architecture amd64 \
+		--extrapackages crossbuild-essential-arm64 debhelper
 	mkdir -p $(ROOTDIR)/cache/base-tmp
 	cd $(ROOTDIR)/cache/base-tmp; \
 	sudo tar xf $@; \
@@ -74,8 +74,9 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 		--buildresult $(PRODUCT_OUT) -- \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
-		--hookdir $(ROOTDIR)/build/pbuilder-hooks
-	sudo touch $(PRODUCT_OUT)/.$1-pbuilder
+		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
+		--host-arch arm64
+	touch $(PRODUCT_OUT)/.$1-pbuilder
 .PHONY:: $1
 endef
 

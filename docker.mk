@@ -46,6 +46,7 @@ define docker_body
 		-v $(PREBUILT_DOCKER_ROOT)\:/docker \
 		-v $(PREBUILT_MODULES_ROOT)\:/modules \
 		-v $(FETCH_PBUILDER_DIRECTORY)\:/pbuilder \
+		-v /var/cache/pbuilder\:/var/cache/pbuilder \
 		-w /rootdir \
 		-e "DEBOOTSTRAP_FETCH_TARBALL=$(DEBOOTSTRAP_FETCH_TARBALL)" \
 		-e "ROOTFS_FETCH_TARBALL=$(ROOTFS_FETCH_TARBALL)" \
