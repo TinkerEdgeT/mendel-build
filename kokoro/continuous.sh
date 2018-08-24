@@ -32,6 +32,6 @@ cp ${ROOTDIR}/board/flash.sh ${KOKORO_ARTIFACTS_DIR}
 chmod -x ${KOKORO_ARTIFACTS_DIR}/flash.sh
 cp ${PRODUCT_OUT}/u-boot.imx ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/boot.img ${KOKORO_ARTIFACTS_DIR}
-cp ${PRODUCT_OUT}/partition-table.img ${KOKORO_ARTIFACTS_DIR}
+cp ${PRODUCT_OUT}/partition-table-*.img ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/rootfs.img ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/sdcard.img ${KOKORO_ARTIFACTS_DIR}
