@@ -104,7 +104,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
 	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp
-	sudo cp $(PRODUCT_OUT)/*.deb $(ROOTFS_DIR)/tmp/
+	sudo rsync -avm --exclude="*-dbgsym_*.deb" --exclude="*-dev_*.deb" --include="*.deb" --exclude="*" $(PRODUCT_OUT)/ $(ROOTFS_DIR)/tmp/
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y /tmp/*.deb'
 	sudo umount $(ROOTFS_DIR)/tmp
 
