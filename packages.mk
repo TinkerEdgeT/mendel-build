@@ -57,6 +57,7 @@ PBUILDER_TARGETS += $1
 $(PRODUCT_OUT)/.$1-pbuilder: \
 	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder) \
 	$(shell find $(ROOTDIR)/packages/$1 -type f) \
+	$(shell find $(ROOTDIR)/$2 -type f) \
 	| $(ROOTDIR)/cache/base.tgz \
 	$4
 
