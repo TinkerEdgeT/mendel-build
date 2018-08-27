@@ -9,6 +9,7 @@ REQUIRED_PACKAGES := \
 	binutils-aarch64-linux-gnu \
 	build-essential \
 	binfmt-support \
+	cdbs \
 	coreutils \
 	debhelper \
 	debian-archive-keyring \
@@ -18,6 +19,7 @@ REQUIRED_PACKAGES := \
 	fakeroot \
 	genext2fs \
 	git \
+	gnome-pkg-tools \
 	kpartx \
 	libcap-dev \
 	libwayland-dev \

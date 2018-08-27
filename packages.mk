@@ -76,7 +76,6 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
-		--debbuildopts -d \
 		--host-arch arm64
 	touch $(PRODUCT_OUT)/.$1-pbuilder
 .PHONY:: $1
