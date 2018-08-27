@@ -9,6 +9,7 @@ popd
 
 export DEBOOTSTRAP_FETCH_TARBALL=false
 export ROOTFS_FETCH_TARBALL=false
+export FETCH_PACKAGES=false
 export PREBUILT_DOCKER_ROOT=$KOKORO_GFILE_DIR
 
 m docker-bootstrap

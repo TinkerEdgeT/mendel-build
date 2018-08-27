@@ -11,14 +11,13 @@ ALL_PACKAGE_NAMES := $(EQUIVS_PACKAGE_NAMES)
 BUILDPACKAGE_CMD := dpkg-buildpackage -b -rfakeroot -us -uc -tc
 
 define make-equivs-package-target
-$(PRODUCT_OUT)/.$1: $(ROOTDIR)/packages/equivs/$1
-	cd $(PRODUCT_OUT); equivs-build $$<
+$(PRODUCT_OUT)/.$1: $(ROOTDIR)/packages/equivs/$1 | out-dirs
+	cd $(PRODUCT_OUT)/packages; equivs-build $$<
 	touch $$@
 endef
 
 ifeq ($(FETCH_PBUILDER_BASE),true)
-$(ROOTDIR)/cache/base.tgz: $(FETCH_PBUILDER_DIRECTORY)/base.tgz
-	mkdir -p $(ROOTDIR)/cache
+$(ROOTDIR)/cache/base.tgz: $(FETCH_PBUILDER_DIRECTORY)/base.tgz | out-dirs
 	cp $< $(ROOTDIR)/cache
 else
 $(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static
@@ -53,12 +52,12 @@ endef
 # $4: space separated list of external dependencies (may be empty)
 define make-pbuilder-package-target
 $1: $(PRODUCT_OUT)/.$1-pbuilder
-PBUILDER_TARGETS += $1
+PBUILDER_TARGETS += $(PRODUCT_OUT)/.$1-pbuilder
 $(PRODUCT_OUT)/.$1-pbuilder: \
 	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder) \
 	$(shell find $(ROOTDIR)/packages/$1 -type f) \
 	$(shell find $(ROOTDIR)/$2 -type f | sed -e 's/ /\\ /g') \
-	| $(ROOTDIR)/cache/base.tgz \
+	| out-dirs $(ROOTDIR)/cache/base.tgz \
 	$4
 
 	cd $(ROOTDIR)/$2; git submodule init; git submodule update;
@@ -73,7 +72,7 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 		debian
 
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
-		--buildresult $(PRODUCT_OUT) -- \
+		--buildresult $(PRODUCT_OUT)/packages -- \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
@@ -111,6 +110,18 @@ $(eval $(call make-pbuilder-package-target,aiy-board-keyring,packages/aiy-board-
 $(eval $(call make-pbuilder-package-target,aiy-board-tools,packages/aiy-board-tools))
 $(eval $(call make-pbuilder-package-target,aiy-board-wlan,packages/aiy-board-wlan))
 
-packages:: $(foreach package,$(ALL_PACKAGE_NAMES),$(PRODUCT_OUT)/.$(package)) $(PBUILDER_TARGETS)
+ALL_PACKAGE_TARGETS := $(foreach package,$(ALL_PACKAGE_NAMES),$(PRODUCT_OUT)/.$(package)) $(PBUILDER_TARGETS)
+$(warning ALL_PACKAGE_TARGETS $(ALL_PACKAGE_TARGETS))
+packages-tarball: $(ROOTDIR)/cache/packages.tgz
+ifeq ($(FETCH_PACKAGES),true)
+$(ROOTDIR)/cache/packages.tgz: $(PACKAGES_FETCH_ROOT_DIRECTORY)/packages.tgz | out-dirs
+	cp $< $(ROOTDIR)/cache
+else
+$(ROOTDIR)/cache/packages.tgz: $(ALL_PACKAGE_TARGETS) | out-dirs
+	$(ROOTDIR)/build/update_packages.sh
+	tar -C $(PRODUCT_OUT) -czf $@ packages
+endif
+
+packages:: $(ALL_PACKAGE_TARGETS)
 
 .PHONY:: packages

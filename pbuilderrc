@@ -6,7 +6,7 @@
 # read pbuilderrc.5 document for notes on specific options.
 MIRRORSITE=http://http.us.debian.org/debian
 PBUILDERSATISFYDEPENDSCMD=/usr/lib/pbuilder/pbuilder-satisfydepends-apt
-export DEPSBASE=$PRODUCT_OUT
+export DEPSBASE=$PRODUCT_OUT/packages
 BINDMOUNTS="$DEPSBASE $ROOTDIR"
 APTCACHE=$ROOTDIR/cache/pbuilder_apt
 APTCACHEHARDLINK=no

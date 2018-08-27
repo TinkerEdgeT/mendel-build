@@ -5,6 +5,7 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 REQUIRED_PACKAGES := \
+	apt-utils \
 	bc \
 	binutils-aarch64-linux-gnu \
 	build-essential \

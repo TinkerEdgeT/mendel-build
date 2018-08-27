@@ -11,8 +11,6 @@ ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img
 ROOTFS_FETCH_TARBALL ?= true
 ROOTFS_REVISION ?= latest
 
-ROOTFS_PUSH_DEBS ?= false
-
 USER_GROUPS := \
 	adm \
 	audio \
@@ -25,6 +23,44 @@ USER_GROUPS := \
 	sudo \
 	users \
 	video
+
+PRE_INSTALL_PACKAGES := \
+	aiy-board-audio \
+	aiy-board-gadget \
+	aiy-board-keyring \
+	aiy-board-tools \
+	aiy-board-wlan \
+	gstreamer1.0-alsa \
+	gstreamer1.0-plugins-bad \
+	gstreamer1.0-plugins-base \
+	gstreamer1.0-plugins-base-apps \
+	gstreamer1.0-plugins-good \
+	gstreamer1.0-tools \
+	imx-atf \
+	imx-firmware \
+	imx-gpu-viv \
+	imx-gst1.0-plugin \
+	imx-mkimage \
+	imx-vpu-hantro \
+	imx-vpuwrap \
+	libdrm2 \
+	libdrm-vivante \
+	libegl1-mesa \
+	libegl1-mesa-dev \
+	libgbm1 \
+	libgbm-dev \
+	libgl1-mesa-glx \
+	libgles1-mesa \
+	libgles2-mesa \
+	libgstreamer1.0-0 \
+	libgstreamer-plugins-bad1.0-0 \
+	libgstreamer-plugins-base1.0-0 \
+	linux-headers-4.9.51-aiy \
+	linux-image-4.9.51-aiy \
+	mesa-common-dev \
+	uboot-imx \
+	wayland-protocols-imx \
+	weston-imx \
 
 rootfs: $(PRODUCT_OUT)/rootfs.img
 rootfs_raw: $(ROOTFS_RAW_IMG)
@@ -86,10 +122,10 @@ endif
 $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/board/fstab.emmc \
                        $(ROOTDIR)/build/boot.mk \
-                       $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb \
+                       kernel-deb \
+                       $(ROOTDIR)/cache/packages.tgz \
                        | $(PRODUCT_OUT)/boot.img \
-                         modules \
-                         packages
+                         modules
 	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
@@ -102,10 +138,10 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
-	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp
-	sudo rsync -avm --exclude="*-dbgsym_*.deb" --exclude="*-dev_*.deb" --include="*.deb" --exclude="*" $(PRODUCT_OUT)/ $(ROOTFS_DIR)/tmp/
-	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y /tmp/*.deb'
-	sudo umount $(ROOTFS_DIR)/tmp
+	sudo sed -i '1 i\deb [trusted=yes] file:///opt/aiy/packages ./' $(ROOTFS_DIR)/etc/apt/sources.list
+	sudo mkdir -p $(ROOTFS_DIR)/opt/aiy
+	sudo tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(ROOTFS_DIR)/opt/aiy/
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update && apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
 
 	sudo umount $(ROOTFS_DIR)/boot
 	sudo umount $(ROOTFS_DIR)
@@ -115,21 +151,6 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 
 $(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
 	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(PRODUCT_OUT)/rootfs.img
-
-fetch_debs:
-	$(info Fetching debs from cache...)
-	mkdir -p $(PRODUCT_OUT)
-	rsync -rv $(DEBCACHE_ROOT)/ $(PRODUCT_OUT)/
-	find $(PRODUCT_OUT) -name *.deb | xargs touch -d "-1337 days ago"
-
-ifeq ($(ROOTFS_PUSH_DEBS),true)
-push_debs:
-	$(info Pushing debs to cache...)
-	rsync -rvm --exclude="aiy*.deb" --include="*.deb" --include="*/" --exclude="*"  $(PRODUCT_OUT)/ $(DEBCACHE_ROOT)/
-else
-push_debs:
-	$(error Pushing debs to cache disabled)
-endif
 
 clean::
 	if mount |grep -q $(ROOTFS_DIR); then sudo umount -R $(ROOTFS_DIR); fi

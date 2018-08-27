@@ -15,15 +15,15 @@ $(KERNEL_OUT_DIR)/.config: $(ROOTDIR)/board/defconfig | $(KERNEL_OUT_DIR)
 $(KERNEL_OUT_DIR)/arch/arm64/boot/Image: $(KERNEL_OUT_DIR)/.config
 		+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) $(KERNEL_OPTIONS) Image modules dtbs
 
-kernel-deb: $(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb
+kernel-deb: $(PRODUCT_OUT)/packages/linux-image-4.9.51-aiy_1_arm64.deb
 
 kernel: $(KERNEL_OUT_DIR)/arch/arm64/boot/Image $(KERNEL_OUT_DIR)/arch/arm64/boot/dts/freescale/fsl-imx8mq-phanbell.dtb
 
-$(PRODUCT_OUT)/linux-image-4.9.51-aiy_1_arm64.deb: $(KERNEL_OUT_DIR)/.config
+$(PRODUCT_OUT)/packages/linux-image-4.9.51-aiy_1_arm64.deb: $(KERNEL_OUT_DIR)/.config | out-dirs
 	+make -C $(KERNEL_SRC_DIR) O=$(KERNEL_OUT_DIR) $(KERNEL_OPTIONS) \
 		KDEB_PKGVERSION=1 KBUILD_IMAGE=Image deb-pkg
-	mv $(KERNEL_OUT_DIR)/../linux-image-4.9.51-aiy_1_arm64.deb $(PRODUCT_OUT)
-	mv $(KERNEL_OUT_DIR)/../linux-headers-4.9.51-aiy_1_arm64.deb $(PRODUCT_OUT)
+	mv $(KERNEL_OUT_DIR)/../linux-image-4.9.51-aiy_1_arm64.deb $(PRODUCT_OUT)/packages
+	mv $(KERNEL_OUT_DIR)/../linux-headers-4.9.51-aiy_1_arm64.deb $(PRODUCT_OUT)/packages
 
 targets::
 	@echo "kernel - builds the kernel and boot partition"

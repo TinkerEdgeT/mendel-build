@@ -46,7 +46,7 @@ define docker_body
 		-v $(PREBUILT_DOCKER_ROOT)\:/docker \
 		-v $(PREBUILT_MODULES_ROOT)\:/modules \
 		-v $(FETCH_PBUILDER_DIRECTORY)\:/pbuilder \
-		-v /var/cache/pbuilder\:/var/cache/pbuilder \
+		-v $(PACKAGES_FETCH_ROOT_DIRECTORY)\:/packages \
 		-w /rootdir \
 		-e "DEBOOTSTRAP_FETCH_TARBALL=$(DEBOOTSTRAP_FETCH_TARBALL)" \
 		-e "ROOTFS_FETCH_TARBALL=$(ROOTFS_FETCH_TARBALL)" \
@@ -58,6 +58,7 @@ define docker_body
 		-e "DEBOOTSTRAP_TARBALL_REVISION=$(DEBOOTSTRAP_TARBALL_REVISION)" \
 		-e "PREBUILT_MODULES_ROOT=/modules" \
 		-e "FETCH_PBUILDER_DIRECTORY=/pbuilder" \
+		-e "PACKAGES_FETCH_ROOT_DIRECTORY=/packages" \
 		aiy-board-builder \
 		/bin/bash -c \
 			'groupadd --gid $(shell id -g) $(shell id -g -n); \
@@ -81,6 +82,7 @@ endef
 
 $(call docker-run,bootstrap,make-bootstrap-tarball)
 $(call docker-run,rootfs,rootfs_raw)
+$(call docker-run,rootfs-final,rootfs)
 $(call docker-run,boot,boot)
 $(call docker-run,all,boot-targets)
 $(call docker-run,sdcard,sdcard)

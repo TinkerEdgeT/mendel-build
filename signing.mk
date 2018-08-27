@@ -5,15 +5,16 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 make-repo: $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release
-$(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release: $(ROOTDIR)/build/distributions | kernel-deb modules packages
+$(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release: $(ROOTDIR)/build/distributions | kernel-deb modules packages-tarball
 	mkdir -p $(PRODUCT_OUT)/repo
 	mkdir -p $(PRODUCT_OUT)/repo/debian_repo
 	mkdir -p $(PRODUCT_OUT)/repo/deb_repo_config
+	tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(PRODUCT_OUT)/repo
 	cp $(ROOTDIR)/build/distributions $(PRODUCT_OUT)/repo/deb_repo_config/
 	reprepro --basedir $(PRODUCT_OUT)/repo \
 	         --outdir $(PRODUCT_OUT)/repo/debian_repo \
 	         --confdir $(PRODUCT_OUT)/repo/deb_repo_config \
-	         includedeb stable $(PRODUCT_OUT)/*.deb
+	         includedeb stable $(PRODUCT_OUT)/repo/packages/*.deb
 	find $(PRODUCT_OUT)/repo/debian_repo -type d | xargs chmod 777
 	find $(PRODUCT_OUT)/repo/debian_repo -type f | xargs chmod 666
 

@@ -10,8 +10,10 @@ precheck:
 	+make -f $(ROOTDIR)/build/Makefile validate-bootstrap-tarball
 	+make -f $(ROOTDIR)/build/Makefile all
 
-$(PRODUCT_OUT):
-	mkdir -p $(PRODUCT_OUT)
+out-dirs:
+	mkdir -p $(PRODUCT_OUT)/packages
+	mkdir -p $(PRODUCT_OUT)/obj
+	mkdir -p $(ROOTDIR)/cache
 
 all: boot-targets
 

@@ -18,6 +18,7 @@ export PREBUILT_DOCKER_ROOT=${KOKORO_GFILE_DIR}
 export FETCH_PBUILDER_DIRECTORY=${KOKORO_GFILE_DIR}
 export DEBOOTSTRAP_TARBALL_REVISION=.
 export ROOTFS_REVISION=.
+export FETCH_PACKAGES=false
 
 m docker-all
 m docker-sdcard
@@ -35,3 +36,4 @@ cp ${PRODUCT_OUT}/boot.img ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/partition-table-*.img ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/rootfs.img ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/sdcard.img ${KOKORO_ARTIFACTS_DIR}
+cp ${ROOTDIR}/cache/packages.tgz $KOKORO_ARTIFACTS_DIR
