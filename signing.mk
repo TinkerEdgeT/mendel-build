@@ -14,7 +14,14 @@ $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release: $(ROOTDIR)/build/distribut
 	reprepro --basedir $(PRODUCT_OUT)/repo \
 	         --outdir $(PRODUCT_OUT)/repo/debian_repo \
 	         --confdir $(PRODUCT_OUT)/repo/deb_repo_config \
-	         includedeb stable $(PRODUCT_OUT)/repo/packages/*.deb
+	         includedeb animal $(PRODUCT_OUT)/repo/packages/*.deb
+	# Sigh, reprepro doesn't accept multiple dsc's at once...
+	find $(PRODUCT_OUT)/packages -maxdepth 1 -type f -name '*.dsc' | \
+	xargs -n1 \
+	reprepro --basedir $(PRODUCT_OUT)/repo \
+					 --outdir $(PRODUCT_OUT)/repo/debian_repo \
+					 --confdir $(PRODUCT_OUT)/repo/deb_repo_config \
+					 includedsc animal
 	find $(PRODUCT_OUT)/repo/debian_repo -type d | xargs chmod 777
 	find $(PRODUCT_OUT)/repo/debian_repo -type f | xargs chmod 666
 
