@@ -36,8 +36,8 @@ $(ROOTDIR)/cache/arm64-builder.tar:
 	docker rmi arm64-builder:latest
 endif
 
-# Macros for running make target in x86 docker image
-define docker_body
+# Runs any make TARGET in x86 docker image ('m docker-TARGET')
+docker-%: docker-build;
 	docker load -i $(ROOTDIR)/cache/aiy-board-builder.tar
 	docker run --rm --privileged --tty \
 		-v /dev\:/dev \
@@ -68,28 +68,7 @@ define docker_body
 			adduser $(shell id -u -n) docker; \
 			/etc/init.d/docker start; \
 			sudo -E -u $(shell id -u -n) /bin/bash -c "source build/setup.sh; m \
-			-j$(shell nproc)
-endef
-
-define docker_tail
-	";'
-endef
-
-define docker-run
-docker-$1: docker-build;
-	$(call docker_body) $2 $(call docker_tail)
-endef
-
-$(call docker-run,bootstrap,make-bootstrap-tarball)
-$(call docker-run,rootfs,rootfs_raw)
-$(call docker-run,rootfs-final,rootfs)
-$(call docker-run,boot,boot)
-$(call docker-run,all,boot-targets)
-$(call docker-run,sdcard,sdcard)
-$(call docker-run,make-repo,make-repo)
-
-docker-%: docker-build;
-	$(call docker_body) $* $(call docker_tail)
+			-j$(shell nproc) $*";'
 
 # Macro for running make target in arm64 docker image
 define docker-arm64-run
@@ -119,6 +98,7 @@ docker-arm64-$1: docker-build-arm64;
 	     source build/setup.sh; m -j$(shell nproc) $2'
 endef
 
+# Test x86 docker ('m docker-test-docker')
 test-docker:
 	@echo "Docker architecture: $(shell uname -a)"
 	@echo "Compiler version: $(shell gcc --version)"
@@ -129,8 +109,6 @@ test-docker:
 
 # Test arm64 docker 'm docker-arm64-test-docker'
 $(call docker-arm64-run,test-docker,test-docker)
-# Test x86 docker 'm docker-test-docker'
-$(call docker-run,test-docker,test-docker)
 
 .DEFAULT_GOAL:=docker-all
 

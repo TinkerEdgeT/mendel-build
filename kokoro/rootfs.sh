@@ -12,8 +12,8 @@ export ROOTFS_FETCH_TARBALL=false
 export FETCH_PACKAGES=false
 export PREBUILT_DOCKER_ROOT=$KOKORO_GFILE_DIR
 
-m docker-bootstrap
-m docker-rootfs
+m docker-bootstrap-tarball
+m docker-rootfs_raw
 
 cp git/cache/debootstrap.tgz $KOKORO_ARTIFACTS_DIR
 cp git/cache/debootstrap.tgz.sha256sum $KOKORO_ARTIFACTS_DIR

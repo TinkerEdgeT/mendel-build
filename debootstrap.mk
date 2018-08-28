@@ -24,21 +24,21 @@ $(DEBOOTSTRAP_TARBALL): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preambl
 		$(DEBOOTSTRAP_ARGS) \
 		--make-tarball=$(DEBOOTSTRAP_TARBALL) \
 		stretch $(PRODUCT_OUT)/obj/DEBOOTSTRAP
-	+make -f $(ROOTDIR)/build/debootstrap.mk make-bootstrap-sha256sum
+	+make -f $(ROOTDIR)/build/debootstrap.mk bootstrap-sha256sum
 endif
 
-make-bootstrap-tarball: $(DEBOOTSTRAP_TARBALL)
+bootstrap-tarball: $(DEBOOTSTRAP_TARBALL)
 
-make-bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
+bootstrap-sha256sum: $(DEBOOTSTRAP_TARBALL)
 	cd $(ROOTDIR)/cache && \
 		sha256sum $(notdir $(DEBOOTSTRAP_TARBALL)) > $(DEBOOTSTRAP_TARBALL_SHA256)
 
 targets::
 	@echo "validate-bootstrap-tarball - validates the bootstrap tarball matches the SHA-256 sums"
-	@echo "make-bootstrap-tarball - makes the debootstrap tarball for faster rootfs building"
-	@echo "make-bootstrap-sha256sum - calculates the SHA-256 sums of the debootstrap tarball"
+	@echo "bootstrap-tarball - makes the debootstrap tarball for faster rootfs building"
+	@echo "bootstrap-sha256sum - calculates the SHA-256 sums of the debootstrap tarball"
 
 clean::
 	sudo rm -rf $(PRODUCT_OUT)/obj/DEBOOTSTRAP
 
-.PHONY:: validate-bootstrap-tarball make-bootstrap-sha256sum make-bootstrap-tarball
+.PHONY:: validate-bootstrap-tarball bootstrap-sha256sum bootstrap-tarball
