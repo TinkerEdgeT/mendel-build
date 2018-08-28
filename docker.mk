@@ -59,6 +59,7 @@ docker-%: docker-build;
 		-e "PREBUILT_MODULES_ROOT=/modules" \
 		-e "FETCH_PBUILDER_DIRECTORY=/pbuilder" \
 		-e "PACKAGES_FETCH_ROOT_DIRECTORY=/packages" \
+		-e "FETCH_PACKAGES=$(FETCH_PACKAGES)" \
 		aiy-board-builder \
 		/bin/bash -c \
 			'groupadd --gid $(shell id -g) $(shell id -g -n); \
