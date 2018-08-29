@@ -129,11 +129,11 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/cache/packages.tgz \
                        | $(PRODUCT_OUT)/boot.img \
                          modules
-	cp -r $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG)
+	cp $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG).wip
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
 	-sudo umount $(ROOTFS_DIR)
-	sudo mount -o loop $(ROOTFS_PATCHED_IMG) $(ROOTFS_DIR)
+	sudo mount -o loop $(ROOTFS_PATCHED_IMG).wip $(ROOTFS_DIR)
 	sudo mount -o loop $(PRODUCT_OUT)/boot.img $(ROOTFS_DIR)/boot
 
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
@@ -149,8 +149,9 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo umount $(ROOTFS_DIR)/boot
 	sudo umount $(ROOTFS_DIR)
 	sudo rmdir $(ROOTFS_DIR)
-	sudo sync $(ROOTFS_PATCHED_IMG)
-	sudo chown ${USER} $(ROOTFS_PATCHED_IMG)
+	sudo sync $(ROOTFS_PATCHED_IMG).wip
+	sudo chown ${USER} $(ROOTFS_PATCHED_IMG).wip
+	mv $(ROOTFS_PATCHED_IMG).wip $(ROOTFS_PATCHED_IMG)
 
 $(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
 	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(PRODUCT_OUT)/rootfs.img
