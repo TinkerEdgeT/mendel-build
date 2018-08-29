@@ -60,6 +60,7 @@ docker-%: docker-build;
 		-e "FETCH_PBUILDER_DIRECTORY=/pbuilder" \
 		-e "PACKAGES_FETCH_ROOT_DIRECTORY=/packages" \
 		-e "FETCH_PACKAGES=$(FETCH_PACKAGES)" \
+		-e "PACKAGES_REVISION=$(PACKAGES_REVISION)" \
 		aiy-board-builder \
 		/bin/bash -c \
 			'groupadd --gid $(shell id -g) $(shell id -g -n); \

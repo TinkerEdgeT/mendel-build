@@ -114,14 +114,18 @@ $(eval $(call make-pbuilder-package-target,aiy-board-wlan,packages/aiy-board-wla
 
 ALL_PACKAGE_TARGETS := $(foreach package,$(ALL_PACKAGE_NAMES),$(PRODUCT_OUT)/.$(package)) $(PBUILDER_TARGETS)
 packages-tarball: $(ROOTDIR)/cache/packages.tgz
+$(info )
 ifeq ($(FETCH_PACKAGES),true)
-$(ROOTDIR)/cache/packages.tgz: $(PACKAGES_FETCH_ROOT_DIRECTORY)/packages.tgz | out-dirs
+$(info Using prebuilt packages, set FETCH_PACKAGES=false to build locally)
+$(ROOTDIR)/cache/packages.tgz: $(PACKAGES_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/packages.tgz | out-dirs
 	cp $< $(ROOTDIR)/cache
 else
+$(info Building packages locally, set FETCH_PACKAGES=true to use prebuilts)
 $(ROOTDIR)/cache/packages.tgz: $(ALL_PACKAGE_TARGETS) | out-dirs
 	$(ROOTDIR)/build/update_packages.sh
 	tar -C $(PRODUCT_OUT) -czf $@ packages
 endif
+$(info )
 
 packages:: $(ALL_PACKAGE_TARGETS)
 

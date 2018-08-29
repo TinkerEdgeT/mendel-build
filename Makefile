@@ -11,9 +11,9 @@ precheck:
 	+make -f $(ROOTDIR)/build/Makefile all
 
 out-dirs:
-	mkdir -p $(PRODUCT_OUT)/packages
-	mkdir -p $(PRODUCT_OUT)/obj
-	mkdir -p $(ROOTDIR)/cache
+	@mkdir -p $(PRODUCT_OUT)/packages
+	@mkdir -p $(PRODUCT_OUT)/obj
+	@mkdir -p $(ROOTDIR)/cache
 
 all: boot-targets
 
