@@ -112,6 +112,8 @@ $(eval $(call make-pbuilder-package-target,aiy-board-keyring,packages/aiy-board-
 $(eval $(call make-pbuilder-package-target,aiy-board-tools,packages/aiy-board-tools))
 $(eval $(call make-pbuilder-package-target,aiy-board-wlan,packages/aiy-board-wlan))
 
+$(eval $(call make-pbuilder-package-target,bluez-imx,bluez-imx))
+
 ALL_PACKAGE_TARGETS := $(foreach package,$(ALL_PACKAGE_NAMES),$(PRODUCT_OUT)/.$(package)) $(PBUILDER_TARGETS)
 packages-tarball: $(ROOTDIR)/cache/packages.tgz
 $(info )

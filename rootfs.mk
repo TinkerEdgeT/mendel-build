@@ -30,6 +30,7 @@ PRE_INSTALL_PACKAGES := \
 	aiy-board-keyring \
 	aiy-board-tools \
 	aiy-board-wlan \
+	bluetooth \
 	gstreamer1.0-alsa \
 	gstreamer1.0-plugins-bad \
 	gstreamer1.0-plugins-base \
@@ -133,15 +134,15 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo mount -o loop $(ROOTFS_PATCHED_IMG) $(ROOTFS_DIR)
 	sudo mount -o loop $(PRODUCT_OUT)/boot.img $(ROOTFS_DIR)/boot
 
-	+make -f $(ROOTDIR)/build/rootfs.mk firmware
-	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
-
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
 	sudo sed -i '1 i\deb [trusted=yes] file:///opt/aiy/packages ./' $(ROOTFS_DIR)/etc/apt/sources.list
 	sudo mkdir -p $(ROOTFS_DIR)/opt/aiy
 	sudo tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(ROOTFS_DIR)/opt/aiy/
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update && apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
+
+	+make -f $(ROOTDIR)/build/rootfs.mk firmware
+	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
 	sudo umount $(ROOTFS_DIR)/boot
 	sudo umount $(ROOTFS_DIR)

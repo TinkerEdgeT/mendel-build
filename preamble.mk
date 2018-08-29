@@ -23,7 +23,6 @@ DEBOOTSTRAP_EXTRA := \
 	aptitude \
 	avahi-daemon \
 	bash-completion \
-	bluez \
 	cpio \
 	cron \
 	dbus \
