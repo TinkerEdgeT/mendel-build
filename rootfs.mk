@@ -31,6 +31,7 @@ PRE_INSTALL_PACKAGES := \
 	aiy-board-tools \
 	aiy-board-wlan \
 	bluetooth \
+	bluez \
 	gstreamer1.0-alsa \
 	gstreamer1.0-plugins-bad \
 	gstreamer1.0-plugins-base \
@@ -44,6 +45,7 @@ PRE_INSTALL_PACKAGES := \
 	imx-mkimage \
 	imx-vpu-hantro \
 	imx-vpuwrap \
+	libbluetooth3 \
 	libdrm2 \
 	libdrm-vivante \
 	libegl1-mesa \
