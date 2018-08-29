@@ -54,6 +54,7 @@ DEBOOTSTRAP_EXTRA := \
 	libclass-isa-perl \
 	libinput10 \
 	liblockfile-bin \
+	libnss-mdns \
 	libpam-systemd \
 	libswitch-perl \
 	libwayland-cursor0 \
