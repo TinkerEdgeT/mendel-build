@@ -58,8 +58,6 @@ PRE_INSTALL_PACKAGES := \
 	libgstreamer1.0-0 \
 	libgstreamer-plugins-bad1.0-0 \
 	libgstreamer-plugins-base1.0-0 \
-	linux-headers-4.9.51-aiy \
-	linux-image-4.9.51-aiy \
 	mesa-common-dev \
 	uboot-imx \
 	wayland-protocols-imx \
@@ -142,6 +140,12 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo mkdir -p $(ROOTFS_DIR)/opt/aiy
 	sudo tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(ROOTFS_DIR)/opt/aiy/
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update && apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
+
+	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp
+	sudo cp $(PRODUCT_OUT)/packages/linux-headers-*-aiy_*_arm64.deb \
+		$(PRODUCT_OUT)/packages/linux-image-*-aiy_*_arm64.deb $(ROOTFS_DIR)/tmp
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y /tmp/*.deb'
+	sudo umount $(ROOTFS_DIR)/tmp
 
 	+make -f $(ROOTDIR)/build/rootfs.mk firmware
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
