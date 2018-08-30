@@ -66,10 +66,6 @@ PRE_INSTALL_PACKAGES := \
 rootfs: $(PRODUCT_OUT)/rootfs.img
 rootfs_raw: $(ROOTFS_RAW_IMG)
 
-firmware:
-	sudo mkdir -p $(ROOTFS_DIR)/lib/firmware
-	sudo rsync -rl $(ROOTDIR)/imx-firmware/ $(ROOTFS_DIR)/lib/firmware
-
 adjustments:
 	sudo rm -f $(ROOTFS_DIR)/etc/ssh/ssh_host_*
 	sudo rm -f $(ROOTFS_DIR)/var/log/bootstrap.log
@@ -147,7 +143,6 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y /tmp/*.deb'
 	sudo umount $(ROOTFS_DIR)/tmp
 
-	+make -f $(ROOTDIR)/build/rootfs.mk firmware
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
 	sudo umount $(ROOTFS_DIR)/boot
@@ -168,4 +163,4 @@ clean::
 targets::
 	@echo "rootfs - runs debootstrap to build the rootfs tree"
 
-.PHONY:: rootfs rootfs_raw firmware adjustments fetch_debs push_debs
+.PHONY:: rootfs rootfs_raw adjustments fetch_debs push_debs
