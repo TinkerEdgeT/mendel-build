@@ -4,19 +4,6 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-EQUIVS_PACKAGE_NAMES := $(notdir $(shell find $(ROOTDIR)/packages/equivs -maxdepth 1 -type f))
-
-ALL_PACKAGE_NAMES := $(EQUIVS_PACKAGE_NAMES)
-
-BUILDPACKAGE_CMD := dpkg-buildpackage -b -rfakeroot -us -uc -tc
-
-define make-equivs-package-target
-$(PRODUCT_OUT)/.$1: $(ROOTDIR)/packages/equivs/$1 | out-dirs
-	$(ROOTDIR)/build/update_packages.sh
-	cd $(PRODUCT_OUT)/packages; equivs-build $$<
-	touch $$@
-endef
-
 ifeq ($(FETCH_PBUILDER_BASE),true)
 $(ROOTDIR)/cache/base.tgz: $(FETCH_PBUILDER_DIRECTORY)/base.tgz | out-dirs
 	cp $< $(ROOTDIR)/cache
@@ -51,9 +38,11 @@ endef
 # $2: source location (relative to ROOTDIR)
 # $3: space separated list of package dependencies (may be empty)
 # $4: space separated list of external dependencies (may be empty)
+# $5: dpkg-buildpackage --build value (may be empty, defaults to full)
 define make-pbuilder-package-target
 $1: $(PRODUCT_OUT)/.$1-pbuilder
 PBUILDER_TARGETS += $(PRODUCT_OUT)/.$1-pbuilder
+
 $(PRODUCT_OUT)/.$1-pbuilder: \
 	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder) \
 	$(shell find $(ROOTDIR)/packages/$1 -type f) \
@@ -76,6 +65,7 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT)/packages -- \
+		--debbuildopts "--build=$(if $5,$5,full)" \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
@@ -83,9 +73,6 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 	touch $(PRODUCT_OUT)/.$1-pbuilder
 .PHONY:: $1
 endef
-
-# Generate EQUIVS targets
-$(foreach package,$(EQUIVS_PACKAGE_NAMES),$(eval $(call make-equivs-package-target,$(package))))
 
 $(eval $(call make-pbuilder-package-target,imx-atf,imx-atf))
 $(eval $(call make-pbuilder-package-target,imx-firmware,imx-firmware))
@@ -95,7 +82,7 @@ $(eval $(call make-pbuilder-package-target,uboot-imx,uboot-imx,imx-atf imx-firmw
 $(eval $(call make-pbuilder-package-target,wayland-protocols-imx,wayland-protocols-imx))
 $(eval $(call make-pbuilder-package-target,weston-imx,weston-imx,wayland-protocols-imx))
 
-$(eval $(call make-pbuilder-package-target,imx-gpu-viv,packages/imx-gpu-viv))
+$(eval $(call make-pbuilder-package-target,imx-gpu-viv,imx-gpu-viv,,kernel-deb,binary))
 $(eval $(call make-pbuilder-package-target,libdrm-imx,libdrm-imx))
 $(eval $(call make-pbuilder-package-target,imx-vpu-hantro,imx-vpu-hantro,,kernel-deb))
 $(eval $(call make-pbuilder-package-target,imx-vpuwrap,imx-vpuwrap,imx-vpu-hantro))
@@ -115,7 +102,7 @@ $(eval $(call make-pbuilder-package-target,aiy-board-wlan,packages/aiy-board-wla
 
 $(eval $(call make-pbuilder-package-target,bluez-imx,bluez-imx))
 
-ALL_PACKAGE_TARGETS := $(foreach package,$(ALL_PACKAGE_NAMES),$(PRODUCT_OUT)/.$(package)) $(PBUILDER_TARGETS)
+ALL_PACKAGE_TARGETS := $(PBUILDER_TARGETS)
 packages-tarball: $(ROOTDIR)/cache/packages.tgz
 $(info )
 ifeq ($(FETCH_PACKAGES),true)

@@ -48,17 +48,9 @@ PRE_INSTALL_PACKAGES := \
 	libbluetooth3 \
 	libdrm2 \
 	libdrm-vivante \
-	libegl1-mesa \
-	libegl1-mesa-dev \
-	libgbm1 \
-	libgbm-dev \
-	libgl1-mesa-glx \
-	libgles1-mesa \
-	libgles2-mesa \
 	libgstreamer1.0-0 \
 	libgstreamer-plugins-bad1.0-0 \
 	libgstreamer-plugins-base1.0-0 \
-	mesa-common-dev \
 	uboot-imx \
 	wayland-protocols \
 	weston-imx \
