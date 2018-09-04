@@ -60,7 +60,7 @@ PRE_INSTALL_PACKAGES := \
 	libgstreamer-plugins-base1.0-0 \
 	mesa-common-dev \
 	uboot-imx \
-	wayland-protocols-imx \
+	wayland-protocols \
 	weston-imx \
 
 rootfs: $(PRODUCT_OUT)/rootfs.img
