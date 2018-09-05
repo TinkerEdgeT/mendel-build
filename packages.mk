@@ -97,6 +97,7 @@ $(eval $(call make-pbuilder-package-target,imx-gst1.0-plugin,imx-gst1.0-plugin,\
 $(eval $(call make-pbuilder-package-target,aiy-board-audio,packages/aiy-board-audio))
 $(eval $(call make-pbuilder-package-target,aiy-board-gadget,packages/aiy-board-gadget))
 $(eval $(call make-pbuilder-package-target,aiy-board-keyring,packages/aiy-board-keyring))
+$(eval $(call make-pbuilder-package-target,aiy-board-resize2fs,packages/aiy-board-resize2fs))
 $(eval $(call make-pbuilder-package-target,aiy-board-tools,packages/aiy-board-tools))
 $(eval $(call make-pbuilder-package-target,aiy-board-wlan,packages/aiy-board-wlan))
 
