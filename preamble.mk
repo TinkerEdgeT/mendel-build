@@ -25,6 +25,7 @@ DEBOOTSTRAP_EXTRA := \
 	bash-completion \
 	cpio \
 	cron \
+	curl \
 	dbus \
 	debconf-i18n \
 	debian-archive-keyring \
@@ -85,6 +86,8 @@ DEBOOTSTRAP_EXTRA := \
 	python \
 	python-minimal \
 	python2.7 \
+	python3-numpy \
+	python3-pip \
 	python3-reportbug \
 	reportbug \
 	rsync \
@@ -95,6 +98,7 @@ DEBOOTSTRAP_EXTRA := \
 	tasksel \
 	telnet \
 	traceroute \
+	unzip \
 	v4l-utils \
 	vim \
 	wamerican \
