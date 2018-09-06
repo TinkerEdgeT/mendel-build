@@ -90,7 +90,7 @@ $(eval $(call make-pbuilder-package-target,imx-gstreamer,imx-gstreamer))
 $(eval $(call make-pbuilder-package-target,imx-gst-plugins-base,imx-gst-plugins-base,imx-gstreamer))
 $(eval $(call make-pbuilder-package-target,imx-gst-plugins-good,imx-gst-plugins-good,imx-gst-plugins-base))
 $(eval $(call make-pbuilder-package-target,imx-gst-plugins-bad,imx-gst-plugins-bad,\
-	libdrm-imx imx-gst-plugins-base imx-gpu-viv,kernel-deb))
+	libdrm-imx imx-gst-plugins-base,kernel-deb))
 $(eval $(call make-pbuilder-package-target,imx-gst1.0-plugin,imx-gst1.0-plugin,\
 	imx-vpuwrap imx-gst-plugins-bad))
 
