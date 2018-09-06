@@ -28,6 +28,7 @@ PRE_INSTALL_PACKAGES := \
 	aiy-board-audio \
 	aiy-board-gadget \
 	aiy-board-keyring \
+	aiy-board-resize2fs \
 	aiy-board-tools \
 	aiy-board-wlan \
 	bluetooth \
