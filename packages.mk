@@ -43,10 +43,11 @@ define make-pbuilder-package-target
 $1: $(PRODUCT_OUT)/.$1-pbuilder
 PBUILDER_TARGETS += $(PRODUCT_OUT)/.$1-pbuilder
 
+ifneq (,$(wildcard $(ROOTDIR)/packages/$1))
 $(PRODUCT_OUT)/.$1-pbuilder: \
 	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder) \
-	$(shell find $(ROOTDIR)/packages/$1 -type f) \
-	$(shell find $(ROOTDIR)/$2 -type f | sed -e 's/ /\\ /g') \
+	$$(shell find $(ROOTDIR)/packages/$1 -type f) \
+	$$(shell find $(ROOTDIR)/$2 -type f | sed -e 's/ /\\ /g') \
 	| out-dirs $(ROOTDIR)/cache/base.tgz \
 	$4
 
@@ -57,10 +58,10 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 	rsync -rl --exclude .git/ $(ROOTDIR)/$2/* $(PRODUCT_OUT)/obj/$1
 	cp -r $(ROOTDIR)/packages/$1/debian $(PRODUCT_OUT)/obj/$1
 	tar -C $(PRODUCT_OUT)/obj --exclude=debian/ -cJf \
-		$(PRODUCT_OUT)/obj/$1_$(call get-deb-version-orig,$1).orig.tar.xz \
+		$(PRODUCT_OUT)/obj/$1_$$(call get-deb-version-orig,$1).orig.tar.xz \
 		$1
 	tar -C $(PRODUCT_OUT)/obj/$1 -cJf \
-		$(PRODUCT_OUT)/obj/$1_$(call get-deb-version-full,$1).debian.tar.xz \
+		$(PRODUCT_OUT)/obj/$1_$$(call get-deb-version-full,$1).debian.tar.xz \
 		debian
 
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
@@ -70,6 +71,14 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
 		--host-arch arm64
+else
+$(PRODUCT_OUT)/.$1-pbuilder: \
+	| out-dirs \
+	$(PACKAGES_FETCH_ROOT_DIRECTORY)/$(PACKAGES_REVISION)/packages.tgz
+	tar -C $(PRODUCT_OUT) --wildcards -xf \
+		$(PACKAGES_FETCH_ROOT_DIRECTORY)/$(PACKAGES_REVISION)/packages.tgz \
+		packages/$1*.deb
+endif
 	touch $(PRODUCT_OUT)/.$1-pbuilder
 .PHONY:: $1
 endef
