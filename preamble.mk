@@ -89,6 +89,8 @@ DEBOOTSTRAP_EXTRA := \
 	python3-numpy \
 	python3-pip \
 	python3-reportbug \
+	python3-setuptools \
+	python3-wheel \
 	reportbug \
 	rsync \
 	rsyslog \
