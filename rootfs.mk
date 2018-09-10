@@ -31,6 +31,7 @@ PRE_INSTALL_PACKAGES := \
 	aiy-board-resize2fs \
 	aiy-board-tools \
 	aiy-board-wlan \
+	base-files \
 	bluetooth \
 	bluez \
 	gstreamer1.0-alsa \

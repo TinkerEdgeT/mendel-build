@@ -112,6 +112,8 @@ $(eval $(call make-pbuilder-package-target,aiy-board-wlan,packages/aiy-board-wla
 
 $(eval $(call make-pbuilder-package-target,bluez-imx,bluez-imx))
 
+$(eval $(call make-pbuilder-package-target,base-files,packages/base-files))
+
 ALL_PACKAGE_TARGETS := $(PBUILDER_TARGETS)
 packages-tarball: $(ROOTDIR)/cache/packages.tgz
 $(info )
