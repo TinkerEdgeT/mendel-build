@@ -1,9 +1,0 @@
-Source: apex
-Maintainer: AIY Projects <support-aiyprojects@google.com>
-
-Package: apex
-Section: main
-Priority: optional
-Architecture: arm64
-Depends: 
-Description: apex kernel module for AIY Board
