@@ -23,6 +23,7 @@ DEBOOTSTRAP_EXTRA := \
 	aptitude \
 	avahi-daemon \
 	bash-completion \
+	build-essential \
 	cpio \
 	cron \
 	curl \
