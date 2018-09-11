@@ -57,11 +57,11 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 	mkdir -p $(PRODUCT_OUT)/obj/$1
 	rsync -rl --exclude .git/ $(ROOTDIR)/$2/* $(PRODUCT_OUT)/obj/$1
 	cp -r $(ROOTDIR)/packages/$1/debian $(PRODUCT_OUT)/obj/$1
-	tar -C $(PRODUCT_OUT)/obj --exclude=debian/ -cJf \
-		$(PRODUCT_OUT)/obj/$1_$$(call get-deb-version-orig,$1).orig.tar.xz \
+	tar -C $(PRODUCT_OUT)/obj --exclude=debian/ -czf \
+		$(PRODUCT_OUT)/obj/$1_$$(call get-deb-version-orig,$1).orig.tar.gz \
 		$1
-	tar -C $(PRODUCT_OUT)/obj/$1 -cJf \
-		$(PRODUCT_OUT)/obj/$1_$$(call get-deb-version-full,$1).debian.tar.xz \
+	tar -C $(PRODUCT_OUT)/obj/$1 -czf \
+		$(PRODUCT_OUT)/obj/$1_$$(call get-deb-version-full,$1).debian.tar.gz \
 		debian
 
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
