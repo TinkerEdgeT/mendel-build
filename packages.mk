@@ -93,8 +93,8 @@ $(eval $(call make-pbuilder-package-target,weston-imx,weston-imx,wayland-protoco
 
 $(eval $(call make-pbuilder-package-target,imx-gpu-viv,imx-gpu-viv,,kernel-deb,binary))
 $(eval $(call make-pbuilder-package-target,libdrm-imx,libdrm-imx))
-$(eval $(call make-pbuilder-package-target,imx-vpu-hantro,imx-vpu-hantro,,kernel-deb))
-$(eval $(call make-pbuilder-package-target,imx-vpuwrap,imx-vpuwrap,imx-vpu-hantro))
+$(eval $(call make-pbuilder-package-target,imx-vpu-hantro,imx-vpu-hantro,,kernel-deb,binary))
+$(eval $(call make-pbuilder-package-target,imx-vpuwrap,imx-vpuwrap,imx-vpu-hantro,,binary))
 $(eval $(call make-pbuilder-package-target,imx-gstreamer,imx-gstreamer))
 $(eval $(call make-pbuilder-package-target,imx-gst-plugins-base,imx-gst-plugins-base,imx-gstreamer))
 $(eval $(call make-pbuilder-package-target,imx-gst-plugins-good,imx-gst-plugins-good,imx-gst-plugins-base))
