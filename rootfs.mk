@@ -11,25 +11,12 @@ ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img
 ROOTFS_FETCH_TARBALL ?= true
 ROOTFS_REVISION ?= latest
 
-USER_GROUPS := \
-	adm \
-	audio \
-	bluetooth \
-	disk \
-	games \
-	input \
-	plugdev \
-	staff \
-	sudo \
-	users \
-	video
-
 PRE_INSTALL_PACKAGES := \
 	aiy-board-audio \
 	aiy-board-gadget \
 	aiy-board-keyring \
-	aiy-board-resize2fs \
 	aiy-board-tools \
+	aiy-board-tweaks \
 	aiy-board-wlan \
 	base-files \
 	bluetooth \
@@ -61,28 +48,6 @@ rootfs: $(PRODUCT_OUT)/rootfs.img
 rootfs_raw: $(ROOTFS_RAW_IMG)
 
 adjustments:
-	sudo rm -f $(ROOTFS_DIR)/etc/ssh/ssh_host_*
-	sudo rm -f $(ROOTFS_DIR)/var/log/bootstrap.log
-	echo "aiy" | sudo tee $(ROOTFS_DIR)/etc/hostname
-	echo "127.0.0.1 aiy" | sudo tee -a $(ROOTFS_DIR)/etc/hosts
-	echo "en_US.UTF-8 UTF-8" | sudo tee -a $(ROOTFS_DIR)/etc/locale.gen
-	echo "spidev" | sudo tee -a $(ROOTFS_DIR)/etc/modules
-	sudo chroot $(ROOTFS_DIR) locale-gen
-	sudo chroot $(ROOTFS_DIR) mkdir -p /home/aiy
-	sudo chroot $(ROOTFS_DIR) adduser aiy --home /home/aiy --shell /bin/bash --disabled-password --gecos ""
-	for group in $(USER_GROUPS); do \
-		sudo chroot $(ROOTFS_DIR) adduser aiy $$group; \
-	done
-	sudo chroot $(ROOTFS_DIR) chown aiy:aiy /home/aiy
-	sudo chroot $(ROOTFS_DIR) bash -c "echo 'aiy:aiy' | chpasswd"
-	echo "nameserver 8.8.8.8" | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
-
-	sudo chroot $(ROOTFS_DIR) systemctl enable ssh
-	sudo chroot $(ROOTFS_DIR) systemctl enable bluetooth
-	sudo chroot $(ROOTFS_DIR) systemctl enable avahi-daemon
-	sudo chroot $(ROOTFS_DIR) systemctl enable NetworkManager
-	echo "aiy	ALL=(ALL) ALL" |sudo tee -a $(ROOTFS_DIR)/etc/sudoers
-
 	sudo $(ROOTDIR)/build/fix_permissions.sh -p $(ROOTDIR)/build/permissions.txt -t $(ROOTFS_DIR)
 
 ifeq ($(ROOTFS_FETCH_TARBALL),true)
