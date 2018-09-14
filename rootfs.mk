@@ -21,6 +21,7 @@ PRE_INSTALL_PACKAGES := \
 	base-files \
 	bluetooth \
 	bluez \
+	edgetpu-api \
 	gstreamer1.0-alsa \
 	gstreamer1.0-plugins-bad \
 	gstreamer1.0-plugins-base \
