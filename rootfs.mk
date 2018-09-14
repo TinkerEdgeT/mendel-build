@@ -37,6 +37,7 @@ PRE_INSTALL_PACKAGES := \
 	libbluetooth3 \
 	libdrm2 \
 	libdrm-vivante \
+	libedgetpu \
 	libgstreamer1.0-0 \
 	libgstreamer-plugins-bad1.0-0 \
 	libgstreamer-plugins-base1.0-0 \
