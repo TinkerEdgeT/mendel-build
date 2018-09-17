@@ -16,11 +16,14 @@ export TARBALL_FETCH_ROOT_DIRECTORY=${KOKORO_GFILE_DIR}
 export PREBUILT_MODULES_ROOT=${KOKORO_GFILE_DIR}
 export PREBUILT_DOCKER_ROOT=${KOKORO_GFILE_DIR}
 export FETCH_PBUILDER_DIRECTORY=${KOKORO_GFILE_DIR}
+export PACKAGES_FETCH_ROOT_DIRECTORY=${KOKORO_GFILE_DIR}
+export PACKAGES_REVISION=.
 export DEBOOTSTRAP_TARBALL_REVISION=.
 export ROOTFS_REVISION=.
 export FETCH_PACKAGES=false
 
 # Inject libedgetpu deb build from Blaze into the package directory.
+touch ${PACKAGES_FETCH_ROOT_DIRECTORY}/${PACKAGES_REVISION}/packages.tgz
 m out-dirs
 find ${KOKORO_BLAZE_DIR} -name 'libedgetpu*.deb' -exec cp {} ${PRODUCT_OUT}/packages \;
 touch ${PRODUCT_OUT}/.libedgetpu-pbuilder
