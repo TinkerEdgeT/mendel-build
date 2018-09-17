@@ -78,6 +78,7 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 	tar -C $(PRODUCT_OUT) --wildcards -xf \
 		$(PACKAGES_FETCH_ROOT_DIRECTORY)/$(PACKAGES_REVISION)/packages.tgz \
 		packages/$1*.deb
+	$(ROOTDIR)/build/update_packages.sh
 endif
 	touch $(PRODUCT_OUT)/.$1-pbuilder
 .PHONY:: $1
