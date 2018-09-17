@@ -59,7 +59,7 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk 
 	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
-	fallocate -l 2G $(ROOTFS_RAW_IMG)
+	fallocate -l 4G $(ROOTFS_RAW_IMG)
 	mkfs.ext4 -F -j $(ROOTFS_RAW_IMG)
 	tune2fs -o discard $(ROOTFS_RAW_IMG)
 	-sudo umount $(ROOTFS_DIR)
