@@ -8,7 +8,7 @@ sdcard: $(PRODUCT_OUT)/sdcard.img
 sdcard-xz: $(PRODUCT_OUT)/sdcard.img.xz
 
 sdcard-allocate: | $(PRODUCT_OUT)
-	fallocate -l 4G $(PRODUCT_OUT)/sdcard.img
+	fallocate -l $(SDIMAGE_SIZE_MB)M $(PRODUCT_OUT)/sdcard.img
 
 $(PRODUCT_OUT)/sdcard.img: sdcard-allocate \
                            $(ROOTDIR)/build/rootfs.mk \
@@ -19,12 +19,12 @@ $(PRODUCT_OUT)/sdcard.img: sdcard-allocate \
                            $(PRODUCT_OUT)/boot.img \
                            $(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img
 	parted -s $(PRODUCT_OUT)/sdcard.img mklabel msdos
-	parted -s $(PRODUCT_OUT)/sdcard.img unit MiB mkpart primary ext2 8 136
-	parted -s $(PRODUCT_OUT)/sdcard.img unit MiB mkpart primary ext4 136 4095
-	dd if=$(PRODUCT_OUT)/u-boot.imx of=$(PRODUCT_OUT)/sdcard.img conv=notrunc seek=66 bs=512
-	dd if=$(PRODUCT_OUT)/boot.img of=$(PRODUCT_OUT)/sdcard.img conv=notrunc seek=8 bs=1M
+	parted -s $(PRODUCT_OUT)/sdcard.img unit MiB mkpart primary ext2 $(BOOT_START) $(ROOTFS_START)
+	parted -s $(PRODUCT_OUT)/sdcard.img unit MiB mkpart primary ext4 $(ROOTFS_START) 100%
+	dd if=$(PRODUCT_OUT)/u-boot.imx of=$(PRODUCT_OUT)/sdcard.img conv=notrunc seek=$(UBOOT_START) bs=512
+	dd if=$(PRODUCT_OUT)/boot.img of=$(PRODUCT_OUT)/sdcard.img conv=notrunc seek=$(BOOT_START) bs=1M
 	dd if=$(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img \
-		of=$(PRODUCT_OUT)/sdcard.img conv=notrunc seek=136 bs=1M
+		of=$(PRODUCT_OUT)/sdcard.img conv=notrunc seek=$(ROOTFS_START) bs=1M
 
 
 	mkdir -p $(ROOTFS_DIR)

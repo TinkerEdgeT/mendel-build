@@ -7,7 +7,7 @@ include $(ROOTDIR)/build/preamble.mk
 boot: $(PRODUCT_OUT)/boot.img
 
 $(PRODUCT_OUT)/boot.img:
-	fallocate -l 128M $@
+	fallocate -l $(BOOT_SIZE_MB)M $@
 	mkfs.ext2 -F $@
 
 targets::

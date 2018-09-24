@@ -60,7 +60,7 @@ else
 $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-aarch64-static
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
-	fallocate -l 4G $(ROOTFS_RAW_IMG)
+	fallocate -l $(ROOTFS_SIZE_MB)M $(ROOTFS_RAW_IMG)
 	mkfs.ext4 -F -j $(ROOTFS_RAW_IMG)
 	tune2fs -o discard $(ROOTFS_RAW_IMG)
 	-sudo umount $(ROOTFS_DIR)/dev
