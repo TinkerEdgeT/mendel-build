@@ -4,8 +4,8 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-ARM64_BUILDER_FETCH_TARBALL ?= true
-DOCKER_FETCH_TARBALL ?= true
+ARM64_BUILDER_FETCH_TARBALL ?= $(IS_GLINUX)
+DOCKER_FETCH_TARBALL ?= $(IS_GLINUX)
 
 docker-build: $(ROOTDIR)/cache/aiy-board-builder.tar
 ifeq ($(DOCKER_FETCH_TARBALL),true)

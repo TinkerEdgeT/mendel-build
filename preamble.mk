@@ -1,6 +1,11 @@
 # Preamble. Don't define any targets in this file! This is effectively just a
 # common header where useful global vars go.
 
+IS_GLINUX ?= false
+ifneq (,$(wildcard /etc/dpkg/origins/glinux))
+	IS_GLINUX = true
+endif
+
 # Globally useful directories
 TOOLCHAIN := $(ROOTDIR)/toolchains/aarch64-linux-android/bin/aarch64-linux-android-
 
@@ -14,7 +19,7 @@ DEBOOTSTRAP_TARBALL := $(ROOTDIR)/cache/debootstrap.tgz
 DEBOOTSTRAP_TARBALL_SHA256 := $(ROOTDIR)/cache/debootstrap.tgz.sha256sum
 
 FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder
-FETCH_PBUILDER_BASE ?= true
+FETCH_PBUILDER_BASE ?= $(IS_GLINUX)
 
 DEBOOTSTRAP_EXTRA := \
 	alsa-utils \
@@ -126,6 +131,6 @@ TARBALL_FETCH_ROOT_DIRECTORY ?= \
 
 PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker
 
-FETCH_PACKAGES ?= true
+FETCH_PACKAGES ?= $(IS_GLINUX)
 PACKAGES_REVISION ?= latest
 PACKAGES_FETCH_ROOT_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/continuous

@@ -5,7 +5,7 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 DEBOOTSTRAP_TARBALL_REVISION ?= latest
-DEBOOTSTRAP_FETCH_TARBALL ?= true
+DEBOOTSTRAP_FETCH_TARBALL ?= $(IS_GLINUX)
 
 validate-bootstrap-tarball: $(DEBOOTSTRAP_TARBALL)
 	cd $(ROOTDIR)/cache && \
