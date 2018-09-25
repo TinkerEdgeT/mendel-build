@@ -68,7 +68,7 @@ docker-%: docker-build;
 			adduser $(shell id -u -n) docker; \
 			/etc/init.d/docker start; \
 			sudo -E -u $(shell id -u -n) /bin/bash -c "source build/setup.sh; m \
-			-j$(shell nproc) $*";'
+			-j$$(shell nproc) $*";'
 
 # Macro for running make target in arm64 docker image
 define docker-arm64-run
@@ -93,7 +93,7 @@ docker-arm64-$1: docker-build-arm64;
 	     useradd -m -e "" -s /bin/bash --gid $$(shell id -g) --uid $$(shell id -u) $$(shell id -u -n); \
 	     passwd -d $$(shell id -u -n); \
 	     echo "$$(shell id -u -n) ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
-	     source build/setup.sh; m -j$(shell nproc) $2'
+	     source build/setup.sh; m -j$$(shell nproc) $2'
 endef
 
 # Test x86 docker ('m docker-test-docker')

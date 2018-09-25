@@ -98,54 +98,56 @@ if builtin complete >/dev/null 2>/dev/null; then
     complete -F _mm mm
 fi
 
-unset JUMP_TARGETS
-declare -Ax JUMP_TARGETS
-JUMP_TARGETS[.]="."
-JUMP_TARGETS[board]="${ROOTDIR}/board"
-JUMP_TARGETS[top]="${ROOTDIR}"
-JUMP_TARGETS[rootdir]="${ROOTDIR}"
-JUMP_TARGETS[out]="${OUT}"
-JUMP_TARGETS[product]="${PRODUCT_OUT}"
-JUMP_TARGETS[host]="${HOST_OUT}"
-JUMP_TARGETS[root]="${ROOT_OUT}"
-JUMP_TARGETS[build]="${ROOTDIR}/build"
-JUMP_TARGETS[kernel]="${ROOTDIR}/linux-imx/"
-JUMP_TARGETS[uboot]="${ROOTDIR}/uboot-imx/"
+if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
+    unset JUMP_TARGETS
+    declare -Ax JUMP_TARGETS
+    JUMP_TARGETS[.]="."
+    JUMP_TARGETS[board]="${ROOTDIR}/board"
+    JUMP_TARGETS[top]="${ROOTDIR}"
+    JUMP_TARGETS[rootdir]="${ROOTDIR}"
+    JUMP_TARGETS[out]="${OUT}"
+    JUMP_TARGETS[product]="${PRODUCT_OUT}"
+    JUMP_TARGETS[host]="${HOST_OUT}"
+    JUMP_TARGETS[root]="${ROOT_OUT}"
+    JUMP_TARGETS[build]="${ROOTDIR}/build"
+    JUMP_TARGETS[kernel]="${ROOTDIR}/linux-imx/"
+    JUMP_TARGETS[uboot]="${ROOTDIR}/uboot-imx/"
 
-function j
-{
-    local target="$1"; shift
-
-    if [[ -z "${target}" ]]; then
-        cd "${ROOTDIR}"
-        return 0
-    fi
-
-    if [[ -z "${JUMP_TARGETS[$target]}" ]]; then
-        echo "Jump targets are:"
-        echo "${!JUMP_TARGETS[@]}"
-        return 1
-    fi
-
-    cd "${JUMP_TARGETS[$target]}"
-}
-
-if builtin complete >/dev/null 2>/dev/null; then
-    function _j_targets
+    function j
     {
-        echo "${!JUMP_TARGETS[@]}"
-    }
+        local target="$1"; shift
 
-    function _j
-    {
-        local cur=${COMP_WORDS[COMP_CWORD]}
-        COMPREPLY=()
-        if [[ $COMP_CWORD -eq 1 ]]; then
-            COMPREPLY=( $(compgen -W "$(_j_targets)" $cur) )
+        if [[ -z "${target}" ]]; then
+            cd "${ROOTDIR}"
+            return 0
         fi
+
+        if [[ -z "${JUMP_TARGETS[$target]}" ]]; then
+            echo "Jump targets are:"
+            echo "${!JUMP_TARGETS[@]}"
+            return 1
+        fi
+
+        cd "${JUMP_TARGETS[$target]}"
     }
 
-    complete -F _j j
+    if builtin complete >/dev/null 2>/dev/null; then
+        function _j_targets
+        {
+            echo "${!JUMP_TARGETS[@]}"
+        }
+
+        function _j
+        {
+            local cur=${COMP_WORDS[COMP_CWORD]}
+            COMPREPLY=()
+            if [[ $COMP_CWORD -eq 1 ]]; then
+                COMPREPLY=( $(compgen -W "$(_j_targets)" $cur) )
+            fi
+        }
+
+        complete -F _j j
+    fi
 fi
 
 echo ========================================
