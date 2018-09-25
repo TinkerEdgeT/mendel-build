@@ -11,7 +11,7 @@ ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img
 ROOTFS_FETCH_TARBALL ?= $(IS_GLINUX)
 ROOTFS_REVISION ?= latest
 
-PRE_INSTALL_PACKAGES := \
+BASE_PACKAGES := \
 	aiy-board-audio \
 	aiy-board-gadget \
 	aiy-board-keyring \
@@ -22,29 +22,38 @@ PRE_INSTALL_PACKAGES := \
 	bluetooth \
 	bluez \
 	edgetpu-api \
+	libbluetooth3 \
+	libedgetpu \
+	uboot-imx
+
+GUI_PACKAGES := \
 	gstreamer1.0-alsa \
 	gstreamer1.0-plugins-bad \
 	gstreamer1.0-plugins-base \
 	gstreamer1.0-plugins-base-apps \
 	gstreamer1.0-plugins-good \
 	gstreamer1.0-tools \
-	imx-atf \
-	imx-firmware \
 	imx-gpu-viv \
 	imx-gst1.0-plugin \
-	imx-mkimage \
 	imx-vpu-hantro \
 	imx-vpuwrap \
-	libbluetooth3 \
 	libdrm2 \
 	libdrm-vivante \
-	libedgetpu \
 	libgstreamer1.0-0 \
 	libgstreamer-plugins-bad1.0-0 \
 	libgstreamer-plugins-base1.0-0 \
-	uboot-imx \
 	wayland-protocols \
-	weston-imx \
+	weston-imx
+
+ifeq ($(HEADLESS_BUILD),)
+    $(info )
+    $(info *** GUI build selected -- set HEADLESS_BUILD=true if this is not what you intend.)
+	PRE_INSTALL_PACKAGES := $(BASE_PACKAGES) $(GUI_PACKAGES)
+else
+    $(info )
+    $(info *** Headless build selected -- unset HEADLESS_BUILD if this is not what you intend.)
+	PRE_INSTALL_PACKAGES := $(BASE_PACKAGES)
+endif
 
 rootfs: $(PRODUCT_OUT)/rootfs.img
 rootfs_raw: $(ROOTFS_RAW_IMG)
@@ -108,6 +117,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install aiy-board-keyring'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
+
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
 
 	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp

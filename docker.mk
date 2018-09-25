@@ -59,6 +59,7 @@ docker-%: docker-build;
 		-e "PACKAGES_FETCH_ROOT_DIRECTORY=/packages" \
 		-e "FETCH_PACKAGES=$(FETCH_PACKAGES)" \
 		-e "PACKAGES_REVISION=$(PACKAGES_REVISION)" \
+		-e "HEADLESS_BUILD=$(HEADLESS_BUILD)" \
 		aiy-board-builder \
 		/bin/bash -c \
 			'groupadd --gid $(shell id -g) $(shell id -g -n); \
