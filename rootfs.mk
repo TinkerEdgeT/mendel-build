@@ -87,7 +87,9 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/board/fstab.emmc \
                        $(ROOTDIR)/build/boot.mk \
                        $(ROOTDIR)/cache/packages.tgz \
-                       | $(PRODUCT_OUT)/boot.img
+                       kernel-deb \
+                       | $(PRODUCT_OUT)/boot.img \
+                         /usr/bin/qemu-aarch64-static
 	cp $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG).wip
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
@@ -95,6 +97,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo mount -o loop $(ROOTFS_PATCHED_IMG).wip $(ROOTFS_DIR)
 	sudo mount -o loop $(PRODUCT_OUT)/boot.img $(ROOTFS_DIR)/boot
 	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
+	sudo cp /usr/bin/qemu-aarch64-static $(ROOTFS_DIR)/usr/bin
 
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
@@ -115,6 +118,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
+	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-aarch64-static
 	sudo umount $(ROOTFS_DIR)/dev
 	sudo umount $(ROOTFS_DIR)/boot
 	sudo umount $(ROOTFS_DIR)
