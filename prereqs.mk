@@ -14,7 +14,6 @@ REQUIRED_PACKAGES := \
 	coreutils \
 	debhelper \
 	debian-archive-keyring \
-	debootstrap \
 	device-tree-compiler \
 	fakeroot \
 	genext2fs \
@@ -24,6 +23,7 @@ REQUIRED_PACKAGES := \
 	libcap-dev \
 	libwayland-dev \
 	mtools \
+	multistrap \
 	parted \
 	pbuilder \
 	pkg-config \

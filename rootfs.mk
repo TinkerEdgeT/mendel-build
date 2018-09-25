@@ -57,19 +57,23 @@ $(ROOTFS_RAW_IMG): $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
 	cp $< $<.sha256sum $(dir $(ROOTFS_RAW_IMG))
 else
-$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/debootstrap.mk $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk $(DEBOOTSTRAP_TARBALL)
-	+make -f $(ROOTDIR)/build/debootstrap.mk validate-bootstrap-tarball
+$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
 	fallocate -l 4G $(ROOTFS_RAW_IMG)
 	mkfs.ext4 -F -j $(ROOTFS_RAW_IMG)
 	tune2fs -o discard $(ROOTFS_RAW_IMG)
+	-sudo umount $(ROOTFS_DIR)/dev
 	-sudo umount $(ROOTFS_DIR)
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
-	sudo qemu-debootstrap \
-		$(DEBOOTSTRAP_ARGS) \
-		--unpack-tarball=$(DEBOOTSTRAP_TARBALL) \
-		stretch $(ROOTFS_DIR)
+	cp $(ROOTDIR)/build/multistrap.conf $(PRODUCT_OUT)
+	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA)/g' $(PRODUCT_OUT)/multistrap.conf
+	sudo multistrap -f $(PRODUCT_OUT)/multistrap.conf -d $(ROOTFS_DIR)
+
+	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
+	sudo chroot $(ROOTFS_DIR) /var/lib/dpkg/info/dash.preinst install
+	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(ROOTFS_DIR) dpkg --configure -a
+	sudo umount $(ROOTFS_DIR)/dev
 	sudo umount $(ROOTFS_DIR)
 	sudo rmdir $(ROOTFS_DIR)
 	sudo sync $(ROOTFS_RAW_IMG)
@@ -80,23 +84,26 @@ endif
 $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/board/fstab.emmc \
                        $(ROOTDIR)/build/boot.mk \
-                       kernel-deb \
                        $(ROOTDIR)/cache/packages.tgz \
-                       | $(PRODUCT_OUT)/boot.img \
-                         modules
+                       | $(PRODUCT_OUT)/boot.img
 	cp $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG).wip
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
 	-sudo umount $(ROOTFS_DIR)
 	sudo mount -o loop $(ROOTFS_PATCHED_IMG).wip $(ROOTFS_DIR)
 	sudo mount -o loop $(PRODUCT_OUT)/boot.img $(ROOTFS_DIR)/boot
+	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
 
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
-	sudo sed -i '1 i\deb [trusted=yes] file:///opt/aiy/packages ./' $(ROOTFS_DIR)/etc/apt/sources.list
+	echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
+	echo 'deb [trusted=yes] file:///opt/aiy/packages ./' | sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
 	sudo mkdir -p $(ROOTFS_DIR)/opt/aiy
 	sudo tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(ROOTFS_DIR)/opt/aiy/
-	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update && apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install aiy-board-keyring'
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
 
 	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp
 	sudo cp $(PRODUCT_OUT)/packages/linux-headers-*-aiy_*_arm64.deb \
@@ -106,6 +113,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
+	sudo umount $(ROOTFS_DIR)/dev
 	sudo umount $(ROOTFS_DIR)/boot
 	sudo umount $(ROOTFS_DIR)
 	sudo rmdir $(ROOTFS_DIR)
@@ -122,6 +130,6 @@ clean::
 	rm -f $(ROOTFS_PATCHED_IMG) $(ROOTFS_RAW_IMG) $(PRODUCT_OUT)/rootfs.img
 
 targets::
-	@echo "rootfs - runs debootstrap to build the rootfs tree"
+	@echo "rootfs - runs multistrap to build the rootfs tree"
 
 .PHONY:: rootfs rootfs_raw adjustments fetch_debs push_debs

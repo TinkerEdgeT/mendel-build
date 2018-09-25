@@ -14,15 +14,12 @@ KERNEL_SRC_DIR := $(ROOTDIR)/linux-imx
 KERNEL_OUT_DIR := $(PRODUCT_OUT)/obj/KERNEL_OBJ
 KERNEL_OPTIONS := ARCH=arm64 CROSS_COMPILE=$(TOOLCHAIN) LOCALVERSION=-aiy
 
-# Used by debootstrap and rootfs both
-DEBOOTSTRAP_TARBALL := $(ROOTDIR)/cache/debootstrap.tgz
-DEBOOTSTRAP_TARBALL_SHA256 := $(ROOTDIR)/cache/debootstrap.tgz.sha256sum
-
 FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder
 FETCH_PBUILDER_BASE ?= $(IS_GLINUX)
 
-DEBOOTSTRAP_EXTRA := \
+PACKAGES_EXTRA := \
 	alsa-utils \
+	apt-transport-https \
 	apt-listchanges \
 	apt-utils \
 	aptitude \
@@ -117,14 +114,6 @@ DEBOOTSTRAP_EXTRA := \
 	wpasupplicant \
 	xdg-user-dirs \
 	xwayland
-
-DEBOOTSTRAP_ARGS := \
-		--arch=arm64 \
-		--keyring /usr/share/keyrings/debian-archive-keyring.gpg \
-		--variant=buildd \
-		--components=main,non-free \
-		--exclude=debfoster \
-		--include=$$(echo $(DEBOOTSTRAP_EXTRA) |tr ' ' ',') \
 
 TARBALL_FETCH_ROOT_DIRECTORY ?= \
 	/google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/rootfs
