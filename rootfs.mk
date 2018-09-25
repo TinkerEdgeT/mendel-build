@@ -57,7 +57,7 @@ $(ROOTFS_RAW_IMG): $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
 	cp $< $<.sha256sum $(dir $(ROOTFS_RAW_IMG))
 else
-$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk
+$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-aarch64-static
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
 	fallocate -l 4G $(ROOTFS_RAW_IMG)
@@ -71,8 +71,10 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk
 	sudo multistrap -f $(PRODUCT_OUT)/multistrap.conf -d $(ROOTFS_DIR)
 
 	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
+	sudo cp /usr/bin/qemu-aarch64-static $(ROOTFS_DIR)/usr/bin
 	sudo chroot $(ROOTFS_DIR) /var/lib/dpkg/info/dash.preinst install
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(ROOTFS_DIR) dpkg --configure -a
+	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-aarch64-static
 	sudo umount $(ROOTFS_DIR)/dev
 	sudo umount $(ROOTFS_DIR)
 	sudo rmdir $(ROOTFS_DIR)
