@@ -11,6 +11,7 @@ pushd git/continuous-build
 source build/setup.sh
 popd
 
+export IS_GLINUX=true
 export TARBALL_FETCH_ROOT_DIRECTORY=${KOKORO_GFILE_DIR}
 export PREBUILT_MODULES_ROOT=${KOKORO_GFILE_DIR}
 export PREBUILT_DOCKER_ROOT=${KOKORO_GFILE_DIR}
