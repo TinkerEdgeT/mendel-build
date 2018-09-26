@@ -70,7 +70,7 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
-		--host-arch arm64
+		--host-arch arm64 --logfile $(PRODUCT_OUT)/$1.log
 else
 $(PRODUCT_OUT)/.$1-pbuilder: \
 	| out-dirs \
