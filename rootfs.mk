@@ -96,7 +96,6 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/board/fstab.emmc \
                        $(ROOTDIR)/build/boot.mk \
                        $(ROOTDIR)/cache/packages.tgz \
-                       kernel-deb \
                        | $(PRODUCT_OUT)/boot.img \
                          /usr/bin/qemu-aarch64-static
 	cp $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG).wip

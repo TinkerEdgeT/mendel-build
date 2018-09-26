@@ -92,15 +92,17 @@ $(eval $(call make-pbuilder-package-target,uboot-imx,uboot-imx,imx-atf imx-firmw
 $(eval $(call make-pbuilder-package-target,wayland-protocols-imx,wayland-protocols-imx))
 $(eval $(call make-pbuilder-package-target,weston-imx,weston-imx,wayland-protocols-imx))
 
-$(eval $(call make-pbuilder-package-target,imx-gpu-viv,imx-gpu-viv,,kernel-deb,binary))
+$(eval $(call make-pbuilder-package-target,linux-imx,linux-imx))
+
+$(eval $(call make-pbuilder-package-target,imx-gpu-viv,imx-gpu-viv,linux-imx,,binary))
 $(eval $(call make-pbuilder-package-target,libdrm-imx,libdrm-imx))
-$(eval $(call make-pbuilder-package-target,imx-vpu-hantro,imx-vpu-hantro,,kernel-deb,binary))
+$(eval $(call make-pbuilder-package-target,imx-vpu-hantro,imx-vpu-hantro,linux-imx,,binary))
 $(eval $(call make-pbuilder-package-target,imx-vpuwrap,imx-vpuwrap,imx-vpu-hantro,,binary))
 $(eval $(call make-pbuilder-package-target,imx-gstreamer,imx-gstreamer))
 $(eval $(call make-pbuilder-package-target,imx-gst-plugins-base,imx-gst-plugins-base,imx-gstreamer))
 $(eval $(call make-pbuilder-package-target,imx-gst-plugins-good,imx-gst-plugins-good,imx-gst-plugins-base))
 $(eval $(call make-pbuilder-package-target,imx-gst-plugins-bad,imx-gst-plugins-bad,\
-	libdrm-imx imx-gst-plugins-base,kernel-deb))
+	libdrm-imx imx-gst-plugins-base linux-imx))
 $(eval $(call make-pbuilder-package-target,imx-gst1.0-plugin,imx-gst1.0-plugin,\
 	imx-vpuwrap imx-gst-plugins-bad))
 

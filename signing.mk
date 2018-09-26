@@ -5,7 +5,7 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 make-repo: $(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release
-$(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release: $(ROOTDIR)/build/distributions | kernel-deb modules packages-tarball
+$(PRODUCT_OUT)/repo/debian_repo/dists/stable/Release: $(ROOTDIR)/build/distributions | packages-tarball
 	mkdir -p $(PRODUCT_OUT)/repo
 	mkdir -p $(PRODUCT_OUT)/repo/debian_repo
 	mkdir -p $(PRODUCT_OUT)/repo/deb_repo_config

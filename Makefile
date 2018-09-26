@@ -22,7 +22,6 @@ all: boot-targets
 # various odd reasons (duplicate targets such as depcheck, etc.)
 boot-targets:
 	+make -f $(ROOTDIR)/build/Makefile u-boot
-	+make -f $(ROOTDIR)/build/Makefile kernel
 	+make -f $(ROOTDIR)/build/Makefile boot
 	+make -f $(ROOTDIR)/build/Makefile partition-table
 	+make -f $(ROOTDIR)/build/Makefile rootfs
@@ -34,8 +33,6 @@ targets::
 
 include $(ROOTDIR)/build/boot.mk
 include $(ROOTDIR)/build/img2simg.mk
-include $(ROOTDIR)/build/kernel.mk
-include $(ROOTDIR)/build/kernel-modules.mk
 include $(ROOTDIR)/build/partition-table.mk
 include $(ROOTDIR)/build/prereqs.mk
 include $(ROOTDIR)/build/rootfs.mk
