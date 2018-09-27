@@ -3,6 +3,16 @@
 set -e
 set -x
 
+if [[ ${KOKORO_JOB_NAME} =~ release$ ]]; then
+  readonly BUILD_TYPE=release
+elif [[ ${KOKORO_JOB_NAME} =~ continuous$ ]]; then
+  readonly BUILD_TYPE=continuous
+elif [[ ${KOKORO_JOB_NAME} =~ headless$ ]]; then
+  readonly BUILD_TYPE=headless
+else
+  echo "Invalid job name: ${KOKORO_JOB_NAME}" && exit 1
+fi
+
 # Symlink the Makefile, like it would be if repo checked this out.
 # Otherwise, sourcing setup.sh doesn't work as expected.
 ln -sfr git/continuous-build/build/Makefile git/continuous-build/Makefile
@@ -26,8 +36,15 @@ export FETCH_PACKAGES=false
 sudo apt-get install -y haveged
 sudo /etc/init.d/haveged start
 
+case "${BUILD_TYPE}" in
+  headless)
+    export HEADLESS_BUILD=true
+    ;;
+esac
+
 m docker-all
 m docker-sdcard
+m docker-recovery
 
 pushd ${ROOTDIR}
 python3 ${ROOTDIR}/build/create_release_manifest.py \
