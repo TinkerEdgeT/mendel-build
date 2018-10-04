@@ -22,6 +22,10 @@ export PACKAGES_REVISION=.
 export ROOTFS_REVISION=.
 export FETCH_PACKAGES=false
 
+# Install haveged on the host to provide extra entropy.
+sudo apt-get install -y haveged
+sudo /etc/init.d/haveged start
+
 # Inject libedgetpu deb build from Blaze into the package directory.
 touch ${PACKAGES_FETCH_ROOT_DIRECTORY}/${PACKAGES_REVISION}/packages.tgz
 m out-dirs
