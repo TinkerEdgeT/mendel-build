@@ -15,10 +15,12 @@
 # Preamble. Don't define any targets in this file! This is effectively just a
 # common header where useful global vars go.
 
-IS_GLINUX ?= false
 ifneq (,$(wildcard /etc/dpkg/origins/glinux))
+ifneq (,$(wildcard /google))
 	IS_GLINUX = true
 endif
+endif
+IS_GLINUX ?= false
 
 # Globally useful directories
 TOOLCHAIN := $(ROOTDIR)/toolchains/aarch64-linux-android/bin/aarch64-linux-android-
