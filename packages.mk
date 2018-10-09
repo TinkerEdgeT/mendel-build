@@ -26,7 +26,7 @@ $(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static
 	mkdir -p $(ROOTDIR)/cache
 	sudo pbuilder create \
 		--basetgz $@ \
-		--mirror http://http.us.debian.org/debian \
+		--mirror http://ftp.debian.org/debian \
 		--distribution stretch \
 		--architecture amd64 \
 		--extrapackages crossbuild-essential-arm64 debhelper
@@ -132,7 +132,10 @@ $(eval $(call make-pbuilder-package-target,bluez-imx,bluez-imx))
 $(eval $(call make-pbuilder-package-target,base-files,packages/base-files))
 
 $(eval $(call make-pbuilder-package-target,libedgetpu,libedgetpu))
+
+ifneq ($(IS_EXTERNAL),)
 $(eval $(call make-pbuilder-package-target,edgetpu-api,packages/edgetpu-api,libedgetpu))
+endif
 
 ALL_PACKAGE_TARGETS := $(PBUILDER_TARGETS)
 packages-tarball: $(ROOTDIR)/cache/packages.tgz

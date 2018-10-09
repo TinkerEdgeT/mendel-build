@@ -35,10 +35,13 @@ BASE_PACKAGES := \
 	base-files \
 	bluetooth \
 	bluez \
-	edgetpu-api \
 	libbluetooth3 \
 	libedgetpu \
 	uboot-imx
+
+ifneq ($(IS_EXTERNAL),)
+BASE_PACKAGES += edgetpu-api
+endif
 
 GUI_PACKAGES := \
 	gstreamer1.0-alsa \
@@ -117,7 +120,9 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	-sudo umount $(ROOTFS_DIR)/boot
 	-sudo umount $(ROOTFS_DIR)
 	sudo mount -o loop $(ROOTFS_PATCHED_IMG).wip $(ROOTFS_DIR)
+	-sudo mkdir -p $(ROOTFS_DIR)/boot
 	sudo mount -o loop $(PRODUCT_OUT)/boot.img $(ROOTFS_DIR)/boot
+	-sudo mkdir -p $(ROOTFS_DIR)/dev
 	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
 	sudo cp /usr/bin/qemu-aarch64-static $(ROOTFS_DIR)/usr/bin
 

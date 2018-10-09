@@ -15,6 +15,16 @@
 # Preamble. Don't define any targets in this file! This is effectively just a
 # common header where useful global vars go.
 
+ifneq ($(IS_EXTERNAL),)
+    DOCKER_FETCH_TARBALL := false
+    FETCH_PBUILDER_BASE := false
+    ROOTFS_FETCH_TARBALL := false
+    DEBOOTSTRAP_FETCH_TARBALL := false
+    FETCH_PACKAGES := false
+    PACKAGES_FETCH_ROOT_DIRECTORY := $(ROOTDIR)/cache
+    PACKAGES_REVISION := .
+endif
+
 ifneq (,$(wildcard /etc/dpkg/origins/glinux))
 ifneq (,$(wildcard /google))
 	IS_GLINUX = true
