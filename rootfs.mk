@@ -39,8 +39,8 @@ BASE_PACKAGES := \
 	libedgetpu \
 	uboot-imx
 
-ifneq ($(IS_EXTERNAL),)
-BASE_PACKAGES += edgetpu-api
+ifeq ($(IS_EXTERNAL),)
+BASE_PACKAGES += libedgetpu edgetpu-api
 endif
 
 GUI_PACKAGES := \
