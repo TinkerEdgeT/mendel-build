@@ -82,6 +82,10 @@ ifeq ($(ROOTFS_FETCH_TARBALL),true)
 $(ROOTFS_RAW_IMG): $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw.img
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
 	cp $< $<.sha256sum $(dir $(ROOTFS_RAW_IMG))
+else ifeq ($(shell test -f $(ROOTDIR)/cache/rootfs.raw.img && echo found),found)
+$(ROOTFS_RAW_IMG): $(ROOTDIR)/cache/rootfs.raw.img
+	cp $(ROOTDIR)/cache/rootfs.raw.img $(ROOTFS_RAW_IMG)
+	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 else
 $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-aarch64-static
 	mkdir -p $(ROOTFS_DIR)
