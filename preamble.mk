@@ -115,6 +115,7 @@ PACKAGES_EXTRA := \
 	python \
 	python-minimal \
 	python2.7 \
+	python3-gst-1.0 \
 	python3-jwt \
 	python3-numpy \
 	python3-pip \
