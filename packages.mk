@@ -18,21 +18,24 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
+pbuilder-base: $(ROOTDIR)/cache/base.tgz
+
 ifeq ($(FETCH_PBUILDER_BASE),true)
 $(ROOTDIR)/cache/base.tgz: $(FETCH_PBUILDER_DIRECTORY)/base.tgz | out-dirs
 	cp $< $(ROOTDIR)/cache
 else
-$(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static
+$(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static /usr/bin/qemu-arm-static
 	mkdir -p $(ROOTDIR)/cache
 	sudo pbuilder create \
 		--basetgz $@ \
 		--mirror http://ftp.debian.org/debian \
 		--distribution stretch \
 		--architecture amd64 \
-		--extrapackages crossbuild-essential-arm64 debhelper
+		--extrapackages crossbuild-essential-armhf crossbuild-essential-arm64 debhelper
 	mkdir -p $(ROOTDIR)/cache/base-tmp
 	cd $(ROOTDIR)/cache/base-tmp; \
 	sudo tar xf $@; \
+	sudo cp /usr/bin/qemu-arm-static usr/bin; \
 	sudo cp /usr/bin/qemu-aarch64-static usr/bin; \
 	sudo tar cf base.tar .; \
 	gzip base.tar; mv -f base.tar.gz $@
@@ -54,12 +57,12 @@ endef
 # $4: space separated list of external dependencies (may be empty)
 # $5: dpkg-buildpackage --build value (may be empty, defaults to full)
 define make-pbuilder-package-target
-$1: $(PRODUCT_OUT)/.$1-pbuilder
-PBUILDER_TARGETS += $(PRODUCT_OUT)/.$1-pbuilder
+$1: $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
+PBUILDER_TARGETS += $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
 
 ifneq (,$(wildcard $(ROOTDIR)/packages/$1))
-$(PRODUCT_OUT)/.$1-pbuilder: \
-	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder) \
+$(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
+	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder-$(USERSPACE_ARCH)) \
 	$$(shell find $(ROOTDIR)/packages/$1 -type f) \
 	$$(shell find $(ROOTDIR)/$2 -type f | sed -e 's/ /\\ /g') \
 	| out-dirs $(ROOTDIR)/cache/base.tgz \
@@ -89,11 +92,10 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
-		--host-arch arm64 --logfile $(PRODUCT_OUT)/$1.log
-
+		--host-arch $(USERSPACE_ARCH) --logfile $(PRODUCT_OUT)/$1-$(USERSPACE_ARCH).log
 	$(LOG) $1 finished
 else
-$(PRODUCT_OUT)/.$1-pbuilder: \
+$(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 	| out-dirs \
 	$(PACKAGES_FETCH_ROOT_DIRECTORY)/$(PACKAGES_REVISION)/packages.tgz
 	$(LOG) $1 pbuilder extract
@@ -103,7 +105,7 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 	$(ROOTDIR)/build/update_packages.sh
 	$(LOG) $1 finished
 endif
-	touch $(PRODUCT_OUT)/.$1-pbuilder
+	touch $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
 .PHONY:: $1
 endef
 
@@ -161,4 +163,4 @@ $(info )
 
 packages:: $(ALL_PACKAGE_TARGETS)
 
-.PHONY:: packages
+.PHONY:: packages pbuilder-base

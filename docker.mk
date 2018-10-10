@@ -76,6 +76,8 @@ docker-%: docker-build;
 		-e "HEADLESS_BUILD=$(HEADLESS_BUILD)" \
 		-e "IS_EXTERNAL=$(IS_EXTERNAL)" \
 		-e "http_proxy=$(http_proxy)" \
+		-e "USERSPACE_ARCH=$(USERSPACE_ARCH)" \
+		-e "QEMU_ARCH=$(QEMU_ARCH)" \
 		aiy-board-builder \
 		/bin/bash -c \
 			'groupadd --gid $(shell id -g) $(shell id -g -n); \

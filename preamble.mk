@@ -34,6 +34,17 @@ endif
 endif
 IS_GLINUX ?= false
 
+USERSPACE_ARCH ?= arm64
+
+# Architecture specific defines here
+ifeq (armhf,$(USERSPACE_ARCH))
+	QEMU_ARCH := arm
+endif
+
+ifeq (arm64,$(USERSPACE_ARCH))
+	QEMU_ARCH := aarch64
+endif
+
 # Globally useful directories
 TOOLCHAIN := $(ROOTDIR)/toolchains/aarch64-linux-android/bin/aarch64-linux-android-
 

@@ -36,6 +36,7 @@ BASE_PACKAGES := \
 	bluetooth \
 	bluez \
 	libbluetooth3 \
+	linux-image-4.9.51-aiy \
 	uboot-imx
 
 ifeq ($(IS_EXTERNAL),)
@@ -94,7 +95,7 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/cache/rootfs.raw.img
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 	$(LOG) rootfs raw-cache finished
 else
-$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-aarch64-static
+$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-$(QEMU_ARCH)-static
 	$(LOG) rootfs raw-build
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
@@ -106,20 +107,20 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
 	cp $(ROOTDIR)/build/multistrap.conf $(PRODUCT_OUT)
 	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA)/g' $(PRODUCT_OUT)/multistrap.conf
-
+	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap.conf
 	$(LOG) rootfs raw-build multistrap
 	sudo multistrap -f $(PRODUCT_OUT)/multistrap.conf -d $(ROOTFS_DIR)
 	$(LOG) rootfs raw-build multistrap finished
 
 	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
-	sudo cp /usr/bin/qemu-aarch64-static $(ROOTFS_DIR)/usr/bin
+	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static $(ROOTFS_DIR)/usr/bin
 	sudo chroot $(ROOTFS_DIR) /var/lib/dpkg/info/dash.preinst install
 
 	$(LOG) rootfs raw-build dpkg-configure
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(ROOTFS_DIR) dpkg --configure -a
 	$(LOG) rootfs raw-build dpkg-configure finished
 
-	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-aarch64-static
+	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-$(QEMU_ARCH)-static
 	sudo umount $(ROOTFS_DIR)/dev
 	sudo umount $(ROOTFS_DIR)
 	sudo rmdir $(ROOTFS_DIR)
@@ -134,9 +135,8 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/build/boot.mk \
                        $(ROOTDIR)/cache/packages.tgz \
                        | $(PRODUCT_OUT)/boot.img \
-                         /usr/bin/qemu-aarch64-static
+                         /usr/bin/qemu-$(QEMU_ARCH)-static
 	$(LOG) rootfs patch
-
 	cp $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG).wip
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
@@ -146,7 +146,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo mount -o loop $(PRODUCT_OUT)/boot.img $(ROOTFS_DIR)/boot
 	-sudo mkdir -p $(ROOTFS_DIR)/dev
 	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
-	sudo cp /usr/bin/qemu-aarch64-static $(ROOTFS_DIR)/usr/bin
+	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static $(ROOTFS_DIR)/usr/bin
 
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
@@ -163,16 +163,11 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 
 	$(LOG) rootfs patch bsp
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
-	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp
-	sudo cp $(PRODUCT_OUT)/packages/linux-headers-*-aiy_*_arm64.deb \
-		$(PRODUCT_OUT)/packages/linux-image-*-aiy_*_arm64.deb $(ROOTFS_DIR)/tmp
-	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y /tmp/*.deb'
-	sudo umount $(ROOTFS_DIR)/tmp
 	$(LOG) rootfs patch bsp finished
 
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
-	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-aarch64-static
+	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-$(QEMU_ARCH)-static
 	sudo umount $(ROOTFS_DIR)/dev
 	sudo umount $(ROOTFS_DIR)/boot
 	sudo umount $(ROOTFS_DIR)
