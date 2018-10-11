@@ -20,7 +20,7 @@ include $(ROOTDIR)/build/preamble.mk
 
 u-boot: $(PRODUCT_OUT)/u-boot.imx
 
-$(PRODUCT_OUT)/u-boot.imx: uboot-imx | out-dirs
+$(PRODUCT_OUT)/u-boot.imx: docker-uboot-imx | out-dirs
 	dpkg --fsys-tarfile $(PRODUCT_OUT)/packages/uboot-imx*.deb | \
 	tar --strip-components 2 -C $(PRODUCT_OUT) -xf - ./boot/u-boot.imx
 
