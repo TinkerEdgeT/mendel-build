@@ -74,6 +74,7 @@ docker-%: docker-build;
 		-e "FETCH_PACKAGES=$(FETCH_PACKAGES)" \
 		-e "PACKAGES_REVISION=$(PACKAGES_REVISION)" \
 		-e "HEADLESS_BUILD=$(HEADLESS_BUILD)" \
+		-e "http_proxy=$(http_proxy)" \
 		aiy-board-builder \
 		/bin/bash -c \
 			'groupadd --gid $(shell id -g) $(shell id -g -n); \
@@ -81,6 +82,7 @@ docker-%: docker-build;
 			passwd -d $(shell id -u -n); \
 			echo "$(shell id -u -n) ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers; \
 			adduser $(shell id -u -n) docker; \
+			sudo cp /rootdir/build/99network-settings /etc/apt/apt.conf.d/;\
 			/etc/init.d/docker start; \
 			sudo -E -u $(shell id -u -n) /bin/bash -c "source build/setup.sh; m \
 			-j$$(nproc) $*";'

@@ -78,6 +78,8 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 		$(PRODUCT_OUT)/obj/$1_$$(call get-deb-version-full,$1).debian.tar.gz \
 		debian
 
+	sudo cp $(ROOTDIR)/build/99network-settings ~/
+	echo "cp ~/99network-settings /etc/apt/apt.conf.d/" | sudo tee ~/.pbuilderrc
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT)/packages -- \
 		--debbuildopts "--build=$(if $5,$5,full)" \

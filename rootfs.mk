@@ -136,6 +136,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	echo 'deb [trusted=yes] file:///opt/aiy/packages ./' | sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
 	sudo mkdir -p $(ROOTFS_DIR)/opt/aiy
 	sudo tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(ROOTFS_DIR)/opt/aiy/
+	sudo cp $(ROOTDIR)/build/99network-settings $(ROOTFS_DIR)/etc/apt/apt.conf.d/
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install aiy-board-keyring'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
