@@ -74,6 +74,7 @@ docker-%: docker-build;
 		-e "FETCH_PACKAGES=$(FETCH_PACKAGES)" \
 		-e "PACKAGES_REVISION=$(PACKAGES_REVISION)" \
 		-e "HEADLESS_BUILD=$(HEADLESS_BUILD)" \
+		-e "IS_EXTERNAL=$(IS_EXTERNAL)" \
 		-e "http_proxy=$(http_proxy)" \
 		aiy-board-builder \
 		/bin/bash -c \
