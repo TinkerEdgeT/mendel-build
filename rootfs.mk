@@ -36,11 +36,10 @@ BASE_PACKAGES := \
 	bluetooth \
 	bluez \
 	libbluetooth3 \
-	libedgetpu \
 	uboot-imx
 
 ifeq ($(IS_EXTERNAL),)
-BASE_PACKAGES += libedgetpu edgetpu-api
+BASE_PACKAGES += edgetpu-api
 endif
 
 GUI_PACKAGES := \

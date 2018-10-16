@@ -134,8 +134,7 @@ $(eval $(call make-pbuilder-package-target,bluez-imx,bluez-imx))
 $(eval $(call make-pbuilder-package-target,base-files,packages/base-files))
 
 ifeq ($(IS_EXTERNAL),)
-$(eval $(call make-pbuilder-package-target,libedgetpu,libedgetpu))
-$(eval $(call make-pbuilder-package-target,edgetpu-api,packages/edgetpu-api,libedgetpu))
+$(eval $(call make-pbuilder-package-target,edgetpu-api,packages/edgetpu-api,,,binary))
 endif
 
 ALL_PACKAGE_TARGETS := $(PBUILDER_TARGETS)
