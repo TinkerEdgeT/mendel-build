@@ -47,19 +47,35 @@ export OUT="${ROOTDIR}/out"
 export PRODUCT_OUT="${OUT}/target/product/imx8m_phanbell"
 export HOST_OUT="${OUT}/host/linux-x86"
 export ROOT_OUT="${OUT}/root"
+export BUILDTAB="${OUT}/buildtab"
 
 export PATH="${PATH}:${HOST_OUT}/bin:${ROOTDIR}/build:${ROOTDIR}/board"
 
 function m
 {
+    local target="build"
+
+    if [[ -f /.dockerenv ]]; then
+        target="sub-build"
+    fi
+
     pushd "${ROOTDIR}" >/dev/null
+    log.sh $target started m "$@"
+
     make -f "${ROOTDIR}/build/Makefile" "$@"
+
+    if [[ "$?" != 0 ]]; then
+        log.sh $target failed
+    else
+        log.sh $target finished
+    fi
     popd >/dev/null
 }
 
 function mm
 {
     local module="$1"; shift
+    local target="build"
 
     if [[ -z "${module}" ]]; then
         echo "Usage: mm <modulename> [<target>]"
@@ -74,8 +90,18 @@ function mm
         return 1
     fi
 
+    if [[ -f /.dockerenv ]]; then
+        target="sub-build"
+    fi
+
     pushd "${ROOTDIR}" >/dev/null
+    log.sh $target started mm "$@"
     make -f "${ROOTDIR}/build/${module}.mk" "$@"
+    if [[ "$?" != 0 ]]; then
+        log.sh $target failed
+    else
+        log.sh $target finished
+    fi
     popd >/dev/null
 }
 

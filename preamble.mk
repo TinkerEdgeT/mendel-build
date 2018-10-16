@@ -15,6 +15,8 @@
 # Preamble. Don't define any targets in this file! This is effectively just a
 # common header where useful global vars go.
 
+LOG := @$(ROOTDIR)/build/log.sh
+
 ifneq ($(IS_EXTERNAL),)
     DOCKER_FETCH_TARBALL := false
     FETCH_PBUILDER_BASE := false

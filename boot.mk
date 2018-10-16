@@ -21,8 +21,10 @@ include $(ROOTDIR)/build/preamble.mk
 boot: $(PRODUCT_OUT)/boot.img
 
 $(PRODUCT_OUT)/boot.img:
+	$(LOG) boot fallocate
 	fallocate -l $(BOOT_SIZE_MB)M $@
 	mkfs.ext2 -F $@
+	$(LOG) boot finished
 
 targets::
 	@echo "boot - builds the kernel and boot partition"

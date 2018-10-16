@@ -35,10 +35,37 @@ all: boot-targets
 # u-boot and kernel build systems, in particular, do not play well together for
 # various odd reasons (duplicate targets such as depcheck, etc.)
 boot-targets:
+	$(LOG) boot-targets started
+	@echo
+	@echo ==============================================================================
+	@echo ==================== u-boot
+	@echo ==============================================================================
+	@echo
 	+make -f $(ROOTDIR)/build/Makefile u-boot
+	@echo
+	@echo ==============================================================================
+	@echo ==================== boot
+	@echo ==============================================================================
+	@echo
 	+make -f $(ROOTDIR)/build/Makefile boot
+	@echo
+	@echo ==============================================================================
+	@echo ==================== partition-table
+	@echo ==============================================================================
+	@echo
 	+make -f $(ROOTDIR)/build/Makefile partition-table
+	@echo
+	@echo ==============================================================================
+	@echo ==================== rootfs
+	@echo ==============================================================================
+	@echo
 	+make -f $(ROOTDIR)/build/Makefile rootfs
+	@echo
+	@echo ==============================================================================
+	@echo ==================== successful build
+	@echo ==============================================================================
+	@echo
+	$(LOG) boot-targets finished
 
 help: targets
 targets::

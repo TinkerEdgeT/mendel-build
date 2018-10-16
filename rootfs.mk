@@ -72,21 +72,30 @@ else
 endif
 
 rootfs: $(PRODUCT_OUT)/rootfs.img
+	$(LOG) rootfs finished
+
 rootfs_raw: $(ROOTFS_RAW_IMG)
 
 adjustments:
+	$(LOG) rootfs adjustments
 	sudo $(ROOTDIR)/build/fix_permissions.sh -p $(ROOTDIR)/build/permissions.txt -t $(ROOTFS_DIR)
 
 ifeq ($(ROOTFS_FETCH_TARBALL),true)
 $(ROOTFS_RAW_IMG): $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw.img
+	$(LOG) rootfs raw-fetch
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
 	cp $< $<.sha256sum $(dir $(ROOTFS_RAW_IMG))
+	$(LOG) rootfs raw-fetch finished
 else ifeq ($(shell test -f $(ROOTDIR)/cache/rootfs.raw.img && echo found),found)
 $(ROOTFS_RAW_IMG): $(ROOTDIR)/cache/rootfs.raw.img
+	$(LOG) rootfs raw-cache
+	mkdir -p $(dir $(ROOTFS_RAW_IMG))
 	cp $(ROOTDIR)/cache/rootfs.raw.img $(ROOTFS_RAW_IMG)
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
+	$(LOG) rootfs raw-cache finished
 else
 $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-aarch64-static
+	$(LOG) rootfs raw-build
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
 	fallocate -l $(ROOTFS_SIZE_MB)M $(ROOTFS_RAW_IMG)
@@ -97,12 +106,19 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
 	cp $(ROOTDIR)/build/multistrap.conf $(PRODUCT_OUT)
 	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA)/g' $(PRODUCT_OUT)/multistrap.conf
+
+	$(LOG) rootfs raw-build multistrap
 	sudo multistrap -f $(PRODUCT_OUT)/multistrap.conf -d $(ROOTFS_DIR)
+	$(LOG) rootfs raw-build multistrap finished
 
 	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
 	sudo cp /usr/bin/qemu-aarch64-static $(ROOTFS_DIR)/usr/bin
 	sudo chroot $(ROOTFS_DIR) /var/lib/dpkg/info/dash.preinst install
+
+	$(LOG) rootfs raw-build dpkg-configure
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(ROOTFS_DIR) dpkg --configure -a
+	$(LOG) rootfs raw-build dpkg-configure finished
+
 	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-aarch64-static
 	sudo umount $(ROOTFS_DIR)/dev
 	sudo umount $(ROOTFS_DIR)
@@ -110,6 +126,7 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/
 	sudo sync $(ROOTFS_RAW_IMG)
 	sudo chown ${USER} $(ROOTFS_RAW_IMG)
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
+	$(LOG) rootfs raw-build finished
 endif
 
 $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
@@ -118,6 +135,8 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/cache/packages.tgz \
                        | $(PRODUCT_OUT)/boot.img \
                          /usr/bin/qemu-aarch64-static
+	$(LOG) rootfs patch
+
 	cp $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG).wip
 	mkdir -p $(ROOTFS_DIR)
 	-sudo umount $(ROOTFS_DIR)/boot
@@ -131,6 +150,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
+	$(LOG) rootfs patch keyring
 	echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
 	echo 'deb [trusted=yes] file:///opt/aiy/packages ./' | sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
 	sudo mkdir -p $(ROOTFS_DIR)/opt/aiy
@@ -139,14 +159,16 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install aiy-board-keyring'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
+	$(LOG) rootfs patch keyring finished
 
+	$(LOG) rootfs patch bsp
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
-
 	sudo mount -t tmpfs none $(ROOTFS_DIR)/tmp
 	sudo cp $(PRODUCT_OUT)/packages/linux-headers-*-aiy_*_arm64.deb \
 		$(PRODUCT_OUT)/packages/linux-image-*-aiy_*_arm64.deb $(ROOTFS_DIR)/tmp
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y /tmp/*.deb'
 	sudo umount $(ROOTFS_DIR)/tmp
+	$(LOG) rootfs patch bsp finished
 
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
@@ -158,9 +180,12 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 	sudo sync $(ROOTFS_PATCHED_IMG).wip
 	sudo chown ${USER} $(ROOTFS_PATCHED_IMG).wip
 	mv $(ROOTFS_PATCHED_IMG).wip $(ROOTFS_PATCHED_IMG)
+	$(LOG) rootfs patch finished
 
 $(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
+	$(LOG) rootfs img2simg
 	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(PRODUCT_OUT)/rootfs.img
+	$(LOG) rootfs img2simg finished
 
 clean::
 	if mount |grep -q $(ROOTFS_DIR); then sudo umount -R $(ROOTFS_DIR); fi

@@ -65,6 +65,7 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 	| out-dirs $(ROOTDIR)/cache/base.tgz \
 	$4
 
+	$(LOG) $1 pbuilder
 	$(ROOTDIR)/build/update_packages.sh
 	cd $(ROOTDIR)/$2; git submodule init; git submodule update;
 	rm -rf $(PRODUCT_OUT)/obj/$1
@@ -80,6 +81,8 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 
 	sudo cp $(ROOTDIR)/build/99network-settings ~/
 	echo "cp ~/99network-settings /etc/apt/apt.conf.d/" | sudo tee ~/.pbuilderrc
+
+	$(LOG) $1 pbuilder pdebuild
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT)/packages -- \
 		--debbuildopts "--build=$(if $5,$5,full)" \
@@ -87,14 +90,18 @@ $(PRODUCT_OUT)/.$1-pbuilder: \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
 		--host-arch arm64 --logfile $(PRODUCT_OUT)/$1.log
+
+	$(LOG) $1 finished
 else
 $(PRODUCT_OUT)/.$1-pbuilder: \
 	| out-dirs \
 	$(PACKAGES_FETCH_ROOT_DIRECTORY)/$(PACKAGES_REVISION)/packages.tgz
+	$(LOG) $1 pbuilder extract
 	tar -C $(PRODUCT_OUT) --wildcards -xf \
 		$(PACKAGES_FETCH_ROOT_DIRECTORY)/$(PACKAGES_REVISION)/packages.tgz \
 		packages/$1*.deb
 	$(ROOTDIR)/build/update_packages.sh
+	$(LOG) $1 finished
 endif
 	touch $(PRODUCT_OUT)/.$1-pbuilder
 .PHONY:: $1
