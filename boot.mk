@@ -20,7 +20,7 @@ include $(ROOTDIR)/build/preamble.mk
 
 boot: $(PRODUCT_OUT)/boot.img
 
-$(PRODUCT_OUT)/boot.img:
+$(PRODUCT_OUT)/boot.img: | out-dirs
 	$(LOG) boot fallocate
 	fallocate -l $(BOOT_SIZE_MB)M $@
 	mkfs.ext2 -F $@
