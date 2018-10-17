@@ -19,13 +19,16 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 REQUIRED_PACKAGES := \
+	apt-transport-https \
 	apt-utils \
 	bc \
 	binutils-aarch64-linux-gnu \
 	build-essential \
 	binfmt-support \
+	ca-certificates \
 	cdbs \
 	coreutils \
+	curl \
 	debhelper \
 	debian-archive-keyring \
 	device-tree-compiler \
