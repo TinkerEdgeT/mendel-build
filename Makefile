@@ -29,7 +29,7 @@ out-dirs:
 	@mkdir -p $(PRODUCT_OUT)/obj
 	@mkdir -p $(ROOTDIR)/cache
 
-all: $(PRODUCT_OUT)/rootfs.img
+all: $(PRODUCT_OUT)/rootfs.img $(PRODUCT_OUT)/u-boot.imx partition-table
 
 help: targets
 targets::
