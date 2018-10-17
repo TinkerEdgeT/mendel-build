@@ -47,7 +47,6 @@ REQUIRED_PACKAGES := \
 	python3-setuptools \
 	qemu-user-static \
 	quilt \
-	reprepro \
 	rsync \
 	xz-utils \
 	zlib1g-dev

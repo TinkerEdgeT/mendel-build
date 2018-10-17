@@ -78,7 +78,6 @@ include $(ROOTDIR)/build/partition-table.mk
 include $(ROOTDIR)/build/prereqs.mk
 include $(ROOTDIR)/build/rootfs.mk
 include $(ROOTDIR)/build/sdcard.mk
-include $(ROOTDIR)/build/signing.mk
 include $(ROOTDIR)/build/u-boot.mk
 
 include $(ROOTDIR)/build/docker.mk

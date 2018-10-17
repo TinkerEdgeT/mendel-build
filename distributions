@@ -1,8 +1,0 @@
-Origin: Google LLC
-Label: Google
-Suite: stable
-Codename: animal
-Version: 1.0
-Architectures: arm64 source
-Components: main
-Description: Google AIY Board Debian repository
