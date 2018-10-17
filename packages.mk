@@ -31,7 +31,7 @@ $(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static /usr/bin/qemu-arm-static
 		--mirror http://ftp.debian.org/debian \
 		--distribution stretch \
 		--architecture amd64 \
-		--extrapackages crossbuild-essential-armhf crossbuild-essential-arm64 debhelper
+		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper"
 	mkdir -p $(ROOTDIR)/cache/base-tmp
 	cd $(ROOTDIR)/cache/base-tmp; \
 	sudo tar xf $@; \
