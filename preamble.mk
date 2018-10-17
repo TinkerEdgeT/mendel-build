@@ -45,14 +45,6 @@ ifeq (arm64,$(USERSPACE_ARCH))
 	QEMU_ARCH := aarch64
 endif
 
-# Globally useful directories
-TOOLCHAIN := $(ROOTDIR)/toolchains/aarch64-linux-android/bin/aarch64-linux-android-
-
-# Kernel directories and options
-KERNEL_SRC_DIR := $(ROOTDIR)/linux-imx
-KERNEL_OUT_DIR := $(PRODUCT_OUT)/obj/KERNEL_OBJ
-KERNEL_OPTIONS := ARCH=arm64 CROSS_COMPILE=$(TOOLCHAIN) LOCALVERSION=-aiy
-
 FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder
 FETCH_PBUILDER_BASE ?= $(IS_GLINUX)
 
