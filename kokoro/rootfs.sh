@@ -18,5 +18,5 @@ sudo /etc/init.d/haveged start
 
 m docker-rootfs_raw
 
-cp git/out/target/product/imx8m_phanbell/obj/ROOTFS/rootfs.raw.img $KOKORO_ARTIFACTS_DIR
-cp git/out/target/product/imx8m_phanbell/obj/ROOTFS/rootfs.raw.img.sha256sum $KOKORO_ARTIFACTS_DIR
+cp ${PRODUCT_OUT}/obj/ROOTFS/rootfs.raw.img $KOKORO_ARTIFACTS_DIR
+cp ${PRODUCT_OUT}/obj/ROOTFS/rootfs.raw.img.sha256sum $KOKORO_ARTIFACTS_DIR
