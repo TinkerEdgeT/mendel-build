@@ -26,22 +26,15 @@ ROOTFS_FETCH_TARBALL ?= $(IS_GLINUX)
 ROOTFS_REVISION ?= latest
 
 BASE_PACKAGES := \
-	aiy-board-audio \
 	aiy-board-gadget \
 	aiy-board-keyring \
-	aiy-board-tools \
 	aiy-board-tweaks \
-	aiy-board-wlan \
 	base-files \
 	bluetooth \
 	bluez \
 	libbluetooth3 \
 	linux-image-4.9.51-aiy \
 	uboot-imx
-
-ifeq ($(IS_EXTERNAL),)
-BASE_PACKAGES += edgetpu-api
-endif
 
 GUI_PACKAGES := \
 	gstreamer1.0-alsa \
@@ -50,26 +43,21 @@ GUI_PACKAGES := \
 	gstreamer1.0-plugins-base-apps \
 	gstreamer1.0-plugins-good \
 	gstreamer1.0-tools \
-	imx-gpu-viv \
-	imx-gst1.0-plugin \
-	imx-vpu-hantro \
-	imx-vpuwrap \
 	libdrm2 \
-	libdrm-vivante \
 	libgstreamer1.0-0 \
 	libgstreamer-plugins-bad1.0-0 \
-	libgstreamer-plugins-base1.0-0 \
-	wayland-protocols \
-	weston-imx
+	libgstreamer-plugins-base1.0-0
+
+include $(ROOTDIR)/board/rootfs.mk
 
 ifeq ($(HEADLESS_BUILD),)
     $(info )
     $(info *** GUI build selected -- set HEADLESS_BUILD=true if this is not what you intend.)
-	PRE_INSTALL_PACKAGES := $(BASE_PACKAGES) $(GUI_PACKAGES)
+	PRE_INSTALL_PACKAGES := $(BASE_PACKAGES) $(BSP_BASE_PACKAGES) $(GUI_PACKAGES) $(BSP_GUI_PACKAGES)
 else
     $(info )
     $(info *** Headless build selected -- unset HEADLESS_BUILD if this is not what you intend.)
-	PRE_INSTALL_PACKAGES := $(BASE_PACKAGES)
+	PRE_INSTALL_PACKAGES := $(BASE_PACKAGES) $(BSP_BASE_PACKAGES)
 endif
 
 rootfs: $(PRODUCT_OUT)/rootfs.img

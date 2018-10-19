@@ -156,10 +156,5 @@ FETCH_PACKAGES ?= $(IS_GLINUX)
 PACKAGES_REVISION ?= latest
 PACKAGES_FETCH_ROOT_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/continuous
 
-# Image size variables
-BOOT_START := 8
 BOOT_SIZE_MB := 128
-ROOTFS_START := $(shell echo $(BOOT_START)+$(BOOT_SIZE_MB) | bc)
 ROOTFS_SIZE_MB := 4096
-UBOOT_START := 66# Cribbed from Yocto.
-SDIMAGE_SIZE_MB := $(shell echo $(ROOTFS_START)+$(ROOTFS_SIZE_MB) | bc)

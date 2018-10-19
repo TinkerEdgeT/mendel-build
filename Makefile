@@ -25,11 +25,12 @@ precheck:
 	+make -f $(ROOTDIR)/build/Makefile all
 
 out-dirs:
-	@mkdir -p $(PRODUCT_OUT)/packages
+	@mkdir -p $(PRODUCT_OUT)/packages/core
+	@mkdir -p $(PRODUCT_OUT)/packages/bsp
 	@mkdir -p $(PRODUCT_OUT)/obj
 	@mkdir -p $(ROOTDIR)/cache
 
-all: $(PRODUCT_OUT)/rootfs.img $(PRODUCT_OUT)/u-boot.imx partition-table
+all: rootfs bootloader partition-table
 
 help: targets
 targets::
@@ -41,12 +42,12 @@ include $(ROOTDIR)/build/img2simg.mk
 include $(ROOTDIR)/build/partition-table.mk
 include $(ROOTDIR)/build/prereqs.mk
 include $(ROOTDIR)/build/rootfs.mk
-include $(ROOTDIR)/build/sdcard.mk
-include $(ROOTDIR)/build/u-boot.mk
-include $(ROOTDIR)/build/recovery.mk
-
 include $(ROOTDIR)/build/docker.mk
 include $(ROOTDIR)/build/packages.mk
+
+include $(ROOTDIR)/board/bootloader.mk
+-include $(ROOTDIR)/board/sdcard.mk
+-include $(ROOTDIR)/board/recovery.mk
 
 clean::
 	rm -rf $(ROOTDIR)/out

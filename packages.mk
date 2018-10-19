@@ -56,6 +56,7 @@ endef
 # $3: space separated list of package dependencies (may be empty)
 # $4: space separated list of external dependencies (may be empty)
 # $5: dpkg-buildpackage --build value (may be empty, defaults to full)
+# $6: repository which package belongs to (e.g. core or bsp)
 define make-pbuilder-package-target
 $1: $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
 PBUILDER_TARGETS += $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
@@ -87,7 +88,7 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 
 	$(LOG) $1 pbuilder pdebuild
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
-		--buildresult $(PRODUCT_OUT)/packages -- \
+		--buildresult $(PRODUCT_OUT)/packages/$(if $6,$6,core) -- \
 		--debbuildopts "--build=$(if $5,$5,full)" \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
@@ -109,42 +110,21 @@ endif
 .PHONY:: $1
 endef
 
-$(eval $(call make-pbuilder-package-target,imx-atf,imx-atf))
-$(eval $(call make-pbuilder-package-target,imx-firmware,imx-firmware))
-$(eval $(call make-pbuilder-package-target,imx-mkimage,tools/imx-mkimage))
-$(eval $(call make-pbuilder-package-target,uboot-imx,uboot-imx,imx-atf imx-firmware imx-mkimage))
+# Convenience macro to target a package to the bsp repo
+define make-pbuilder-bsp-package-target
+$(call make-pbuilder-package-target,$1,$2,$3,$4,$5,bsp)
+endef
 
-$(eval $(call make-pbuilder-package-target,wayland-protocols-imx,wayland-protocols-imx))
-$(eval $(call make-pbuilder-package-target,weston-imx,weston-imx,wayland-protocols-imx))
-
-$(eval $(call make-pbuilder-package-target,linux-imx,linux-imx))
-
-$(eval $(call make-pbuilder-package-target,imx-gpu-viv,imx-gpu-viv,linux-imx,,binary))
-$(eval $(call make-pbuilder-package-target,libdrm-imx,libdrm-imx))
-$(eval $(call make-pbuilder-package-target,imx-vpu-hantro,imx-vpu-hantro,linux-imx,,binary))
-$(eval $(call make-pbuilder-package-target,imx-vpuwrap,imx-vpuwrap,imx-vpu-hantro,,binary))
-$(eval $(call make-pbuilder-package-target,imx-gstreamer,imx-gstreamer))
-$(eval $(call make-pbuilder-package-target,imx-gst-plugins-base,imx-gst-plugins-base,imx-gstreamer))
-$(eval $(call make-pbuilder-package-target,imx-gst-plugins-good,imx-gst-plugins-good,imx-gst-plugins-base))
-$(eval $(call make-pbuilder-package-target,imx-gst-plugins-bad,imx-gst-plugins-bad,\
-	libdrm-imx imx-gst-plugins-base linux-imx))
-$(eval $(call make-pbuilder-package-target,imx-gst1.0-plugin,imx-gst1.0-plugin,\
-	imx-vpuwrap imx-gst-plugins-bad))
-
-$(eval $(call make-pbuilder-package-target,aiy-board-audio,packages/aiy-board-audio))
 $(eval $(call make-pbuilder-package-target,aiy-board-gadget,packages/aiy-board-gadget))
 $(eval $(call make-pbuilder-package-target,aiy-board-keyring,packages/aiy-board-keyring))
-$(eval $(call make-pbuilder-package-target,aiy-board-tools,packages/aiy-board-tools))
 $(eval $(call make-pbuilder-package-target,aiy-board-tweaks,packages/aiy-board-tweaks))
-$(eval $(call make-pbuilder-package-target,aiy-board-wlan,packages/aiy-board-wlan))
-
-$(eval $(call make-pbuilder-package-target,bluez-imx,bluez-imx))
-
 $(eval $(call make-pbuilder-package-target,base-files,packages/base-files))
 
 ifeq ($(IS_EXTERNAL),)
 $(eval $(call make-pbuilder-package-target,edgetpu-api,packages/edgetpu-api,,,binary))
 endif
+
+include $(ROOTDIR)/board/packages.mk
 
 ALL_PACKAGE_TARGETS := $(PBUILDER_TARGETS)
 packages-tarball: $(ROOTDIR)/cache/packages.tgz
