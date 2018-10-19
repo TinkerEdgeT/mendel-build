@@ -105,7 +105,7 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/
 	-sudo umount $(ROOTFS_DIR)/dev
 	-sudo umount $(ROOTFS_DIR)
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
-	cp $(ROOTDIR)/build/multistrap.conf $(PRODUCT_OUT)
+	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)
 	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA)/g' $(PRODUCT_OUT)/multistrap.conf
 	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap.conf
 	$(LOG) rootfs raw-build multistrap
