@@ -2,7 +2,7 @@
 
 set -e
 
-pushd git
+pushd git/continuous-build
 ln -srf build/Makefile .
 source build/setup.sh
 popd
