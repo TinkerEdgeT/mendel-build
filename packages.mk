@@ -74,12 +74,13 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 	cd $(ROOTDIR)/$2; git submodule init; git submodule update;
 	rm -rf $(PRODUCT_OUT)/obj/$1
 	mkdir -p $(PRODUCT_OUT)/obj/$1
-	rsync -rl --exclude .git/ $(ROOTDIR)/$2/* $(PRODUCT_OUT)/obj/$1
-	cp -r $(ROOTDIR)/packages/$1/debian $(PRODUCT_OUT)/obj/$1
-	tar -C $(PRODUCT_OUT)/obj --exclude=debian/ -czf \
+	rsync -a --exclude .git/ $(ROOTDIR)/$2/* $(PRODUCT_OUT)/obj/$1
+	cp -a $(ROOTDIR)/packages/$1/debian $(PRODUCT_OUT)/obj/$1
+	touch -t 7001010000  $(PRODUCT_OUT)/obj/$1
+	tar -C $(PRODUCT_OUT)/obj -I 'gzip -n' --exclude=debian/ -cf \
 		$(PRODUCT_OUT)/obj/$1_$$(call get-deb-version-orig,$1).orig.tar.gz \
 		$1
-	tar -C $(PRODUCT_OUT)/obj/$1 -czf \
+	tar -C $(PRODUCT_OUT)/obj/$1 -I 'gzip -n' -cf \
 		$(PRODUCT_OUT)/obj/$1_$$(call get-deb-version-full,$1).debian.tar.gz \
 		debian
 
