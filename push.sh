@@ -18,7 +18,7 @@ orig_package="$1"
 
 package=$orig_package
 if [[ ! -f $package ]]; then
-    package=$(echo $PRODUCT_OUT/packages/$package*.deb)
+    package=$(find $PRODUCT_OUT/packages -name "${package}*.deb")
 
     if [[ ! -f $package ]]; then
         echo "push: no such package $package"
