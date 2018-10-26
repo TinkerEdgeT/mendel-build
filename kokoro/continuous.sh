@@ -49,4 +49,6 @@ if [[ -f ${PRODUCT_OUT}/u-boot.imx && \
   cp ${PRODUCT_OUT}/rootfs.img ${KOKORO_ARTIFACTS_DIR}
   cp ${PRODUCT_OUT}/sdcard.img ${KOKORO_ARTIFACTS_DIR}
   cp ${PRODUCT_OUT}/manifest.xml ${KOKORO_ARTIFACTS_DIR}
+else
+  exit 1
 fi
