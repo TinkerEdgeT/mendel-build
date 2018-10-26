@@ -32,14 +32,15 @@ m docker-sdcard
 pushd ${ROOTDIR}
 python3 ${ROOTDIR}/build/create_release_manifest.py \
   -i ${ROOTDIR}/manifest/default.xml \
-  -o ${KOKORO_ARTIFACTS_DIR}/manifest.xml
+  -o ${PRODUCT_OUT}/manifest.xml
 popd
 
 if [[ -f ${PRODUCT_OUT}/u-boot.imx && \
       -f ${PRODUCT_OUT}/boot.img && \
       -f ${PRODUCT_OUT}/partition-table-8gb.img && \
       -f ${PRODUCT_OUT}/rootfs.img && \
-      -f ${PRODUCT_OUT}/sdcard.img ]]; then
+      -f ${PRODUCT_OUT}/sdcard.img && \
+      -f ${PRODUCT_OUT}/manifest.xml ]]; then
   cp ${ROOTDIR}/board/flash.sh ${KOKORO_ARTIFACTS_DIR}
   chmod -x ${KOKORO_ARTIFACTS_DIR}/flash.sh
   cp ${PRODUCT_OUT}/u-boot.imx ${KOKORO_ARTIFACTS_DIR}
@@ -47,4 +48,5 @@ if [[ -f ${PRODUCT_OUT}/u-boot.imx && \
   cp ${PRODUCT_OUT}/partition-table-*.img ${KOKORO_ARTIFACTS_DIR}
   cp ${PRODUCT_OUT}/rootfs.img ${KOKORO_ARTIFACTS_DIR}
   cp ${PRODUCT_OUT}/sdcard.img ${KOKORO_ARTIFACTS_DIR}
+  cp ${PRODUCT_OUT}/manifest.xml ${KOKORO_ARTIFACTS_DIR}
 fi
