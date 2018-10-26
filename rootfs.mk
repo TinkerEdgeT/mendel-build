@@ -60,6 +60,13 @@ else
 	PRE_INSTALL_PACKAGES := $(BASE_PACKAGES) $(BSP_BASE_PACKAGES)
 endif
 
+ifeq ($(FETCH_PACKAGES),true)
+    $(info *** Using prebuilt packages, set FETCH_PACKAGES=false to build locally)
+else
+    $(info *** Building packages locally, set FETCH_PACKAGES=true to use prebuilts)
+endif
+
+
 rootfs: $(PRODUCT_OUT)/rootfs.img
 	$(LOG) rootfs finished
 
@@ -118,10 +125,15 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/
 	$(LOG) rootfs raw-build finished
 endif
 
-$(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
+ROOTFS_PATCHED_DEPS := $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/board/fstab.emmc \
-                       $(ROOTDIR)/build/boot.mk \
-                       $(ROOTDIR)/cache/packages.tgz \
+                       $(ROOTDIR)/build/boot.mk
+
+ifeq ($(FETCH_PACKAGES),false)
+    ROOTFS_PATCHED_DEPS += $(ROOTDIR)/cache/packages.tgz
+endif
+
+$(ROOTFS_PATCHED_IMG): $(ROOTFS_PATCHED_DEPS) \
                        | $(PRODUCT_OUT)/boot.img \
                          /usr/bin/qemu-$(QEMU_ARCH)-static
 	$(LOG) rootfs patch
@@ -140,12 +152,14 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_RAW_IMG) \
 
 	$(LOG) rootfs patch keyring
 	echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
+ifeq ($(FETCH_PACKAGES),false)
 	echo 'deb [trusted=yes] file:///opt/aiy/packages ./' | sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
 	sudo mkdir -p $(ROOTFS_DIR)/opt/aiy
 	sudo tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(ROOTFS_DIR)/opt/aiy/
+endif
 	sudo cp $(ROOTDIR)/build/99network-settings $(ROOTFS_DIR)/etc/apt/apt.conf.d/
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
-	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install aiy-board-keyring'
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install -y --allow-unauthenticated aiy-board-keyring'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
 	$(LOG) rootfs patch keyring finished
 

@@ -39,4 +39,3 @@ cp ${PRODUCT_OUT}/boot.img ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/partition-table-*.img ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/rootfs.img ${KOKORO_ARTIFACTS_DIR}
 cp ${PRODUCT_OUT}/sdcard.img ${KOKORO_ARTIFACTS_DIR}
-cp ${ROOTDIR}/cache/packages.tgz $KOKORO_ARTIFACTS_DIR

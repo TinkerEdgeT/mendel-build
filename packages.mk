@@ -129,18 +129,9 @@ include $(ROOTDIR)/board/packages.mk
 
 ALL_PACKAGE_TARGETS := $(PBUILDER_TARGETS)
 packages-tarball: $(ROOTDIR)/cache/packages.tgz
-$(info )
-ifeq ($(FETCH_PACKAGES),true)
-$(info Using prebuilt packages, set FETCH_PACKAGES=false to build locally)
-$(ROOTDIR)/cache/packages.tgz: $(PACKAGES_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/packages.tgz | out-dirs
-	cp $< $(ROOTDIR)/cache
-else
-$(info Building packages locally, set FETCH_PACKAGES=true to use prebuilts)
 $(ROOTDIR)/cache/packages.tgz: $(ALL_PACKAGE_TARGETS) | out-dirs
 	$(ROOTDIR)/build/update_packages.sh
 	tar -C $(PRODUCT_OUT) -czf $@ packages
-endif
-$(info )
 
 packages:: $(ALL_PACKAGE_TARGETS)
 
