@@ -131,7 +131,7 @@ ALL_PACKAGE_TARGETS := $(PBUILDER_TARGETS)
 packages-tarball: $(ROOTDIR)/cache/packages.tgz
 $(ROOTDIR)/cache/packages.tgz: $(ALL_PACKAGE_TARGETS) | out-dirs
 	$(ROOTDIR)/build/update_packages.sh
-	tar -C $(PRODUCT_OUT) -czf $@ packages
+	tar -C $(PRODUCT_OUT) --overwrite -czf $@ packages
 
 packages:: $(ALL_PACKAGE_TARGETS)
 

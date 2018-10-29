@@ -19,8 +19,11 @@ endif
 include $(ROOTDIR)/build/preamble.mk
 
 ROOTFS_DIR := $(PRODUCT_OUT)/obj/ROOTFS/rootfs
-ROOTFS_RAW_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.raw.img
-ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs.patched.img
+ROOTFS_IMG := $(PRODUCT_OUT)/rootfs_$(USERSPACE_ARCH).img
+ROOTFS_RAW_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs_$(USERSPACE_ARCH).raw.img
+ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs_$(USERSPACE_ARCH).patched.img
+ROOTFS_RAW_CACHE_PATH := $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs_$(USERSPACE_ARCH).raw.img
+ROOTFS_RAW_LOCAL_CACHE_PATH := $(ROOTDIR)/cache/rootfs_$(USERSPACE).raw.img
 
 ROOTFS_FETCH_TARBALL ?= $(IS_GLINUX)
 ROOTFS_REVISION ?= latest
@@ -66,8 +69,10 @@ else
     $(info *** Building packages locally, set FETCH_PACKAGES=true to use prebuilts)
 endif
 
+$(ROOTFS_DIR):
+	mkdir -p $(ROOTFS_DIR)
 
-rootfs: $(PRODUCT_OUT)/rootfs.img
+rootfs: $(ROOTFS_IMG)
 	$(LOG) rootfs finished
 
 rootfs_raw: $(ROOTFS_RAW_IMG)
@@ -77,16 +82,16 @@ adjustments:
 	sudo $(ROOTDIR)/build/fix_permissions.sh -p $(ROOTDIR)/build/permissions.txt -t $(ROOTFS_DIR)
 
 ifeq ($(ROOTFS_FETCH_TARBALL),true)
-$(ROOTFS_RAW_IMG): $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs.raw.img
+$(ROOTFS_RAW_IMG): $(ROOTFS_RAW_CACHE_PATH)
 	$(LOG) rootfs raw-fetch
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
 	cp $< $<.sha256sum $(dir $(ROOTFS_RAW_IMG))
 	$(LOG) rootfs raw-fetch finished
-else ifeq ($(shell test -f $(ROOTDIR)/cache/rootfs.raw.img && echo found),found)
-$(ROOTFS_RAW_IMG): $(ROOTDIR)/cache/rootfs.raw.img
+else ifeq ($(shell test -f $(ROOTFS_RAW_LOCAL_CACHE_PATH) && echo found),found)
+$(ROOTFS_RAW_IMG): $(ROOTFS_RAW_LOCAL_CACHE_PATH)
 	$(LOG) rootfs raw-cache
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
-	cp $(ROOTDIR)/cache/rootfs.raw.img $(ROOTFS_RAW_IMG)
+	cp $(ROOTFS_RAW_LOCAL_CACHE_PATH) $(ROOTFS_RAW_IMG)
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 	$(LOG) rootfs raw-cache finished
 else
@@ -134,8 +139,9 @@ ifeq ($(FETCH_PACKAGES),false)
 endif
 
 $(ROOTFS_PATCHED_IMG): $(ROOTFS_PATCHED_DEPS) \
-                       | $(PRODUCT_OUT)/boot.img \
-                         /usr/bin/qemu-$(QEMU_ARCH)-static
+                       | $(PRODUCT_OUT)/boot_$(USERSPACE_ARCH).img \
+                         /usr/bin/qemu-$(QEMU_ARCH)-static \
+                         $(ROOTFS_DIR)
 	$(LOG) rootfs patch
 	cp $(ROOTFS_RAW_IMG) $(ROOTFS_PATCHED_IMG).wip
 	mkdir -p $(ROOTFS_DIR)
@@ -143,7 +149,7 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_PATCHED_DEPS) \
 	-sudo umount $(ROOTFS_DIR)
 	sudo mount -o loop $(ROOTFS_PATCHED_IMG).wip $(ROOTFS_DIR)
 	-sudo mkdir -p $(ROOTFS_DIR)/boot
-	sudo mount -o loop $(PRODUCT_OUT)/boot.img $(ROOTFS_DIR)/boot
+	sudo mount -o loop $(PRODUCT_OUT)/boot_$(USERSPACE_ARCH).img $(ROOTFS_DIR)/boot
 	-sudo mkdir -p $(ROOTFS_DIR)/dev
 	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
 	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static $(ROOTFS_DIR)/usr/bin
@@ -179,15 +185,15 @@ endif
 	mv $(ROOTFS_PATCHED_IMG).wip $(ROOTFS_PATCHED_IMG)
 	$(LOG) rootfs patch finished
 
-$(PRODUCT_OUT)/rootfs.img: $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
+$(ROOTFS_IMG): $(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG)
 	$(LOG) rootfs img2simg
-	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(PRODUCT_OUT)/rootfs.img
+	$(HOST_OUT)/bin/img2simg $(ROOTFS_PATCHED_IMG) $(ROOTFS_IMG)
 	$(LOG) rootfs img2simg finished
 
 clean::
 	if mount |grep -q $(ROOTFS_DIR); then sudo umount -R $(ROOTFS_DIR); fi
 	if [[ -d $(ROOTFS_DIR) ]]; then rmdir $(ROOTFS_DIR); fi
-	rm -f $(ROOTFS_PATCHED_IMG) $(ROOTFS_RAW_IMG) $(PRODUCT_OUT)/rootfs.img
+	rm -f $(ROOTFS_PATCHED_IMG) $(ROOTFS_RAW_IMG) $(ROOTFS_IMG)
 
 targets::
 	@echo "rootfs - runs multistrap to build the rootfs tree"

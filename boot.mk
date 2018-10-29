@@ -18,9 +18,9 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-boot: $(PRODUCT_OUT)/boot.img
+boot: $(PRODUCT_OUT)/boot_$(USERSPACE_ARCH).img
 
-$(PRODUCT_OUT)/boot.img: | out-dirs
+$(PRODUCT_OUT)/boot_$(USERSPACE_ARCH).img: | out-dirs
 	$(LOG) boot fallocate
 	fallocate -l $(BOOT_SIZE_MB)M $@
 	mkfs.ext2 -F $@
@@ -30,6 +30,6 @@ targets::
 	@echo "boot - builds the kernel and boot partition"
 
 clean::
-	rm -f $(PRODUCT_OUT)/boot.img
+	rm -f $(PRODUCT_OUT)/boot_*.img
 
 .PHONY:: boot

@@ -42,8 +42,16 @@ case "${BUILD_TYPE}" in
     ;;
 esac
 
-m docker-all
-m docker-sdcard
+ARCHES="armhf arm64"
+
+for arch in ${ARCHES}
+do
+  export USERSPACE_ARCH=${arch}
+  m docker-all
+  m docker-sdcard
+  unset USERSPACE_ARCH
+done
+
 m docker-recovery
 
 pushd ${ROOTDIR}
@@ -52,20 +60,35 @@ python3 ${ROOTDIR}/build/create_release_manifest.py \
   -o ${PRODUCT_OUT}/manifest.xml
 popd
 
-if [[ -f ${PRODUCT_OUT}/u-boot.imx && \
-      -f ${PRODUCT_OUT}/boot.img && \
-      -f ${PRODUCT_OUT}/partition-table-8gb.img && \
-      -f ${PRODUCT_OUT}/rootfs.img && \
-      -f ${PRODUCT_OUT}/sdcard.img && \
-      -f ${PRODUCT_OUT}/manifest.xml ]]; then
-  cp ${ROOTDIR}/board/flash.sh ${KOKORO_ARTIFACTS_DIR}
-  chmod -x ${KOKORO_ARTIFACTS_DIR}/flash.sh
-  cp ${PRODUCT_OUT}/u-boot.imx ${KOKORO_ARTIFACTS_DIR}
-  cp ${PRODUCT_OUT}/boot.img ${KOKORO_ARTIFACTS_DIR}
-  cp ${PRODUCT_OUT}/partition-table-*.img ${KOKORO_ARTIFACTS_DIR}
-  cp ${PRODUCT_OUT}/rootfs.img ${KOKORO_ARTIFACTS_DIR}
-  cp ${PRODUCT_OUT}/sdcard.img ${KOKORO_ARTIFACTS_DIR}
-  cp ${PRODUCT_OUT}/manifest.xml ${KOKORO_ARTIFACTS_DIR}
-else
-  exit 1
-fi
+ARTIFACTS+="${ROOTDIR}/board/flash.sh "
+ARTIFACTS+="${PRODUCT_OUT}/u-boot.imx "
+ARTIFACTS+="${PRODUCT_OUT}/manifest.xml "
+ARTIFACTS+="${PRODUCT_OUT}/recovery.img "
+ARTIFACTS+="${PRODUCT_OUT}/partition-table-8gb.img "
+ARTIFACTS+="${PRODUCT_OUT}/partition-table-16gb.img "
+ARTIFACTS+="${PRODUCT_OUT}/partition-table-64gb.img "
+
+for arch in ${ARCHES}
+do
+  ARTIFACTS+="${PRODUCT_OUT}/boot_${arch}.img "
+  ARTIFACTS+="${PRODUCT_OUT}/rootfs_${arch}.img "
+  ARTIFACTS+="${PRODUCT_OUT}/sdcard_${arch}.img "
+done
+
+# Check existence of artifacts, exit if one is missing
+for artifact in ${ARTIFACTS}
+do
+  if [[ ! -f ${artifact} ]]; then
+    echo "${artifact} not found!"
+    exit 1
+  fi
+done
+
+# Copy all artifacts to KOKORO_ARTIFACTS_DIR
+for artifact in ${ARTIFACTS}
+do
+  cp ${artifact} ${KOKORO_ARTIFACTS_DIR}
+done
+
+# Clear executable bit from artifacts
+chmod -x ${KOKORO_ARTIFACTS_DIR}/*

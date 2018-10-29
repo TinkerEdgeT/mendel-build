@@ -54,11 +54,11 @@ $(TARGET_64GB_JSON): MMC_SIZE = $(MMC_64GB)
 $(TARGET_64GB_IMG): $(SOURCE_JSON)
 $(TARGET_64GB_IMG): MMC_SIZE = $(MMC_64GB)
 
-$(PRODUCT_OUT)/%.json: $(SOURCE_JSON)
+$(PRODUCT_OUT)/partition-table-%.json: $(SOURCE_JSON)
 	mkdir -p $(@D)
 	$(BPTTOOL) make_table --disk_size $(MMC_SIZE) --input $< --output_json $@
 
-$(PRODUCT_OUT)/%.img: $(SOURCE_JSON)
+$(PRODUCT_OUT)/partition-table-%.img: $(SOURCE_JSON)
 	mkdir -p $(@D)
 	$(BPTTOOL) make_table --disk_size $(MMC_SIZE) --input $< --output_gpt $@
 
