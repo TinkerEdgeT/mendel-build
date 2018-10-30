@@ -90,7 +90,7 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 	$(LOG) $1 pbuilder pdebuild
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT)/packages/$(if $6,$6,core) -- \
-		--debbuildopts "--build=$(if $5,$5,full)" \
+		--debbuildopts "--build=$(if $5,$5,full) -sa" \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
