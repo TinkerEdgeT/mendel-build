@@ -16,7 +16,8 @@ FROM debian:9.4
 MAINTAINER support-aiyprojects@google.com
 
 # Install the prerequisite packages into the image.
-ADD . /build
+ADD ./build /build
+ADD ./board /board
 RUN /bin/bash -c '\
 apt-get update && \
 apt-get install sudo make && \

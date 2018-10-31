@@ -26,11 +26,15 @@ $(ROOTDIR)/cache/aiy-board-builder.tar: $(PREBUILT_DOCKER_ROOT)/aiy-board-builde
 	mkdir -p $(ROOTDIR)/cache
 	cp $< $(ROOTDIR)/cache
 else
-$(ROOTDIR)/cache/aiy-board-builder.tar:
-	mkdir -p $(ROOTDIR)/cache
-	docker build -t aiy-board-builder $(ROOTDIR)/build
+$(ROOTDIR)/cache/aiy-board-builder.tar: $(ROOTDIR)/build/Dockerfile $(ROOTDIR)/build/prereqs.mk
+	mkdir -p $(ROOTDIR)/cache/docker-build
+	cp -a $(ROOTDIR)/build $(ROOTDIR)/cache/docker-build
+	cp -a $(ROOTDIR)/board $(ROOTDIR)/cache/docker-build
+	cp -a $(ROOTDIR)/build/Dockerfile $(ROOTDIR)/cache/docker-build
+	docker build -t aiy-board-builder $(ROOTDIR)/cache/docker-build
 	docker image save -o $@ aiy-board-builder:latest
 	docker rmi aiy-board-builder:latest
+	rm -rf $(ROOTDIR)/cache/docker-build
 endif
 
 # Runs any make TARGET in x86 docker image ('m docker-TARGET')
