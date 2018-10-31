@@ -61,6 +61,8 @@ define make-pbuilder-package-target
 $1: $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
 PBUILDER_TARGETS += $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
 
+# If we don't have the source for a package for some reason, don't panic.
+# Just set the pbuilder stamp, and it will come from apt.
 ifneq (,$(wildcard $(ROOTDIR)/packages/$1))
 $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder-$(USERSPACE_ARCH)) \
@@ -97,15 +99,7 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 		--host-arch $(USERSPACE_ARCH) --logfile $(PRODUCT_OUT)/$1-$(USERSPACE_ARCH).log
 	$(LOG) $1 finished
 else
-$(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
-	| out-dirs \
-	$(PACKAGES_FETCH_ROOT_DIRECTORY)/$(PACKAGES_REVISION)/packages.tgz
-	$(LOG) $1 pbuilder extract
-	tar -C $(PRODUCT_OUT) --wildcards -xf \
-		$(PACKAGES_FETCH_ROOT_DIRECTORY)/$(PACKAGES_REVISION)/packages.tgz \
-		packages/$1*.deb
-	$(ROOTDIR)/build/update_packages.sh
-	$(LOG) $1 finished
+$(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): | out-dirs
 endif
 	touch $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
 .PHONY:: $1
@@ -120,10 +114,7 @@ $(eval $(call make-pbuilder-package-target,aiy-board-gadget,packages/aiy-board-g
 $(eval $(call make-pbuilder-package-target,aiy-board-keyring,packages/aiy-board-keyring))
 $(eval $(call make-pbuilder-package-target,aiy-board-tweaks,packages/aiy-board-tweaks))
 $(eval $(call make-pbuilder-package-target,base-files,packages/base-files))
-
-ifeq ($(IS_EXTERNAL),)
 $(eval $(call make-pbuilder-package-target,edgetpu-api,packages/edgetpu-api,,,binary))
-endif
 
 include $(ROOTDIR)/board/packages.mk
 

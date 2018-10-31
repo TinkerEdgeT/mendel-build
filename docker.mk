@@ -47,7 +47,6 @@ docker-%: docker-build;
 		-v $(PREBUILT_DOCKER_ROOT)\:/docker \
 		-v $(PREBUILT_MODULES_ROOT)\:/modules \
 		-v $(FETCH_PBUILDER_DIRECTORY)\:/pbuilder \
-		-v $(PACKAGES_FETCH_ROOT_DIRECTORY)\:/packages \
 		-w /rootdir \
 		-e "ROOTFS_FETCH_TARBALL=$(ROOTFS_FETCH_TARBALL)" \
 		-e "FETCH_PBUILDER_BASE=$(FETCH_PBUILDER_BASE)" \
@@ -56,9 +55,7 @@ docker-%: docker-build;
 		-e "ROOTFS_REVISION=$(ROOTFS_REVISION)" \
 		-e "PREBUILT_MODULES_ROOT=/modules" \
 		-e "FETCH_PBUILDER_DIRECTORY=/pbuilder" \
-		-e "PACKAGES_FETCH_ROOT_DIRECTORY=/packages" \
 		-e "FETCH_PACKAGES=$(FETCH_PACKAGES)" \
-		-e "PACKAGES_REVISION=$(PACKAGES_REVISION)" \
 		-e "HEADLESS_BUILD=$(HEADLESS_BUILD)" \
 		-e "IS_EXTERNAL=$(IS_EXTERNAL)" \
 		-e "http_proxy=$(http_proxy)" \

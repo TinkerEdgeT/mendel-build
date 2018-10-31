@@ -23,8 +23,6 @@ ifneq ($(IS_EXTERNAL),)
     ROOTFS_FETCH_TARBALL := false
     DEBOOTSTRAP_FETCH_TARBALL := false
     FETCH_PACKAGES := false
-    PACKAGES_FETCH_ROOT_DIRECTORY := $(ROOTDIR)/cache
-    PACKAGES_REVISION := .
 endif
 
 ifneq (,$(wildcard /etc/dpkg/origins/glinux))
@@ -153,8 +151,6 @@ TARBALL_FETCH_ROOT_DIRECTORY ?= \
 PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker
 
 FETCH_PACKAGES ?= $(IS_GLINUX)
-PACKAGES_REVISION ?= latest
-PACKAGES_FETCH_ROOT_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/continuous
 
 BOOT_SIZE_MB := 128
 ROOTFS_SIZE_MB := 4096
