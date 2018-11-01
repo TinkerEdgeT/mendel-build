@@ -86,7 +86,5 @@ done
 for artifact in ${ARTIFACTS}
 do
   cp ${artifact} ${KOKORO_ARTIFACTS_DIR}
+  chmod -x ${KOKORO_ARTIFACTS_DIR}/$(basename ${artifact})
 done
-
-# Clear executable bit from artifacts
-chmod -x ${KOKORO_ARTIFACTS_DIR}/*
