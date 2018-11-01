@@ -17,20 +17,18 @@
 
 LOG := @$(ROOTDIR)/build/log.sh
 
-ifneq ($(IS_EXTERNAL),)
-    DOCKER_FETCH_TARBALL := false
-    FETCH_PBUILDER_BASE := false
-    ROOTFS_FETCH_TARBALL := false
-    DEBOOTSTRAP_FETCH_TARBALL := false
-    FETCH_PACKAGES := false
-endif
-
 ifneq (,$(wildcard /etc/dpkg/origins/glinux))
 ifneq (,$(wildcard /google))
-	IS_GLINUX = true
+	IS_EXTERNAL ?= true
 endif
 endif
-IS_GLINUX ?= false
+
+FETCH_PACKAGES ?= false
+ifeq ($(IS_EXTERNAL),false)
+  PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker/
+  FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder/
+  ROOTFS_RAW_CACHE_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/rootfs/latest/
+endif
 
 USERSPACE_ARCH ?= arm64
 
@@ -42,9 +40,6 @@ endif
 ifeq (arm64,$(USERSPACE_ARCH))
 	QEMU_ARCH := aarch64
 endif
-
-FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder
-FETCH_PBUILDER_BASE ?= $(IS_GLINUX)
 
 PACKAGES_EXTRA := \
 	alsa-utils \
@@ -144,13 +139,6 @@ PACKAGES_EXTRA := \
 	wpasupplicant \
 	xdg-user-dirs \
 	xwayland
-
-TARBALL_FETCH_ROOT_DIRECTORY ?= \
-	/google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/rootfs
-
-PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker
-
-FETCH_PACKAGES ?= $(IS_GLINUX)
 
 BOOT_SIZE_MB := 128
 ROOTFS_SIZE_MB := 4096

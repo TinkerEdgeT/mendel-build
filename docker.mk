@@ -18,10 +18,8 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-DOCKER_FETCH_TARBALL ?= $(IS_GLINUX)
-
 docker-build: $(ROOTDIR)/cache/aiy-board-builder.tar
-ifeq ($(DOCKER_FETCH_TARBALL),true)
+ifneq ($(PREBUILT_DOCKER_ROOT),)
 $(ROOTDIR)/cache/aiy-board-builder.tar: $(PREBUILT_DOCKER_ROOT)/aiy-board-builder.tar
 	mkdir -p $(ROOTDIR)/cache
 	cp $< $(ROOTDIR)/cache
@@ -37,30 +35,35 @@ $(ROOTDIR)/cache/aiy-board-builder.tar: $(ROOTDIR)/build/Dockerfile $(ROOTDIR)/b
 	rm -rf $(ROOTDIR)/cache/docker-build
 endif
 
+DOCKER_VOLUMES := \
+  -v /dev\:/dev \
+  -v $(ROOTDIR)\:/rootdir
+
+DOCKER_ENV := \
+  -e "FETCH_PACKAGES=$(FETCH_PACKAGES)" \
+  -e "HEADLESS_BUILD=$(HEADLESS_BUILD)" \
+  -e "IS_EXTERNAL=$(IS_EXTERNAL)" \
+  -e "http_proxy=$(http_proxy)" \
+  -e "USERSPACE_ARCH=$(USERSPACE_ARCH)" \
+  -e "QEMU_ARCH=$(QEMU_ARCH)"
+
+ifneq ($(ROOTFS_RAW_CACHE_DIRECTORY),)
+  DOCKER_VOLUMES += -v $(ROOTFS_RAW_CACHE_DIRECTORY)\:/rootfs
+  DOCKER_ENV += -e "ROOTFS_RAW_CACHE_DIRECTORY=/rootfs"
+endif
+
+ifneq ($(FETCH_PBUILDER_DIRECTORY),)
+	DOCKER_VOLUMES += -v $(FETCH_PBUILDER_DIRECTORY)\:/pbuilder
+	DOCKER_ENV += -e "FETCH_PBUILDER_DIRECTORY=/pbuilder"
+endif
+
 # Runs any make TARGET in x86 docker image ('m docker-TARGET')
 docker-%: docker-build;
 	docker load -i $(ROOTDIR)/cache/aiy-board-builder.tar
 	docker run --rm --privileged --tty \
-		-v /dev\:/dev \
-		-v $(ROOTDIR)\:/rootdir \
-		-v $(TARBALL_FETCH_ROOT_DIRECTORY)\:/tarballs \
-		-v $(PREBUILT_DOCKER_ROOT)\:/docker \
-		-v $(PREBUILT_MODULES_ROOT)\:/modules \
-		-v $(FETCH_PBUILDER_DIRECTORY)\:/pbuilder \
+		$(DOCKER_VOLUMES) \
+		$(DOCKER_ENV) \
 		-w /rootdir \
-		-e "ROOTFS_FETCH_TARBALL=$(ROOTFS_FETCH_TARBALL)" \
-		-e "FETCH_PBUILDER_BASE=$(FETCH_PBUILDER_BASE)" \
-		-e "TARBALL_FETCH_ROOT_DIRECTORY=/tarballs" \
-		-e "PREBUILT_DOCKER_ROOT=/docker" \
-		-e "ROOTFS_REVISION=$(ROOTFS_REVISION)" \
-		-e "PREBUILT_MODULES_ROOT=/modules" \
-		-e "FETCH_PBUILDER_DIRECTORY=/pbuilder" \
-		-e "FETCH_PACKAGES=$(FETCH_PACKAGES)" \
-		-e "HEADLESS_BUILD=$(HEADLESS_BUILD)" \
-		-e "IS_EXTERNAL=$(IS_EXTERNAL)" \
-		-e "http_proxy=$(http_proxy)" \
-		-e "USERSPACE_ARCH=$(USERSPACE_ARCH)" \
-		-e "QEMU_ARCH=$(QEMU_ARCH)" \
 		aiy-board-builder \
 		/bin/bash -c \
 			'groupadd --gid $(shell id -g) $(shell id -g -n); \

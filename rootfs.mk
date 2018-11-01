@@ -22,11 +22,7 @@ ROOTFS_DIR := $(PRODUCT_OUT)/obj/ROOTFS/rootfs
 ROOTFS_IMG := $(PRODUCT_OUT)/rootfs_$(USERSPACE_ARCH).img
 ROOTFS_RAW_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs_$(USERSPACE_ARCH).raw.img
 ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs_$(USERSPACE_ARCH).patched.img
-ROOTFS_RAW_CACHE_PATH := $(TARBALL_FETCH_ROOT_DIRECTORY)/$(ROOTFS_REVISION)/rootfs_$(USERSPACE_ARCH).raw.img
 ROOTFS_RAW_LOCAL_CACHE_PATH := $(ROOTDIR)/cache/rootfs_$(USERSPACE).raw.img
-
-ROOTFS_FETCH_TARBALL ?= $(IS_GLINUX)
-ROOTFS_REVISION ?= latest
 
 BASE_PACKAGES := \
 	aiy-board-gadget \
@@ -81,8 +77,8 @@ adjustments:
 	$(LOG) rootfs adjustments
 	sudo $(ROOTDIR)/build/fix_permissions.sh -p $(ROOTDIR)/build/permissions.txt -t $(ROOTFS_DIR)
 
-ifeq ($(ROOTFS_FETCH_TARBALL),true)
-$(ROOTFS_RAW_IMG): $(ROOTFS_RAW_CACHE_PATH)
+ifneq ($(ROOTFS_RAW_CACHE_DIRECTORY),)
+$(ROOTFS_RAW_IMG): $(ROOTFS_RAW_CACHE_DIRECTORY)/rootfs_$(USERSPACE_ARCH).raw.img
 	$(LOG) rootfs raw-fetch
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
 	cp $< $<.sha256sum $(dir $(ROOTFS_RAW_IMG))

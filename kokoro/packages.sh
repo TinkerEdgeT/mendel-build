@@ -12,12 +12,9 @@ pushd git/continuous-build
 source build/setup.sh
 popd
 
-export IS_GLINUX=true
-export TARBALL_FETCH_ROOT_DIRECTORY=${KOKORO_GFILE_DIR}
-export PREBUILT_MODULES_ROOT=${KOKORO_GFILE_DIR}
 export PREBUILT_DOCKER_ROOT=${KOKORO_GFILE_DIR}
 export FETCH_PBUILDER_DIRECTORY=${KOKORO_GFILE_DIR}
-export ROOTFS_REVISION=.
+export ROOTFS_RAW_CACHE_DIRECTORY=${KOKORO_GFILE_DIR}
 export FETCH_PACKAGES=false
 
 # Install haveged on the host to provide extra entropy.

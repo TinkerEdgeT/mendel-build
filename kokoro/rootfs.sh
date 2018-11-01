@@ -7,8 +7,7 @@ ln -srf build/Makefile .
 source build/setup.sh
 popd
 
-export IS_GLINUX=true
-export ROOTFS_FETCH_TARBALL=false
+export IS_EXTERNAL=false
 export FETCH_PACKAGES=false
 export PREBUILT_DOCKER_ROOT=${KOKORO_GFILE_DIR}
 

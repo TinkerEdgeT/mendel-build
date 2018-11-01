@@ -20,7 +20,7 @@ include $(ROOTDIR)/build/preamble.mk
 
 pbuilder-base: $(ROOTDIR)/cache/base.tgz
 
-ifeq ($(FETCH_PBUILDER_BASE),true)
+ifneq ($(FETCH_PBUILDER_DIRECTORY),)
 $(ROOTDIR)/cache/base.tgz: $(FETCH_PBUILDER_DIRECTORY)/base.tgz | out-dirs
 	cp $< $(ROOTDIR)/cache
 else
