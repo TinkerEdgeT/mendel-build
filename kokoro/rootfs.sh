@@ -44,4 +44,5 @@ done
 
 # For now, symlink rootfs_arm64 to rootfs.
 # Remove when nothing depends on rootfs.img existing.
-ln -sf rootfs_arm64.img ${KOKORO_ARTIFACTS_DIR}/rootfs.img
+ln -sf rootfs_arm64.raw.img ${KOKORO_ARTIFACTS_DIR}/rootfs.raw.img
+ln -sf rootfs_arm64.raw.img.sha256sum ${KOKORO_ARTIFACTS_DIR}/rootfs.raw.img.sha256sum
