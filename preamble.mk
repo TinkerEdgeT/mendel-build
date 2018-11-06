@@ -17,14 +17,14 @@
 
 LOG := @$(ROOTDIR)/build/log.sh
 
-ifneq (,$(wildcard /etc/dpkg/origins/glinux))
-ifneq (,$(wildcard /google))
-	IS_EXTERNAL ?= true
+ifeq (,$(wildcard /etc/dpkg/origins/glinux))
+ifeq (,$(wildcard /google))
+  IS_EXTERNAL ?= true
 endif
 endif
 
 FETCH_PACKAGES ?= false
-ifeq ($(IS_EXTERNAL),false)
+ifeq ($(IS_EXTERNAL),)
   PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker/
   FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder/
   ROOTFS_RAW_CACHE_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/rootfs/latest/
