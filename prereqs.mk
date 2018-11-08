@@ -47,6 +47,9 @@ REQUIRED_PACKAGES := \
 	python-minimal \
 	python2.7 \
 	python3 \
+	python3-apt \
+	python3-debian \
+	python3-git \
 	python3-setuptools \
 	qemu-user-static \
 	quilt \

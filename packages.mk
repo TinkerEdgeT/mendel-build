@@ -102,7 +102,11 @@ else
 $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): | out-dirs
 endif
 	touch $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
-.PHONY:: $1
+
+$1-source-directory:
+	echo "Source directory: $2"
+
+.PHONY:: $1 $1-source-directory
 endef
 
 # Convenience macro to target a package to the bsp repo
@@ -124,6 +128,10 @@ $(ROOTDIR)/cache/packages.tgz: $(ALL_PACKAGE_TARGETS) | out-dirs
 	$(ROOTDIR)/build/update_packages.sh
 	tar -C $(PRODUCT_OUT) --overwrite -czf $@ packages
 
+upstream-delta: $(ROOTDIR)/cache/update.tgz
+$(ROOTDIR)/cache/update.tgz:
+	$(ROOTDIR)/build/generate_update_tarball.py -rootdir=$(ROOTDIR) -sources_list=$(ROOTDIR)/build/mendel.list -package_dir=$(PRODUCT_OUT)/packages -output_tarball=$(ROOTDIR)/cache/update.tgz
+
 packages:: $(ALL_PACKAGE_TARGETS)
 
-.PHONY:: packages pbuilder-base
+.PHONY:: packages pbuilder-base upstream-delta upstream-tarball

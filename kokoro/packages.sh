@@ -21,11 +21,6 @@ export FETCH_PACKAGES=false
 sudo apt-get install -y haveged
 sudo /etc/init.d/haveged start
 
-ARCHES="armhf arm64"
+m docker-upstream-delta
 
-for arch in ${ARCHES}
-do
-  USERSPACE_ARCH=${arch} m docker-packages-tarball
-done
-
-cp ${ROOTDIR}/cache/packages.tgz ${KOKORO_ARTIFACTS_DIR}
+cp ${ROOTDIR}/cache/update.tgz ${KOKORO_ARTIFACTS_DIR}/packages.tgz
