@@ -60,7 +60,7 @@ endif
 # Runs any make TARGET in x86 docker image ('m docker-TARGET')
 docker-%: docker-build;
 	docker load -i $(ROOTDIR)/cache/aiy-board-builder.tar
-	docker run --rm --privileged --tty \
+	docker run -i --rm --privileged --tty \
 		$(DOCKER_VOLUMES) \
 		$(DOCKER_ENV) \
 		-w /rootdir \
