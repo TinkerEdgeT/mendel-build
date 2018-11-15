@@ -51,7 +51,7 @@ function command::install
 
     local filename="${package_partial}"
     if [[ ! -f "${filename}" ]]; then
-        filename=$(echo $PRODUCT_OUT/packages/$filename*.deb)
+        filename=$(echo $PRODUCT_OUT/packages/*/$filename*.deb)
 
         if [[ ! -f "${filename}" ]]; then
             die "push: no such package ${filename}"
