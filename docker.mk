@@ -47,6 +47,9 @@ DOCKER_ENV := \
   -e "USERSPACE_ARCH=$(USERSPACE_ARCH)" \
   -e "QEMU_ARCH=$(QEMU_ARCH)"
 
+DOCKER_FLAGS := \
+  --rm --privileged --tty
+
 ifneq ($(ROOTFS_RAW_CACHE_DIRECTORY),)
   DOCKER_VOLUMES += -v $(ROOTFS_RAW_CACHE_DIRECTORY)\:/rootfs
   DOCKER_ENV += -e "ROOTFS_RAW_CACHE_DIRECTORY=/rootfs"
@@ -57,10 +60,16 @@ ifneq ($(FETCH_PBUILDER_DIRECTORY),)
 	DOCKER_ENV += -e "FETCH_PBUILDER_DIRECTORY=/pbuilder"
 endif
 
+INTERACTIVE:=$(shell [[ -t 0 ]] && echo true)
+ifeq ($(INTERACTIVE),true)
+  DOCKER_FLAGS += -i
+endif
+
 # Runs any make TARGET in x86 docker image ('m docker-TARGET')
 docker-%: docker-build;
 	docker load -i $(ROOTDIR)/cache/aiy-board-builder.tar
-	docker run -i --rm --privileged --tty \
+	docker run \
+		$(DOCKER_FLAGS) \
 		$(DOCKER_VOLUMES) \
 		$(DOCKER_ENV) \
 		-w /rootdir \
