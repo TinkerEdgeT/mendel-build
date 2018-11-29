@@ -123,6 +123,7 @@ PACKAGES_EXTRA := \
 	reportbug \
 	rsync \
 	rsyslog \
+	software-properties-common \
 	sudo \
 	systemd \
 	systemd-sysv \
