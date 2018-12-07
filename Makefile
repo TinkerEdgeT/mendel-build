@@ -34,7 +34,7 @@ all: rootfs bootloader partition-table
 
 help: targets
 targets::
-	@echo "Tagets available for building in this Makefile:"
+	@echo "Targets available for building in this Makefile:"
 	@echo
 
 include $(ROOTDIR)/build/boot.mk

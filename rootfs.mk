@@ -32,9 +32,7 @@ BASE_PACKAGES := \
 	bluetooth \
 	bluez \
 	libbluetooth3 \
-	linux-image-4.9.51-aiy \
-	mendel-distro-info-data \
-	uboot-imx
+	mendel-distro-info-data
 
 GUI_PACKAGES := \
 	gstreamer1.0-alsa \

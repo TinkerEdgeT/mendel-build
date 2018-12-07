@@ -43,8 +43,9 @@ function getrootdir
 }
 
 export ROOTDIR="$(getrootdir)"
+source ${ROOTDIR}/board/project.sh
 export OUT="${ROOTDIR}/out"
-export PRODUCT_OUT="${OUT}/target/product/imx8m_phanbell"
+export PRODUCT_OUT="${OUT}/target/product/${PROJECT_NAME}"
 export HOST_OUT="${OUT}/host/linux-x86"
 export ROOT_OUT="${OUT}/root"
 export BUILDTAB="${OUT}/buildtab"
@@ -150,8 +151,8 @@ if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
     JUMP_TARGETS[host]="${HOST_OUT}"
     JUMP_TARGETS[root]="${ROOT_OUT}"
     JUMP_TARGETS[build]="${ROOTDIR}/build"
-    JUMP_TARGETS[kernel]="${ROOTDIR}/linux-imx/"
-    JUMP_TARGETS[uboot]="${ROOTDIR}/uboot-imx/"
+    JUMP_TARGETS[kernel]="${ROOTDIR}/linux-${PLATFORM}/"
+    JUMP_TARGETS[uboot]="${ROOTDIR}/uboot-${PLATFORM}/"
 
     function j
     {
