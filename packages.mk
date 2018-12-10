@@ -119,6 +119,7 @@ $(eval $(call make-pbuilder-package-target,aiy-board-keyring,packages/aiy-board-
 $(eval $(call make-pbuilder-package-target,aiy-board-tweaks,packages/aiy-board-tweaks))
 $(eval $(call make-pbuilder-package-target,base-files,packages/base-files))
 $(eval $(call make-pbuilder-package-target,edgetpu-api,packages/edgetpu-api,,,binary))
+$(eval $(call make-pbuilder-package-target,mendel-distro-info-data,packages/mendel-distro-info-data))
 
 include $(ROOTDIR)/board/packages.mk
 

@@ -33,6 +33,7 @@ BASE_PACKAGES := \
 	bluez \
 	libbluetooth3 \
 	linux-image-4.9.51-aiy \
+	mendel-distro-info-data \
 	uboot-imx
 
 GUI_PACKAGES := \

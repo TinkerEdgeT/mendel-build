@@ -130,6 +130,7 @@ PACKAGES_EXTRA := \
 	tasksel \
 	telnet \
 	traceroute \
+	unattended-upgrades \
 	unzip \
 	v4l-utils \
 	vim \
