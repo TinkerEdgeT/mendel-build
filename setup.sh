@@ -151,8 +151,11 @@ if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
     JUMP_TARGETS[host]="${HOST_OUT}"
     JUMP_TARGETS[root]="${ROOT_OUT}"
     JUMP_TARGETS[build]="${ROOTDIR}/build"
-    JUMP_TARGETS[kernel]="${ROOTDIR}/linux-${PLATFORM}/"
-    JUMP_TARGETS[uboot]="${ROOTDIR}/uboot-${PLATFORM}/"
+    JUMP_TARGETS[packages]="${ROOTDIR}/packages"
+
+    if [[ -f "${ROOTDIR}/board/jump_targets.sh" ]]; then
+      source "${ROOTDIR}/board/jump_targets.sh"
+    fi
 
     function j
     {
