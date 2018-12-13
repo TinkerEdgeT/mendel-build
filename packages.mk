@@ -73,7 +73,7 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 
 	$(LOG) $1 pbuilder
 	$(ROOTDIR)/build/update_packages.sh
-	cd $(ROOTDIR)/$2; git submodule init; git submodule update;
+	if [ -d $(ROOTDIR)/$2/.git ]; then cd $(ROOTDIR)/$2; git submodule init; git submodule update; fi
 	rm -rf $(PRODUCT_OUT)/obj/$1
 	mkdir -p $(PRODUCT_OUT)/obj/$1
 	rsync -a --exclude .git/ $(ROOTDIR)/$2/* $(PRODUCT_OUT)/obj/$1
