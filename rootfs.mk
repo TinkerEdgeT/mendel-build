@@ -127,7 +127,7 @@ endif
 
 ROOTFS_PATCHED_DEPS := $(ROOTFS_RAW_IMG) \
                        $(ROOTDIR)/board/fstab.emmc \
-                       $(ROOTDIR)/build/boot.mk
+                       $(ROOTDIR)/board/boot.mk
 
 ifeq ($(FETCH_PACKAGES),false)
     ROOTFS_PATCHED_DEPS += $(ROOTDIR)/cache/packages.tgz

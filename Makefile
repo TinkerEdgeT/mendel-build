@@ -37,14 +37,16 @@ targets::
 	@echo "Targets available for building in this Makefile:"
 	@echo
 
-include $(ROOTDIR)/build/boot.mk
+include $(ROOTDIR)/board/boot.mk
+include $(ROOTDIR)/board/partition-table.mk
+
 include $(ROOTDIR)/build/img2simg.mk
-include $(ROOTDIR)/build/partition-table.mk
 include $(ROOTDIR)/build/prereqs.mk
 include $(ROOTDIR)/build/rootfs.mk
 include $(ROOTDIR)/build/docker.mk
 include $(ROOTDIR)/build/packages.mk
 
+ 
 include $(ROOTDIR)/board/bootloader.mk
 -include $(ROOTDIR)/board/sdcard.mk
 -include $(ROOTDIR)/board/recovery.mk
