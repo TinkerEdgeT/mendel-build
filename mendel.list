@@ -1,4 +1,4 @@
-deb [arch=armhf,arm64 trusted=yes] https://packages.cloud.google.com/apt mendel-animal main
-deb-src [trusted=yes] https://packages.cloud.google.com/apt mendel-animal main
-deb [arch=armhf,arm64 trusted=yes] https://packages.cloud.google.com/apt mendel-bsp-enterprise-animal main
-deb-src [trusted=yes] https://packages.cloud.google.com/apt mendel-bsp-enterprise-animal main
+deb [arch=armhf,arm64 trusted=yes] https://packages.cloud.google.com/apt mendel-beaker main
+deb-src [trusted=yes] https://packages.cloud.google.com/apt mendel-beaker main
+deb [arch=armhf,arm64 trusted=yes] https://packages.cloud.google.com/apt mendel-bsp-enterprise-beaker main
+deb-src [trusted=yes] https://packages.cloud.google.com/apt mendel-bsp-enterprise-beaker main
