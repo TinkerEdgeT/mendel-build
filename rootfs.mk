@@ -32,7 +32,8 @@ BASE_PACKAGES := \
 	bluetooth \
 	bluez \
 	libbluetooth3 \
-	mendel-distro-info-data
+	mendel-distro-info-data \
+	runonce
 
 GUI_PACKAGES := \
 	gstreamer1.0-alsa \
