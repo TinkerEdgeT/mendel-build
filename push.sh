@@ -28,6 +28,6 @@ fi
 
 filename="$(basename ${package})"
 
-scp -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -C "${package}" aiy@192.168.100.2:/tmp
-ssh -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -Ct aiy@192.168.100.2 sudo dpkg -i "/tmp/${filename}"
-ssh -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -Ct aiy@192.168.100.2 sudo apt-get -f -y install
+scp -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -C "${package}" mendel@192.168.100.2:/tmp
+ssh -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -Ct mendel@192.168.100.2 sudo dpkg -i "/tmp/${filename}"
+ssh -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -Ct mendel@192.168.100.2 sudo apt-get -f -y install

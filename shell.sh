@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ssh -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -Ct aiy@192.168.100.2
+ssh -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -Ct mendel@192.168.100.2

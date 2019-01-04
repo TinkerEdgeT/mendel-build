@@ -23,9 +23,9 @@ function copy-key
     fi
 
     local ssh_pub_file_contents="$(cat ${SSH_PUB_FILE})"
-    try ssh ${SSH_OPTIONS} -C aiy@${BOARD_IP_ADDRESS} " \
-        mkdir -p /home/aiy/.ssh; \
-        echo '${ssh_pub_file_contents}' >/home/aiy/.ssh/authorized_keys"
+    try ssh ${SSH_OPTIONS} -C mendel@${BOARD_IP_ADDRESS} " \
+        mkdir -p /home/mendel/.ssh; \
+        echo '${ssh_pub_file_contents}' >/home/mendel/.ssh/authorized_keys"
 }
 
 function command::setup-key
@@ -36,7 +36,7 @@ function command::setup-key
         try ssh-keygen -f "${SSH_KEY_FILE}" -N "" >/dev/null
     fi
 
-    echo "Copying keyfile to board (you may be prompted for aiy's password -- it's 'aiy')..."
+    echo "Copying keyfile to board (you may be prompted for mendel's password -- it's 'mendel')..."
     copy-key
     echo "Done."
 }
@@ -59,10 +59,10 @@ function command::install
     fi
 
     copy-key
-    try scp ${SSH_OPTIONS} -C "${filename}" aiy@${BOARD_IP_ADDRESS}:/tmp
+    try scp ${SSH_OPTIONS} -C "${filename}" mendel@${BOARD_IP_ADDRESS}:/tmp
 
     local basename=$(basename "${filename}")
-    try ssh ${SSH_OPTIONS} -Ct aiy@${BOARD_IP_ADDRESS} " \
+    try ssh ${SSH_OPTIONS} -Ct mendel@${BOARD_IP_ADDRESS} " \
         sudo dpkg -i /tmp/${basename}; \
         sudo apt-get -f -y install"
 }
@@ -77,7 +77,7 @@ function command::push
     fi
 
     copy-key
-    try scp ${SSH_OPTIONS} -C "${source_path}" "aiy@${BOARD_IP_ADDRESS}:${dest_path}"
+    try scp ${SSH_OPTIONS} -C "${source_path}" "mendel@${BOARD_IP_ADDRESS}:${dest_path}"
 }
 
 function command::pull
@@ -90,7 +90,7 @@ function command::pull
     fi
 
     copy-key
-    try scp ${SSH_OPTIONS} -C "aiy@${BOARD_IP_ADDRESS}:${source_path}" "${dest_path}"
+    try scp ${SSH_OPTIONS} -C "mendel@${BOARD_IP_ADDRESS}:${source_path}" "${dest_path}"
 }
 
 function command::shell
@@ -102,9 +102,9 @@ function command::shell
     copy-key
 
     if [[ ! -z "$@" ]]; then
-        ssh ${SSH_OPTIONS} -Ct aiy@${BOARD_IP_ADDRESS} "$@"
+        ssh ${SSH_OPTIONS} -Ct mendel@${BOARD_IP_ADDRESS} "$@"
     else
-        ssh ${SSH_OPTIONS} -Ct aiy@${BOARD_IP_ADDRESS}
+        ssh ${SSH_OPTIONS} -Ct mendel@${BOARD_IP_ADDRESS}
     fi
 }
 
@@ -115,7 +115,7 @@ function command::reboot
     fi
 
     copy-key
-    ssh ${SSH_OPTIONS} -Ct aiy@${BOARD_IP_ADDRESS} "sudo reboot"
+    ssh ${SSH_OPTIONS} -Ct mendel@${BOARD_IP_ADDRESS} "sudo reboot"
 }
 
 function command::reboot-bootloader
@@ -125,7 +125,7 @@ function command::reboot-bootloader
     fi
 
     copy-key
-    ssh ${SSH_OPTIONS} -Ct aiy@${BOARD_IP_ADDRESS} "sudo reboot-bootloader"
+    ssh ${SSH_OPTIONS} -Ct mendel@${BOARD_IP_ADDRESS} "sudo reboot-bootloader"
 }
 
 function command::help
