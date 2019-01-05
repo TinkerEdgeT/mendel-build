@@ -32,6 +32,7 @@ BASE_PACKAGES := \
 	bluetooth \
 	bluez \
 	libbluetooth3 \
+	mdt-services \
 	mendel-distro-info-data \
 	runonce
 
