@@ -14,7 +14,6 @@ etc/                                                                 -       roo
 etc/apt                                                              -       root    root    0755
 etc/fstab                                                            -       root    root    0644
 etc/group                                                            -       root    root    0644
-etc/hostname                                                         -       root    root    0644
 etc/hosts                                                            -       root    root    0644
 etc/locale.gen                                                       -       root    root    0644
 etc/passwd                                                           -       root    root    0644
