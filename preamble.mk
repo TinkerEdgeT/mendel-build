@@ -22,14 +22,13 @@ ifeq (,$(wildcard /google))
   IS_EXTERNAL ?= true
 endif
 endif
-
-FETCH_PACKAGES ?= false
+-include $(ROOTDIR)/board/arch.mk
 ifeq ($(IS_EXTERNAL),)
   PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker/
   FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder/
-  ROOTFS_RAW_CACHE_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/rootfs/latest/
 endif
 
+FETCH_PACKAGES ?= false
 USERSPACE_ARCH ?= arm64
 
 # Architecture specific defines here
@@ -142,5 +141,4 @@ PACKAGES_EXTRA := \
 	xdg-user-dirs \
 	xwayland
 
-BOOT_SIZE_MB := 128
-ROOTFS_SIZE_MB := 4096
+PACKAGES_EXTRA += $(BOARD_PACKAGES_EXTRA)
