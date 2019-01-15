@@ -116,6 +116,7 @@ PACKAGES_EXTRA := \
 	python3-jwt \
 	python3-numpy \
 	python3-pip \
+	python3-protobuf \
 	python3-reportbug \
 	python3-setuptools \
 	python3-wheel \

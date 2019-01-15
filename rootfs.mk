@@ -42,6 +42,7 @@ GUI_PACKAGES := \
 	gstreamer1.0-plugins-base \
 	gstreamer1.0-plugins-base-apps \
 	gstreamer1.0-plugins-good \
+	gstreamer1.0-plugins-ugly \
 	gstreamer1.0-tools \
 	libdrm2 \
 	libgstreamer1.0-0 \
