@@ -26,7 +26,6 @@ ROOTFS_RAW_LOCAL_CACHE_PATH := $(ROOTDIR)/cache/rootfs_$(USERSPACE).raw.img
 
 BASE_PACKAGES := \
 	aiy-board-gadget \
-	aiy-board-keyring \
 	aiy-board-tweaks \
 	base-files \
 	bluetooth \
@@ -34,6 +33,7 @@ BASE_PACKAGES := \
 	libbluetooth3 \
 	mdt-services \
 	mendel-distro-info-data \
+	mendel-keyring \
 	runonce
 
 GUI_PACKAGES := \
@@ -164,7 +164,7 @@ endif
 	echo 'deb-src https://deb.debian.org/debian-security/ stretch/updates main' |sudo tee -a $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
 	sudo cp $(ROOTDIR)/build/99network-settings $(ROOTFS_DIR)/etc/apt/apt.conf.d/
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
-	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install -y --allow-unauthenticated aiy-board-keyring'
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install -y --allow-unauthenticated mendel-keyring'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
 	$(LOG) rootfs patch keyring finished
 
