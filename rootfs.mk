@@ -24,31 +24,7 @@ ROOTFS_RAW_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs_$(USERSPACE_ARCH).raw.img
 ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs_$(USERSPACE_ARCH).patched.img
 ROOTFS_RAW_LOCAL_CACHE_PATH := $(ROOTDIR)/cache/rootfs_$(USERSPACE).raw.img
 
-BASE_PACKAGES := \
-	aiy-board-gadget \
-	aiy-board-tweaks \
-	base-files \
-	bluetooth \
-	bluez \
-	libbluetooth3 \
-	mdt-services \
-	mendel-distro-info-data \
-	mendel-keyring \
-	runonce
-
-GUI_PACKAGES := \
-	gstreamer1.0-alsa \
-	gstreamer1.0-plugins-bad \
-	gstreamer1.0-plugins-base \
-	gstreamer1.0-plugins-base-apps \
-	gstreamer1.0-plugins-good \
-	gstreamer1.0-plugins-ugly \
-	gstreamer1.0-tools \
-	libdrm2 \
-	libgstreamer1.0-0 \
-	libgstreamer-plugins-bad1.0-0 \
-	libgstreamer-plugins-base1.0-0
-
+include $(ROOTDIR)/build/rootfs-packages.mk
 include $(ROOTDIR)/board/rootfs.mk
 
 ifeq ($(HEADLESS_BUILD),)

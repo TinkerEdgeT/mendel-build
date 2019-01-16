@@ -45,8 +45,8 @@ include $(ROOTDIR)/build/prereqs.mk
 include $(ROOTDIR)/build/rootfs.mk
 include $(ROOTDIR)/build/docker.mk
 include $(ROOTDIR)/build/packages.mk
+include $(ROOTDIR)/build/multistrap.mk
 
- 
 include $(ROOTDIR)/board/bootloader.mk
 -include $(ROOTDIR)/board/sdcard.mk
 -include $(ROOTDIR)/board/recovery.mk
