@@ -16,7 +16,6 @@
 
 BASE_PACKAGES := \
     aiy-board-gadget \
-    aiy-board-tweaks \
     base-files \
     bluetooth \
     bluez \
@@ -24,6 +23,7 @@ BASE_PACKAGES := \
     mdt-services \
     mendel-distro-info-data \
     mendel-keyring \
+    mendel-minimal \
     runonce
 
 GUI_PACKAGES := \
