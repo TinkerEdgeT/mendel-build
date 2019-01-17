@@ -126,6 +126,7 @@ $(eval $(call make-pbuilder-package-target,mdt-services,packages/mdt-services))
 $(eval $(call make-pbuilder-package-target,mendel-distro-info-data,packages/mendel-distro-info-data))
 $(eval $(call make-pbuilder-package-target,mendel-keyring,packages/mendel-keyring))
 $(eval $(call make-pbuilder-package-target,runonce,packages/runonce))
+$(eval $(call make-pbuilder-package-target,usb-gadget,packages/usb-gadget))
 
 include $(ROOTDIR)/board/packages.mk
 

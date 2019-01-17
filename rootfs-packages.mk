@@ -23,7 +23,8 @@ BASE_PACKAGES := \
     mendel-distro-info-data \
     mendel-keyring \
     mendel-minimal \
-    runonce
+    runonce \
+    usb-gadget
 
 GUI_PACKAGES := \
     gstreamer1.0-alsa \
