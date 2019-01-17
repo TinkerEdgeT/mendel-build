@@ -15,7 +15,6 @@
 
 
 BASE_PACKAGES := \
-    aiy-board-gadget \
     base-files \
     bluetooth \
     bluez \
