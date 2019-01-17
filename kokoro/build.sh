@@ -37,7 +37,7 @@ case "${BUILD_TYPE}" in
     ;;
 esac
 
-ARCHES="armhf arm64"
+ARCHES="arm64"
 
 for arch in ${ARCHES}
 do
