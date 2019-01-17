@@ -20,7 +20,7 @@ BASE_PACKAGES := \
     base-files \
     bluetooth \
     bluez \
-    libbluetooth3
+    libbluetooth3 \
     mdt-services \
     mendel-distro-info-data \
     mendel-keyring \
