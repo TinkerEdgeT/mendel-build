@@ -21,18 +21,18 @@ include $(ROOTDIR)/build/rootfs-packages.mk
 
 MULTISTRAP_WORK_DIR := $(PRODUCT_OUT)/multistrap/work
 
-multistrap: $(PRODUCT_OUT)/multistrap/rootfs.img $(PRODUCT_OUT)/multistrap/boot.img
+multistrap: $(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img
 
-$(PRODUCT_OUT)/multistrap/rootfs.img: $(PRODUCT_OUT)/multistrap/boot.img $(HOST_OUT)/bin/img2simg
+$(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img $(HOST_OUT)/bin/img2simg
 	fallocate -l $(ROOTFS_SIZE_MB)M $@.wip
 	mkfs.ext4 -F -j $@.wip
-	mkfs.ext2 -F $(PRODUCT_OUT)/multistrap/boot.img
+	mkfs.ext2 -F $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img
 	tune2fs -o discard $@.wip
 	mkdir -p $(MULTISTRAP_WORK_DIR)
 
 	sudo mount -o loop $@.wip $(MULTISTRAP_WORK_DIR)
 	sudo mkdir -p $(MULTISTRAP_WORK_DIR)/boot $(MULTISTRAP_WORK_DIR)/dev
-	sudo mount -o loop $(PRODUCT_OUT)/multistrap/boot.img $(MULTISTRAP_WORK_DIR)/boot
+	sudo mount -o loop $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img $(MULTISTRAP_WORK_DIR)/boot
 
 	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)/multistrap
 	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap/multistrap.conf
@@ -49,7 +49,7 @@ $(PRODUCT_OUT)/multistrap/rootfs.img: $(PRODUCT_OUT)/multistrap/boot.img $(HOST_
 	rm -rf $(MULTISTRAP_WORK_DIR)
 	$(HOST_OUT)/bin/img2simg $@.wip $@
 
-$(PRODUCT_OUT)/multistrap/boot.img: $(PRODUCT_OUT)/multistrap
+$(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistrap
 	fallocate -l $(BOOT_SIZE_MB)M $@
 
 $(PRODUCT_OUT)/multistrap:
