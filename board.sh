@@ -62,9 +62,7 @@ function command::install
     try scp ${SSH_OPTIONS} -C "${filename}" mendel@${BOARD_IP_ADDRESS}:/tmp
 
     local basename=$(basename "${filename}")
-    try ssh ${SSH_OPTIONS} -Ct mendel@${BOARD_IP_ADDRESS} " \
-        sudo dpkg -i /tmp/${basename}; \
-        sudo apt-get -f -y install"
+    try ssh ${SSH_OPTIONS} -Ct mendel@${BOARD_IP_ADDRESS} "sudo /usr/sbin/mdt-install-package /tmp/${basename};"
 }
 
 function command::push
