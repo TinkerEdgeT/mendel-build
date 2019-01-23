@@ -23,7 +23,7 @@ MULTISTRAP_WORK_DIR := $(PRODUCT_OUT)/multistrap/work
 
 multistrap: $(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img
 
-$(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img $(HOST_OUT)/bin/img2simg
+$(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img $(HOST_OUT)/bin/img2simg $(ROOTDIR)/board/fstab.emmc
 	fallocate -l $(ROOTFS_SIZE_MB)M $@.wip
 	mkfs.ext4 -F -j $@.wip
 	mkfs.ext2 -F $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img
@@ -43,6 +43,7 @@ $(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistra
 	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static $(MULTISTRAP_WORK_DIR)/usr/bin
 	sudo chroot $(MULTISTRAP_WORK_DIR) /var/lib/dpkg/info/dash.preinst install
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(MULTISTRAP_WORK_DIR) dpkg --configure -a
+	sudo cp $(ROOTDIR)/board/fstab.emmc $(MULTISTRAP_WORK_DIR)/etc/fstab
 	sudo rm -f $(MULTISTRAP_WORK_DIR)/usr/bin/qemu-$(QEMU_ARCH)-static
 
 	sudo umount -R $(MULTISTRAP_WORK_DIR)
