@@ -27,11 +27,19 @@ do
   unset USERSPACE_ARCH
 done
 
+# Build the recovery partition, using the beta-uboot branch of uboot-imx
+mv ${PRODUCT_OUT}/u-boot.imx ${PRODUCT_OUT}/u-boot.imx.clean
+git -C ${ROOTDIR}/uboot-imx checkout $(git -C ${ROOTDIR}/uboot-imx remote)/beta-uboot
+m docker-recovery
+mv ${PRODUCT_OUT}/u-boot.imx.clean ${PRODUCT_OUT}/u-boot.imx
+
+
 ARTIFACTS+="${ROOTDIR}/board/flash.sh "
 ARTIFACTS+="${PRODUCT_OUT}/u-boot.imx "
 ARTIFACTS+="${PRODUCT_OUT}/partition-table-8gb.img "
 ARTIFACTS+="${PRODUCT_OUT}/partition-table-16gb.img "
 ARTIFACTS+="${PRODUCT_OUT}/partition-table-64gb.img "
+ARTIFACTS+="${PRODUCT_OUT}/recovery.img "
 
 for arch in ${ARCHES}
 do
