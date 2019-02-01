@@ -42,6 +42,8 @@ $(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistra
 	sudo mount -o bind /dev $(MULTISTRAP_WORK_DIR)/dev
 	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static $(MULTISTRAP_WORK_DIR)/usr/bin
 	sudo chroot $(MULTISTRAP_WORK_DIR) /var/lib/dpkg/info/dash.preinst install
+	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(MULTISTRAP_WORK_DIR) dpkg --configure --force-configure-any base-passwd
+	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(MULTISTRAP_WORK_DIR) dpkg --configure --force-configure-any base-files
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(MULTISTRAP_WORK_DIR) dpkg --configure -a
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(MULTISTRAP_WORK_DIR)/etc/fstab
 	sudo rm -f $(MULTISTRAP_WORK_DIR)/usr/bin/qemu-$(QEMU_ARCH)-static
