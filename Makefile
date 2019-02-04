@@ -32,6 +32,9 @@ out-dirs:
 
 all: rootfs bootloader partition-table
 
+lintian: packages
+	lintian $(PRODUCT_OUT)/packages/core/*.deb $(PRODUCT_OUT)/packages/bsp/*.deb
+
 help: targets
 targets::
 	@echo "Targets available for building in this Makefile:"
