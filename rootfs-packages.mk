@@ -24,7 +24,8 @@ BASE_PACKAGES := \
     mendel-keyring \
     mendel-minimal \
     runonce \
-    usb-gadget
+    usb-gadget \
+    vitalsd
 
 GUI_PACKAGES := \
     gstreamer1.0-alsa \
