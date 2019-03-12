@@ -13,7 +13,7 @@
 # limitations under the License.
 
 FROM debian:9.4
-MAINTAINER support-aiyprojects@google.com
+MAINTAINER coral-support@google.com
 
 # Install the prerequisite packages into the image.
 ADD ./build /build
