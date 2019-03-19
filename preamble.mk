@@ -22,7 +22,10 @@ ifeq (,$(wildcard /google))
   IS_EXTERNAL ?= true
 endif
 endif
+
 -include $(ROOTDIR)/board/arch.mk
+BOARD_NAME ?= mendel
+
 ifeq ($(IS_EXTERNAL),)
   PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker/
   FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder/

@@ -129,6 +129,7 @@ $(eval $(call make-pbuilder-package-target,mendel-keyring,packages/mendel-keyrin
 $(eval $(call make-pbuilder-package-target,runonce,packages/runonce))
 $(eval $(call make-pbuilder-package-target,usb-gadget,packages/usb-gadget))
 $(eval $(call make-pbuilder-package-target,vitalsd,packages/vitalsd))
+$(eval $(call make-pbuilder-package-target,meta-mendel,packages/meta-mendel))
 
 include $(ROOTDIR)/board/packages.mk
 

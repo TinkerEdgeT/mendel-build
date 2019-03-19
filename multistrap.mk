@@ -17,7 +17,6 @@ $(error $$ROOTDIR IS NOT DEFINED -- don\'t forget to source setup.sh)
 endif
 
 include $(ROOTDIR)/build/preamble.mk
-include $(ROOTDIR)/build/rootfs-packages.mk
 
 MULTISTRAP_WORK_DIR := $(PRODUCT_OUT)/multistrap/work
 
@@ -36,7 +35,7 @@ $(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistra
 
 	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)/multistrap
 	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap/multistrap.conf
-	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA) $(BASE_PACKAGES) $(BSP_BASE_PACKAGES)/g' $(PRODUCT_OUT)/multistrap/multistrap.conf
+	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA) $(BOARD_NAME)-core/g' $(PRODUCT_OUT)/multistrap/multistrap.conf
 	sudo multistrap -f $(PRODUCT_OUT)/multistrap/multistrap.conf -d $(MULTISTRAP_WORK_DIR)
 
 	sudo mount -o bind /dev $(MULTISTRAP_WORK_DIR)/dev

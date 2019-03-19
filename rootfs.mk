@@ -24,17 +24,14 @@ ROOTFS_RAW_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs_$(USERSPACE_ARCH).raw.img
 ROOTFS_PATCHED_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs_$(USERSPACE_ARCH).patched.img
 ROOTFS_RAW_LOCAL_CACHE_PATH := $(ROOTDIR)/cache/rootfs_$(USERSPACE).raw.img
 
-include $(ROOTDIR)/build/rootfs-packages.mk
-include $(ROOTDIR)/board/rootfs.mk
-
 ifeq ($(HEADLESS_BUILD),)
     $(info )
     $(info *** GUI build selected -- set HEADLESS_BUILD=true if this is not what you intend.)
-	PRE_INSTALL_PACKAGES := $(BASE_PACKAGES) $(BSP_BASE_PACKAGES) $(GUI_PACKAGES) $(BSP_GUI_PACKAGES)
+	PRE_INSTALL_PACKAGES := $(BOARD_NAME)-core $(BOARD_NAME)-gui
 else
     $(info )
     $(info *** Headless build selected -- unset HEADLESS_BUILD if this is not what you intend.)
-	PRE_INSTALL_PACKAGES := $(BASE_PACKAGES) $(BSP_BASE_PACKAGES)
+	PRE_INSTALL_PACKAGES := $(BOARD_NAME)-core
 endif
 
 ifeq ($(FETCH_PACKAGES),true)
