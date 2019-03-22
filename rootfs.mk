@@ -129,11 +129,13 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_PATCHED_DEPS) \
 
 	$(LOG) rootfs patch keyring
 	echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
+
 ifeq ($(FETCH_PACKAGES),false)
 	echo 'deb [trusted=yes] file:///opt/aiy/packages ./' | sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
 	sudo mkdir -p $(ROOTFS_DIR)/opt/aiy
 	sudo tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(ROOTFS_DIR)/opt/aiy/
 endif
+
 	echo 'deb https://deb.debian.org/debian-security/ stretch/updates main' |sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
 	echo 'deb-src https://deb.debian.org/debian-security/ stretch/updates main' |sudo tee -a $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
 	sudo cp $(ROOTDIR)/build/99network-settings $(ROOTFS_DIR)/etc/apt/apt.conf.d/
@@ -145,6 +147,11 @@ endif
 	$(LOG) rootfs patch bsp
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
 	$(LOG) rootfs patch bsp finished
+
+ifeq ($(FETCH_PACKAGES),false)
+	sudo rm -f $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
+	sudo rm -rf $(ROOTFS_DIR)/opt/aiy
+endif
 
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
