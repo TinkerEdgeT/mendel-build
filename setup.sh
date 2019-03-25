@@ -52,6 +52,11 @@ export BUILDTAB="${OUT}/buildtab"
 
 export PATH="${PATH}:${HOST_OUT}/bin:${ROOTDIR}/build:${ROOTDIR}/board"
 
+function compile-changelogs
+{
+    find $ROOTDIR/packages -name changelog |compile_changelogs.py
+}
+
 function mdt
 {
     PYTHONPATH="${PYTHONPATH}:${ROOTDIR}/tools/mdt" /usr/bin/python3 "${ROOTDIR}/tools/mdt/mdt/main.py" "$@"
