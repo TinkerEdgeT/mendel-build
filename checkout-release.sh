@@ -19,7 +19,6 @@ release_branch_name="$2"
     while read project commit; do
         pushd $project
         git checkout $commit
-        git branch -D --force $release_branch_name
         git checkout -b $release_branch_name
         popd
     done
