@@ -27,7 +27,10 @@ REQUIRED_PACKAGES := \
 	binfmt-support \
 	ca-certificates \
 	cdbs \
+	crossbuild-essential-arm64 \
+	crossbuild-essential-armhf \
 	coreutils \
+	cpio \
 	curl \
 	debhelper \
 	debian-archive-keyring \

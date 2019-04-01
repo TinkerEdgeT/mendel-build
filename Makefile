@@ -44,6 +44,7 @@ include $(ROOTDIR)/board/boot.mk
 include $(ROOTDIR)/board/partition-table.mk
 
 include $(ROOTDIR)/build/img2simg.mk
+include $(ROOTDIR)/build/busybox.mk
 include $(ROOTDIR)/build/prereqs.mk
 include $(ROOTDIR)/build/rootfs.mk
 include $(ROOTDIR)/build/docker.mk
@@ -52,6 +53,7 @@ include $(ROOTDIR)/build/multistrap.mk
 
 include $(ROOTDIR)/board/bootloader.mk
 -include $(ROOTDIR)/board/sdcard.mk
+-include $(ROOTDIR)/board/flashcard.mk
 -include $(ROOTDIR)/board/recovery.mk
 
 clean::
