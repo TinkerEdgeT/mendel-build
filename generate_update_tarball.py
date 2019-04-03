@@ -46,6 +46,8 @@ def GeneratePackageList(directory):
 
         packages = deb822.Packages.iter_paragraphs(control_file)
         for p in packages:
+            if 'Source' in p:
+                package_name = p['Source']
             if 'Package' in p and 'Architecture' in p:
                 arches = p['Architecture']
                 if arches in VERSION_MAP:
@@ -135,6 +137,9 @@ def main():
     output_files = set()
     for deb in debs_to_update:
         for filename in glob.glob('%s/**/*%s*' % (args.package_dir, deb.split(':')[0])):
+            output_files.add(filename)
+    for package in packages_to_update:
+        for filename in glob.glob('%s/**/*%s*' % (args.package_dir, package)):
             output_files.add(filename)
 
     # Generate a tarball appropriate for uploading containing the new packages.
