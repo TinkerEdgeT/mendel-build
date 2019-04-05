@@ -31,7 +31,7 @@ $(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static /usr/bin/qemu-arm-static
 		--mirror http://ftp.debian.org/debian \
 		--distribution stretch \
 		--architecture amd64 \
-		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg"
+		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg lintian"
 	mkdir -p $(ROOTDIR)/cache/base-tmp
 	cd $(ROOTDIR)/cache/base-tmp; \
 	sudo tar xf $@; \
@@ -96,7 +96,7 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 	$(LOG) $1 pbuilder pdebuild
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT)/packages/$(if $6,$6,core) -- \
-		--debbuildopts "--build=$(if $5,$5,full) -sa" \
+		--debbuildopts "--build=$(if $5,$5,full) -sa --check-command=lintian --check-option=--fail-on-warnings --check-option=--profile=mendel" \
 		--basetgz $(ROOTDIR)/cache/base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
