@@ -52,6 +52,13 @@ export BUILDTAB="${OUT}/buildtab"
 
 export PATH="${PATH}:${HOST_OUT}/bin:${ROOTDIR}/build:${ROOTDIR}/board"
 
+function is-internal
+{
+    local groups=$(git --git-dir=$ROOTDIR/.repo/manifests.git config \
+                       --get manifest.groups)
+    echo $groups |grep -qe '.*internal.*'
+}
+
 function compile-changelogs
 {
     find $ROOTDIR/packages -name changelog |compile_changelogs.py
@@ -138,7 +145,7 @@ if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
     fi
 fi
 
-if [[ -f "${ROOTDIR}/INTERNAL_NOTICE.md" ]]; then
+if is-internal; then
     echo
     echo '*** WARNING: Your repo configuration includes closed-source internal'
     echo '*** repositories. Please watch your step when you contribute code.'
