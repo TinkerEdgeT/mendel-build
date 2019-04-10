@@ -5,4 +5,6 @@ echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" >>
 echo 'Debug::pkgProblemResolver true;' > /etc/apt/apt.conf
 cp -r /rootdir/build/lintian /usr/share/
 cat /rootdir/build/bazel-release.pub.gpg | apt-key add -
+cat /rootdir/packages/mendel-keyring/cloud-key.gpg | apt-key add -
+cat /rootdir/packages/mendel-keyring/linux_signing_key.pub |apt-key add -
 apt-get update

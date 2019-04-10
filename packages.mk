@@ -28,7 +28,7 @@ $(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static /usr/bin/qemu-arm-static
 	mkdir -p $(ROOTDIR)/cache
 	sudo pbuilder create \
 		--basetgz $@ \
-		--mirror http://ftp.debian.org/debian \
+		--othermirror "deb http://packages.cloud.google.com/apt mendel-chef main|deb http://packages.cloud.google.com/apt mendel-bsp-$(BOARD_NAME)-chef main" \
 		--distribution stretch \
 		--architecture amd64 \
 		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg lintian"
