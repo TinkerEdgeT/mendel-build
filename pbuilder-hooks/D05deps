@@ -4,4 +4,6 @@ echo "deb [trusted=yes] file://$DEPSBASE ./" >> /etc/apt/sources.list
 echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" >> /etc/apt/sources.list
 echo 'Debug::pkgProblemResolver true;' > /etc/apt/apt.conf
 cat /rootdir/build/bazel-release.pub.gpg | apt-key add -
+cat /rootdir/packages/mendel-keyring/cloud-key.gpg | apt-key add -
+cat /rootdir/packages/mendel-keyring/linux_signing_key.pub |apt-key add -
 apt-get update
