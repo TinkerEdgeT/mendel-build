@@ -17,33 +17,33 @@
 ## Shamelessly borrowed from android's envsetup.sh.
 function getrootdir
 {
-    local TOPFILE=build/Makefile
+    local TOPFILE="build/Makefile"
     if [[ -n "$ROOTDIR" && -f "$ROOTDIR/$TOPFILE" ]]; then
         # The following circumlocution ensures we remove symlinks from ROOTDIR.
-        (cd $ROOTDIR; PWD= /bin/pwd)
+        (cd "${ROOTDIR}"; PWD= /bin/pwd)
     else
-        if [[ -f $TOPFILE ]]; then
+        if [[ -f "${TOPFILE}" ]]; then
             # The following circumlocution (repeated below as well) ensures
             # that we record the true directory name and not one that is
             # faked up with symlink names.
             PWD= /bin/pwd
         else
-            local HERE=$PWD
+            local HERE="${PWD}"
             local R=
-            while [ \( ! \( -f $TOPFILE \) \) -a \( $PWD != "/" \) ]; do
+            while [ \( ! \( -f "${TOPFILE}" \) \) -a \( "${PWD}" != "/" \) ]; do
                 \cd ..
                 R=`PWD= /bin/pwd -P`
             done
-            \cd $HERE
-            if [ -f "$R/$TOPFILE" ]; then
-                echo $R
+            \cd "${HERE}"
+            if [ -f "${R}/${TOPFILE}" ]; then
+                echo "${R}"
             fi
         fi
     fi
 }
 
 export ROOTDIR="$(getrootdir)"
-source ${ROOTDIR}/board/project.sh
+source "${ROOTDIR}/board/project.sh"
 export OUT="${ROOTDIR}/out"
 export PRODUCT_OUT="${OUT}/target/product/${PROJECT_NAME}"
 export HOST_OUT="${OUT}/host/linux-x86"
@@ -54,14 +54,14 @@ export PATH="${PATH}:${HOST_OUT}/bin:${ROOTDIR}/build:${ROOTDIR}/board"
 
 function is-internal
 {
-    local groups=$(git --git-dir=$ROOTDIR/.repo/manifests.git config \
+    local groups=$(git --git-dir="${ROOTDIR}/.repo/manifests.git" config \
                        --get manifest.groups)
-    echo $groups |grep -qe '.*internal.*'
+    echo "${groups}" | grep -qe '.*internal.*'
 }
 
 function compile-changelogs
 {
-    find $ROOTDIR/packages -name changelog |compile_changelogs.py
+    find "${ROOTDIR}/packages" -name changelog | compile_changelogs.py
 }
 
 function mdt
@@ -78,14 +78,14 @@ function m
     fi
 
     pushd "${ROOTDIR}" >/dev/null
-    log.sh $target started m "$@"
+    log.sh "${target}" started m "$@"
 
     make -f "${ROOTDIR}/build/Makefile" "$@"
 
     if [[ "$?" != 0 ]]; then
-        log.sh $target failed
+        log.sh "${target} failed"
     else
-        log.sh $target finished
+        log.sh "${target} finished"
     fi
     popd >/dev/null
 }
@@ -134,9 +134,9 @@ if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
 
         function _j
         {
-            local cur=${COMP_WORDS[COMP_CWORD]}
+            local cur="${COMP_WORDS[COMP_CWORD]}"
             COMPREPLY=()
-            if [[ $COMP_CWORD -eq 1 ]]; then
+            if [[ "${COMP_CWORD}" -eq 1 ]]; then
                 COMPREPLY=( $(compgen -W "$(_j_targets)" $cur) )
             fi
         }
