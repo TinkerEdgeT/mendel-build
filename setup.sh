@@ -52,10 +52,15 @@ export BUILDTAB="${OUT}/buildtab"
 
 export PATH="${PATH}:${HOST_OUT}/bin:${ROOTDIR}/build:${ROOTDIR}/board"
 
+function get-groups
+{
+    git --git-dir="${ROOTDIR}/.repo/manifests.git" config \
+        --get manifest.groups
+}
+
 function is-internal
 {
-    local groups=$(git --git-dir="${ROOTDIR}/.repo/manifests.git" config \
-                       --get manifest.groups)
+    local groups="$(get-groups)"
     echo "${groups}" | grep -qe '.*internal.*'
 }
 
