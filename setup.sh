@@ -88,9 +88,9 @@ function m
     make -f "${ROOTDIR}/build/Makefile" "$@"
 
     if [[ "$?" != 0 ]]; then
-        log.sh "${target} failed"
+        log.sh "${target}" failed
     else
-        log.sh "${target} finished"
+        log.sh "${target}" finished
     fi
     popd >/dev/null
 }
