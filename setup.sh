@@ -138,6 +138,13 @@ if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
     fi
 fi
 
+if [[ "${ROOTDIR}/INTERNAL_NOTICE.md" ]]; then
+    echo
+    echo '*** WARNING: Your repo configuration includes closed-source internal'
+    echo '*** repositories. Please watch your step when you contribute code.'
+    echo
+fi
+
 echo ========================================
 echo ROOTDIR="${ROOTDIR}"
 echo OUT="${OUT}"
