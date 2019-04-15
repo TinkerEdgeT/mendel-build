@@ -64,11 +64,6 @@ function is-internal
     echo "${groups}" | grep -qe '.*internal.*'
 }
 
-function compile-changelogs
-{
-    find "${ROOTDIR}/packages" -name changelog | compile_changelogs.py
-}
-
 function mdt
 {
     PYTHONPATH="${PYTHONPATH}:${ROOTDIR}/tools/mdt" /usr/bin/python3 "${ROOTDIR}/tools/mdt/mdt/main.py" "$@"
@@ -116,10 +111,17 @@ if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
     function j
     {
         local target="$1"; shift
+        local splitpath=(${target//\// })
+        local subpath=""
 
         if [[ -z "${target}" ]]; then
             cd "${ROOTDIR}"
             return 0
+        fi
+
+        if [[ -z "${JUMP_TARGETS[$target]}" ]]; then
+            target="${splitpath[0]}"
+            subpath="${splitpath[@]:1}"
         fi
 
         if [[ -z "${JUMP_TARGETS[$target]}" ]]; then
@@ -129,6 +131,10 @@ if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
         fi
 
         cd "${JUMP_TARGETS[$target]}"
+
+        if [[ ! -z "${subpath}" ]]; then
+            cd "${subpath}"
+        fi
     }
 
     if builtin complete >/dev/null 2>/dev/null; then
