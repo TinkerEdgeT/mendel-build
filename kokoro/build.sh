@@ -13,10 +13,6 @@ else
   echo "Invalid job name: ${KOKORO_JOB_NAME}" && exit 1
 fi
 
-# Symlink the Makefile, like it would be if repo checked this out.
-# Otherwise, sourcing setup.sh doesn't work as expected.
-ln -sfr git/continuous-build/build/Makefile git/continuous-build/Makefile
-
 # Sourcing this only works in the directory above build...
 pushd git/continuous-build
 source build/setup.sh
