@@ -14,7 +14,7 @@ else
 fi
 
 # Sourcing this only works in the directory above build...
-pushd git/continuous-build
+pushd git
 source build/setup.sh
 popd
 
