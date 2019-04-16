@@ -47,7 +47,7 @@ m docker-recovery
 
 pushd ${ROOTDIR}
 python3 ${ROOTDIR}/build/create_release_manifest.py \
-  -i ${ROOTDIR}/manifest/default.xml \
+  -i ${ROOTDIR}/.repo/manifest.xml \
   -o ${PRODUCT_OUT}/manifest.xml
 popd
 
