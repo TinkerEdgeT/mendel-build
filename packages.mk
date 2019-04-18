@@ -120,7 +120,7 @@ endef
 
 $(eval $(call make-pbuilder-package-target,mendel-minimal,packages/mendel-minimal))
 $(eval $(call make-pbuilder-package-target,base-files,packages/base-files))
-$(eval $(call make-pbuilder-package-target,edgetpu-api,packages/edgetpu-api,,,binary))
+$(eval $(call make-pbuilder-package-target,edgetpu,packages/edgetpu,,,binary))
 $(eval $(call make-pbuilder-package-target,edgetpuvision,packages/edgetpuvision))
 $(eval $(call make-pbuilder-package-target,edgetpudemo,packages/edgetpudemo))
 $(eval $(call make-pbuilder-package-target,mdt-services,packages/mdt-services))

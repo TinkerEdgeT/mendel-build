@@ -3,12 +3,8 @@
 set -e
 set -x
 
-# Symlink the Makefile, like it would be if repo checked this out.
-# Otherwise, sourcing setup.sh doesn't work as expected.
-ln -sfr git/continuous-build/build/Makefile git/continuous-build/Makefile
-
 # Sourcing this only works in the directory above build...
-pushd git/continuous-build
+pushd git
 source build/setup.sh
 popd
 
