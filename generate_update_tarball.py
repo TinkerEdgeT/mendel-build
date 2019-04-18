@@ -42,7 +42,7 @@ def GeneratePackageList(directory):
     with open(os.path.join(directory, 'changelog'), 'rb') as changelog_file, \
          open(os.path.join(directory, 'control')) as control_file:
         cl = changelog.Changelog(file=changelog_file)
-        version = str(cl.get_version())
+        version = cl.get_version()
 
         packages = deb822.Packages.iter_paragraphs(control_file)
         for p in packages:
@@ -79,10 +79,11 @@ def CheckVersionTags(rootdir, package, version):
     debian_repo = Repo(debian_dir)
     source_tags = source_repo.git.tag('-l')
     debian_tags = debian_repo.git.tag('-l')
-    if version in source_tags and version in debian_tags:
+    str_version = str(version)
+    if str_version in source_tags and str_version in debian_tags:
         print('Found tags for %s of %s. Checking out tags.' % (version, package))
-        source_repo.git.checkout('tags/' + version)
-        debian_repo.git.checkout('tags/' + version)
+        source_repo.git.checkout('tags/' + str_version)
+        debian_repo.git.checkout('tags/' + str_version)
         return True
     else:
         print('Did not find tags for %s of %s.' % (version, package))
