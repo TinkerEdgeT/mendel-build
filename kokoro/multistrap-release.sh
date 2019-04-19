@@ -25,7 +25,11 @@ done
 
 # Build the recovery partition, using the beta-uboot branch of uboot-imx
 mv ${PRODUCT_OUT}/u-boot.imx ${PRODUCT_OUT}/u-boot.imx.clean
-git -C ${ROOTDIR}/uboot-imx checkout $(git -C ${ROOTDIR}/uboot-imx remote)/beta-uboot
+REMOTE=$(git -C ${ROOTDIR}/uboot-imx remote)
+git -C ${ROOTDIR}/uboot-imx fetch --unshallow
+git -C ${ROOTDIR}/uboot-imx config remote.${REMOTE}.fetch "+refs/heads/*:refs/remotes/${REMOTE}/*"
+git -C ${ROOTDIR}/uboot-imx fetch ${REMOTE}
+git -C ${ROOTDIR}/uboot-imx checkout ${REMOTE}/beta-uboot
 m docker-recovery
 mv ${PRODUCT_OUT}/u-boot.imx.clean ${PRODUCT_OUT}/u-boot.imx
 
