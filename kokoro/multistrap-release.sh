@@ -27,7 +27,7 @@ done
 mv ${PRODUCT_OUT}/u-boot.imx ${PRODUCT_OUT}/u-boot.imx.clean
 git -C ${ROOTDIR}/uboot-imx remote add https https://coral.googlesource.com/uboot-imx
 REMOTE=https
-git -C ${ROOTDIR}/uboot-imx fetch --unshallow
+git -C ${ROOTDIR}/uboot-imx fetch ${REMOTE} --unshallow
 git -C ${ROOTDIR}/uboot-imx config remote.${REMOTE}.fetch "+refs/heads/*:refs/remotes/${REMOTE}/*"
 git -C ${ROOTDIR}/uboot-imx fetch ${REMOTE}
 git -C ${ROOTDIR}/uboot-imx checkout ${REMOTE}/beta-uboot
