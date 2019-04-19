@@ -25,7 +25,8 @@ done
 
 # Build the recovery partition, using the beta-uboot branch of uboot-imx
 mv ${PRODUCT_OUT}/u-boot.imx ${PRODUCT_OUT}/u-boot.imx.clean
-REMOTE=$(git -C ${ROOTDIR}/uboot-imx remote)
+git -C ${ROOTDIR}/uboot-imx remote add https https://coral.googlesource.com/uboot-imx
+REMOTE=https
 git -C ${ROOTDIR}/uboot-imx fetch --unshallow
 git -C ${ROOTDIR}/uboot-imx config remote.${REMOTE}.fetch "+refs/heads/*:refs/remotes/${REMOTE}/*"
 git -C ${ROOTDIR}/uboot-imx fetch ${REMOTE}
