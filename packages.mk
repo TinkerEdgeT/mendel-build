@@ -139,9 +139,12 @@ $(ROOTDIR)/cache/packages.tgz: $(ALL_PACKAGE_TARGETS) | out-dirs
 	$(ROOTDIR)/build/update_packages.sh
 	tar -C $(PRODUCT_OUT) --overwrite -czf $@ packages
 
-upstream-delta: $(ROOTDIR)/cache/update.tgz
+$(PRODUCT_OUT)/mendel.list: $(ROOTDIR)/build/mendel.list.template
+	sed -e "s;%BOARDNAME%;$(BOARD_NAME);g" $(ROOTDIR)/build/mendel.list.template > $(PRODUCT_OUT)/mendel.list
+
+upstream-delta: $(ROOTDIR)/cache/update.tgz $(PRODUCT_OUT)/mendel.list
 $(ROOTDIR)/cache/update.tgz:
-	$(ROOTDIR)/build/generate_update_tarball.py -rootdir=$(ROOTDIR) -sources_list=$(ROOTDIR)/build/mendel.list -package_dir=$(PRODUCT_OUT)/packages -output_tarball=$(ROOTDIR)/cache/update.tgz
+	$(ROOTDIR)/build/generate_update_tarball.py -rootdir=$(ROOTDIR) -sources_list=$(PRODUCT_OUT)/mendel.list -package_dir=$(PRODUCT_OUT)/packages -output_tarball=$(ROOTDIR)/cache/update.tgz
 
 packages:: $(ALL_PACKAGE_TARGETS)
 

@@ -1,4 +1,0 @@
-deb [arch=armhf,arm64 trusted=yes] https://packages.cloud.google.com/apt mendel-chef main
-deb-src [trusted=yes] https://packages.cloud.google.com/apt mendel-chef main
-deb [arch=armhf,arm64 trusted=yes] https://packages.cloud.google.com/apt mendel-bsp-enterprise-chef main
-deb-src [trusted=yes] https://packages.cloud.google.com/apt mendel-bsp-enterprise-chef main
