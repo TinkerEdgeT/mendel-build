@@ -27,8 +27,9 @@ endif
 BOARD_NAME ?= mendel
 
 ifeq ($(IS_EXTERNAL),)
-  PREBUILT_DOCKER_ROOT ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/docker/
-  FETCH_PBUILDER_DIRECTORY ?= /google/data/ro/teams/spacepark/enterprise/kokoro/prod/spacepark/enterprise/pbuilder/
+  CACHED_BUILD_IMAGE_DIRECTORY ?= /google/data/ro/teams/spacepark/mendel/kokoro/prod
+  PREBUILT_DOCKER_ROOT ?= $(CACHED_BUILD_IMAGE_DIRECTORY)/docker/
+  FETCH_PBUILDER_DIRECTORY ?= $(CACHED_BUILD_IMAGE_DIRECTORY)/pbuilder/
 endif
 
 FETCH_PACKAGES ?= false
