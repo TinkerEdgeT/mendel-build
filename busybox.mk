@@ -23,7 +23,7 @@ BUSYBOX_WORK_DIR := $(PRODUCT_OUT)/obj/busybox
 busybox: $(PRODUCT_OUT)/busybox
 $(PRODUCT_OUT)/busybox:
 	mkdir -p $(BUSYBOX_WORK_DIR)
-	+make -C $(ROOTDIR)/tools/busybox O=$(BUSYBOX_WORK_DIR) enterprise_defconfig
+	+make -C $(ROOTDIR)/tools/busybox O=$(BUSYBOX_WORK_DIR) mendel_defconfig
 	+make -C $(ROOTDIR)/tools/busybox O=$(BUSYBOX_WORK_DIR)
 	cp $(BUSYBOX_WORK_DIR)/busybox $(PRODUCT_OUT)/busybox
 
