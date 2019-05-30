@@ -128,7 +128,8 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_PATCHED_DEPS) \
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
 	$(LOG) rootfs patch keyring
-	echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
+	#echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
+	echo 'nameserver 172.23.44.53' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
 
 ifeq ($(FETCH_PACKAGES),false)
 	echo 'deb [trusted=yes] file:///opt/aiy/packages ./' | sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
@@ -152,6 +153,8 @@ ifeq ($(FETCH_PACKAGES),false)
 	sudo rm -f $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
 	sudo rm -rf $(ROOTFS_DIR)/opt/aiy
 endif
+
+	echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
 
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
