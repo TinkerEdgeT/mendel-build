@@ -94,5 +94,7 @@ test-docker:
 	@rm -f hello.c hello
 
 .DEFAULT_GOAL:=docker-all
+.MAKEFLAGS += --no-builtin-rules
+.SUFFIXES:
 
 .PHONY:: docker-build
