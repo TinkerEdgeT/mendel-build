@@ -118,6 +118,7 @@ define make-pbuilder-bsp-package-target
 $(call make-pbuilder-package-target,$1,$2,$3,$4,$5,bsp)
 endef
 
+$(eval $(call make-pbuilder-package-target,android-core,android-core))
 $(eval $(call make-pbuilder-package-target,mendel-minimal,packages/mendel-minimal))
 $(eval $(call make-pbuilder-package-target,base-files,packages/base-files))
 $(eval $(call make-pbuilder-package-target,edgetpu,packages/edgetpu,,,binary))
