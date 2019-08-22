@@ -143,6 +143,8 @@ PACKAGES_EXTRA := \
 	wireless-tools \
 	wpasupplicant \
 	xdg-user-dirs \
-	xwayland
+	xwayland \
+	gstreamer1.0-tools \
+	gstreamer1.0-alsa
 
 PACKAGES_EXTRA += $(BOARD_PACKAGES_EXTRA)
