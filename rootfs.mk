@@ -66,7 +66,7 @@ $(ROOTFS_RAW_IMG): $(ROOTFS_RAW_LOCAL_CACHE_PATH)
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 	$(LOG) rootfs raw-cache finished
 else
-$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-$(QEMU_ARCH)-static
+$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-$(QEMU_ARCH)-static /tmp/multistrap
 	$(LOG) rootfs raw-build
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
@@ -79,13 +79,14 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/
 	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)
 	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA)/g' $(PRODUCT_OUT)/multistrap.conf
 	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap.conf
+
 	$(LOG) rootfs raw-build multistrap
-	sudo multistrap -f $(PRODUCT_OUT)/multistrap.conf -d $(ROOTFS_DIR)
+# TODO(jtgans): EWW! RIP THIS OUT WHEN BUSTER IS FIXED! EWW!
+	sudo /tmp/multistrap -f $(PRODUCT_OUT)/multistrap.conf -d $(ROOTFS_DIR)
 	$(LOG) rootfs raw-build multistrap finished
 
 	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
 	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static $(ROOTFS_DIR)/usr/bin
-	sudo chroot $(ROOTFS_DIR) /var/lib/dpkg/info/dash.preinst install
 
 	$(LOG) rootfs raw-build dpkg-configure
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(ROOTFS_DIR) dpkg --configure -a
