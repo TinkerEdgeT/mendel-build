@@ -22,19 +22,20 @@ REQUIRED_PACKAGES := \
 	apt-transport-https \
 	apt-utils \
 	bc \
+	binfmt-support \
 	binutils-aarch64-linux-gnu \
 	build-essential \
-	binfmt-support \
 	ca-certificates \
 	cdbs \
-	crossbuild-essential-arm64 \
-	crossbuild-essential-armhf \
 	coreutils \
 	cpio \
+	crossbuild-essential-arm64 \
+	crossbuild-essential-armhf \
 	curl \
 	debhelper \
 	debian-archive-keyring \
 	device-tree-compiler \
+	dh-python \
 	fakeroot \
 	genext2fs \
 	git \
@@ -50,6 +51,7 @@ REQUIRED_PACKAGES := \
 	python-minimal \
 	python2.7 \
 	python3 \
+	python3-all \
 	python3-apt \
 	python3-debian \
 	python3-git \

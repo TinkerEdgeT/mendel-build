@@ -136,8 +136,8 @@ ifeq ($(FETCH_PACKAGES),false)
 	sudo tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(ROOTFS_DIR)/opt/aiy/
 endif
 
-	echo 'deb https://deb.debian.org/debian-security/ stretch/updates main' |sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
-	echo 'deb-src https://deb.debian.org/debian-security/ stretch/updates main' |sudo tee -a $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
+	echo 'deb https://deb.debian.org/debian-security/ buster/updates main' |sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
+	echo 'deb-src https://deb.debian.org/debian-security/ buster/updates main' |sudo tee -a $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
 	sudo cp $(ROOTDIR)/build/99network-settings $(ROOTFS_DIR)/etc/apt/apt.conf.d/
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install -y --allow-unauthenticated mendel-keyring'

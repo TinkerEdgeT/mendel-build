@@ -4,7 +4,7 @@
 # the default template
 #
 # read pbuilderrc.5 document for notes on specific options.
-OTHERMIRROR="deb https://packages.cloud.google.com/apt mendel-chef main|deb https://packages.cloud.google.com/apt mendel-bsp-$BOARD_NAME-chef main"
+OTHERMIRROR="deb https://packages.cloud.google.com/apt mendel-day main|deb https://packages.cloud.google.com/apt mendel-bsp-$BOARD_NAME-day main"
 PBUILDERSATISFYDEPENDSCMD=/usr/lib/pbuilder/pbuilder-satisfydepends-apt
 export DEPSBASE=$PRODUCT_OUT/packages
 BINDMOUNTS="$DEPSBASE $ROOTDIR"
