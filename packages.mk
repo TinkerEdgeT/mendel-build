@@ -28,7 +28,7 @@ $(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static /usr/bin/qemu-arm-static
 	mkdir -p $(ROOTDIR)/cache
 	sudo pbuilder create \
 		--basetgz $@ \
-		--othermirror "deb http://packages.cloud.google.com/apt mendel-day main|deb http://packages.cloud.google.com/apt mendel-bsp-$(BOARD_NAME)-day main" \
+		--othermirror "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-day main|deb [trusted=yes] http://packages.cloud.google.com/apt mendel-bsp-$(BOARD_NAME)-day main" \
 		--distribution buster \
 		--architecture amd64 \
 		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg lintian"
