@@ -22,7 +22,13 @@ MULTISTRAP_WORK_DIR := $(PRODUCT_OUT)/multistrap/work
 
 multistrap: $(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img
 
-$(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img $(HOST_OUT)/bin/img2simg $(ROOTDIR)/board/fstab.emmc
+/tmp/multistrap: $(ROOTDIR)/build/multistrap-fix.patch
+# multistrap in buster is hosed and missing the Acquire::AllowInsecureRepositories=yes flag for apt.
+# TODO(jtgans): EWW! RIP THIS OUT WHEN BUSTER IS FIXED! EWW!
+	sudo cp /usr/sbin/multistrap /tmp/multistrap
+	cd /tmp && sudo patch < $(ROOTDIR)/build/multistrap-fix.patch
+
+$(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img $(HOST_OUT)/bin/img2simg $(ROOTDIR)/board/fstab.emmc /tmp/multistrap
 	fallocate -l $(ROOTFS_SIZE_MB)M $@.wip
 	mkfs.ext4 -F -j $@.wip
 	mkfs.ext2 -F $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img
@@ -36,11 +42,12 @@ $(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistra
 	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)/multistrap
 	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap/multistrap.conf
 	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA) $(BOARD_NAME)-core/g' $(PRODUCT_OUT)/multistrap/multistrap.conf
-	sudo multistrap -f $(PRODUCT_OUT)/multistrap/multistrap.conf -d $(MULTISTRAP_WORK_DIR)
+
+# TODO(jtgans): EWW! RIP THIS OUT WHEN BUSTER IS FIXED! EWW!
+	sudo /tmp/multistrap -f $(PRODUCT_OUT)/multistrap/multistrap.conf -d $(MULTISTRAP_WORK_DIR)
 
 	sudo mount -o bind /dev $(MULTISTRAP_WORK_DIR)/dev
 	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static $(MULTISTRAP_WORK_DIR)/usr/bin
-	sudo chroot $(MULTISTRAP_WORK_DIR) /var/lib/dpkg/info/dash.preinst install
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(MULTISTRAP_WORK_DIR) dpkg --configure --force-configure-any base-passwd
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(MULTISTRAP_WORK_DIR) dpkg --configure --force-configure-any base-files
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(MULTISTRAP_WORK_DIR) dpkg --configure -a
