@@ -93,6 +93,10 @@ test-docker:
 	@./hello
 	@rm -f hello.c hello
 
+# Open a docker shell ('m docker-debug-shell')
+debug-shell:
+	bash
+
 .DEFAULT_GOAL:=docker-all
 .MAKEFLAGS += --no-builtin-rules
 .SUFFIXES:
