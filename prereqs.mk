@@ -60,11 +60,17 @@ REQUIRED_PACKAGES := \
 	quilt \
 	rsync \
 	xz-utils \
+	wget \
 	zlib1g-dev
 
 prereqs:
 	sudo apt-get update
 	sudo apt-get install --no-install-recommends -y $(REQUIRED_PACKAGES)
+
+	# Hack in known-to-be-working-in-docker version, see
+	# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=930684
+	wget -O debbootstrap.deb http://ftp.us.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.89_all.deb
+	sudo dpkg -i debbootstrap.deb
 
 targets::
 	@echo "prereqs    - installs packages required by this Makefile"

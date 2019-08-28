@@ -31,7 +31,8 @@ $(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static /usr/bin/qemu-arm-static
 		--othermirror "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-day main|deb [trusted=yes] http://packages.cloud.google.com/apt mendel-bsp-$(BOARD_NAME)-day main" \
 		--distribution buster \
 		--architecture amd64 \
-		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg lintian"
+		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg lintian" \
+		--aptcache ""
 	mkdir -p $(ROOTDIR)/cache/base-tmp
 	cd $(ROOTDIR)/cache/base-tmp; \
 	sudo tar xf $@; \
