@@ -130,6 +130,7 @@ $(eval $(call make-pbuilder-package-target,runonce,packages/runonce))
 $(eval $(call make-pbuilder-package-target,usb-gadget,packages/usb-gadget))
 $(eval $(call make-pbuilder-package-target,vitalsd,packages/vitalsd))
 $(eval $(call make-pbuilder-package-target,meta-mendel,packages/meta-mendel))
+$(eval $(call make-pbuilder-package-target,tinker-edge-t,packages/tinker-edge-t))
 
 include $(ROOTDIR)/board/packages.mk
 
