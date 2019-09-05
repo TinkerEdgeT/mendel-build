@@ -157,12 +157,15 @@ endif
 
 	$(LOG) rootfs patch bsp
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get upgrade -y'
 	$(LOG) rootfs patch bsp finished
 
-ifeq ($(FETCH_PACKAGES),false)
-	sudo rm -f $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
-	sudo rm -rf $(ROOTFS_DIR)/opt/aiy
-endif
+# TODO(jtgans): Remove these when rapture is updated. Until then keeping the local repo
+# is the only way of installing locally built packages on device.
+# ifeq ($(FETCH_PACKAGES),false)
+# 	sudo rm -f $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
+# 	sudo rm -rf $(ROOTFS_DIR)/opt/aiy
+# endif
 
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
