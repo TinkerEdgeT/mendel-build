@@ -89,6 +89,12 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/
 	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static $(ROOTFS_DIR)/usr/bin
 
 	$(LOG) rootfs raw-build dpkg-configure
+	# Configure base-passwd first since a bunch of things relies on /etc/passwd existing without base-passwd as a dep.
+	# python2.7-minimal requires (m)awk
+	# See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=924401
+	# TODO(jtgans): Find out how debootstrap handles this.
+	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(ROOTFS_DIR) dpkg --configure \
+		gcc-8-base libgcc1 libc6 libdebconfclient0 base-passwd mawk
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(ROOTFS_DIR) dpkg --configure -a
 	$(LOG) rootfs raw-build dpkg-configure finished
 
