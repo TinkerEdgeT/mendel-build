@@ -146,6 +146,10 @@ endif
 	echo 'deb https://deb.debian.org/debian-security/ buster/updates main' |sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
 	echo 'deb-src https://deb.debian.org/debian-security/ buster/updates main' |sudo tee -a $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
 	sudo cp $(ROOTDIR)/build/99network-settings $(ROOTFS_DIR)/etc/apt/apt.conf.d/
+
+	#TODO(jtgans): This must go away.
+	echo -e 'Acquire::Check-Valid-Until "false";\nAcquire::AllowInsecureRepositories "true";\nAcquire::AllowDowngradeToInsecureRepositories "true";' | sudo tee $(ROOTFS_DIR)/etc/apt/apt.conf.d/99-enable-unsecure-repos
+
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install -y --allow-unauthenticated mendel-keyring'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
