@@ -66,7 +66,7 @@ $(ROOTFS_RAW_IMG): $(ROOTFS_RAW_LOCAL_CACHE_PATH)
 	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
 	$(LOG) rootfs raw-cache finished
 else
-$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-$(QEMU_ARCH)-static
+$(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-$(QEMU_ARCH)-static /tmp/multistrap
 	$(LOG) rootfs raw-build
 	mkdir -p $(ROOTFS_DIR)
 	rm -f $(ROOTFS_RAW_IMG)
@@ -79,15 +79,22 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/
 	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)
 	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA)/g' $(PRODUCT_OUT)/multistrap.conf
 	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap.conf
+
 	$(LOG) rootfs raw-build multistrap
-	sudo multistrap -f $(PRODUCT_OUT)/multistrap.conf -d $(ROOTFS_DIR)
+# TODO(jtgans): EWW! RIP THIS OUT WHEN BUSTER IS FIXED! EWW!
+	sudo /tmp/multistrap -f $(PRODUCT_OUT)/multistrap.conf -d $(ROOTFS_DIR)
 	$(LOG) rootfs raw-build multistrap finished
 
 	sudo mount -o bind /dev $(ROOTFS_DIR)/dev
 	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static $(ROOTFS_DIR)/usr/bin
-	sudo chroot $(ROOTFS_DIR) /var/lib/dpkg/info/dash.preinst install
 
 	$(LOG) rootfs raw-build dpkg-configure
+	# Configure base-passwd first since a bunch of things relies on /etc/passwd existing without base-passwd as a dep.
+	# python2.7-minimal requires (m)awk
+	# See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=924401
+	# TODO(jtgans): Find out how debootstrap handles this.
+	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(ROOTFS_DIR) dpkg --configure \
+		gcc-8-base libgcc1 libc6 libdebconfclient0 base-passwd mawk
 	sudo DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot $(ROOTFS_DIR) dpkg --configure -a
 	$(LOG) rootfs raw-build dpkg-configure finished
 
@@ -136,9 +143,13 @@ ifeq ($(FETCH_PACKAGES),false)
 	sudo tar -xvf $(ROOTDIR)/cache/packages.tgz -C $(ROOTFS_DIR)/opt/aiy/
 endif
 
-	echo 'deb https://deb.debian.org/debian-security/ stretch/updates main' |sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
-	echo 'deb-src https://deb.debian.org/debian-security/ stretch/updates main' |sudo tee -a $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
+	echo 'deb https://deb.debian.org/debian-security/ buster/updates main' |sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
+	echo 'deb-src https://deb.debian.org/debian-security/ buster/updates main' |sudo tee -a $(ROOTFS_DIR)/etc/apt/sources.list.d/security.list
 	sudo cp $(ROOTDIR)/build/99network-settings $(ROOTFS_DIR)/etc/apt/apt.conf.d/
+
+	#TODO(jtgans): This must go away.
+	echo -e 'Acquire::Check-Valid-Until "false";\nAcquire::AllowInsecureRepositories "true";\nAcquire::AllowDowngradeToInsecureRepositories "true";' | sudo tee $(ROOTFS_DIR)/etc/apt/apt.conf.d/99-enable-unsecure-repos
+
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install -y --allow-unauthenticated mendel-keyring'
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get update'
@@ -146,12 +157,15 @@ endif
 
 	$(LOG) rootfs patch bsp
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get install --allow-downgrades --no-install-recommends -y $(PRE_INSTALL_PACKAGES)'
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get upgrade -y'
 	$(LOG) rootfs patch bsp finished
 
-ifeq ($(FETCH_PACKAGES),false)
-	sudo rm -f $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
-	sudo rm -rf $(ROOTFS_DIR)/opt/aiy
-endif
+# TODO(jtgans): Remove these when rapture is updated. Until then keeping the local repo
+# is the only way of installing locally built packages on device.
+# ifeq ($(FETCH_PACKAGES),false)
+# 	sudo rm -f $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
+# 	sudo rm -rf $(ROOTFS_DIR)/opt/aiy
+# endif
 
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 

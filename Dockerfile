@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM debian:9.4
+FROM debian:10.0
 MAINTAINER coral-support@google.com
 
 # Install the prerequisite packages into the image.
@@ -20,7 +20,7 @@ ADD ./build /build
 ADD ./board /board
 RUN /bin/bash -c '\
 apt-get update && \
-apt-get install sudo make && \
+apt-get install -y sudo make && \
 ln -sfr /build/Makefile /Makefile && \
 source /build/setup.sh && \
 make -C /build prereqs'

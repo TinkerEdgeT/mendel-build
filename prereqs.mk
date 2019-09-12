@@ -22,19 +22,20 @@ REQUIRED_PACKAGES := \
 	apt-transport-https \
 	apt-utils \
 	bc \
+	binfmt-support \
 	binutils-aarch64-linux-gnu \
 	build-essential \
-	binfmt-support \
 	ca-certificates \
 	cdbs \
-	crossbuild-essential-arm64 \
-	crossbuild-essential-armhf \
 	coreutils \
 	cpio \
+	crossbuild-essential-arm64 \
+	crossbuild-essential-armhf \
 	curl \
 	debhelper \
 	debian-archive-keyring \
 	device-tree-compiler \
+	dh-python \
 	fakeroot \
 	genext2fs \
 	git \
@@ -50,6 +51,7 @@ REQUIRED_PACKAGES := \
 	python-minimal \
 	python2.7 \
 	python3 \
+	python3-all \
 	python3-apt \
 	python3-debian \
 	python3-git \
@@ -58,11 +60,17 @@ REQUIRED_PACKAGES := \
 	quilt \
 	rsync \
 	xz-utils \
+	wget \
 	zlib1g-dev
 
 prereqs:
 	sudo apt-get update
 	sudo apt-get install --no-install-recommends -y $(REQUIRED_PACKAGES)
+
+	# Hack in known-to-be-working-in-docker version, see
+	# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=930684
+	wget -O debbootstrap.deb http://ftp.us.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.89_all.deb
+	sudo dpkg -i debbootstrap.deb
 
 targets::
 	@echo "prereqs    - installs packages required by this Makefile"

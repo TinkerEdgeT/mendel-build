@@ -18,20 +18,36 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-pbuilder-base: $(ROOTDIR)/cache/base.tgz
+pbuilder-base: $(ROOTDIR)/cache/cross-base.tgz $(ROOTDIR)/cache/native-base.tgz
 
 ifneq ($(FETCH_PBUILDER_DIRECTORY),)
-$(ROOTDIR)/cache/base.tgz: $(FETCH_PBUILDER_DIRECTORY)/base.tgz | out-dirs
+$(ROOTDIR)/cache/cross-base.tgz: $(FETCH_PBUILDER_DIRECTORY)/cross-base.tgz | out-dirs
 	cp $< $(ROOTDIR)/cache
 else
-$(ROOTDIR)/cache/base.tgz: /usr/bin/qemu-aarch64-static /usr/bin/qemu-arm-static
+$(ROOTDIR)/cache/cross-base.tgz:
 	mkdir -p $(ROOTDIR)/cache
 	sudo pbuilder create \
 		--basetgz $@ \
-		--othermirror "deb http://packages.cloud.google.com/apt mendel-chef main|deb http://packages.cloud.google.com/apt mendel-bsp-$(BOARD_NAME)-chef main" \
-		--distribution stretch \
+		--othermirror "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-day main|deb [trusted=yes] http://packages.cloud.google.com/apt mendel-bsp-$(BOARD_NAME)-day main" \
+		--distribution buster \
 		--architecture amd64 \
-		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg lintian"
+		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg lintian" \
+		--aptcache ""
+endif
+
+ifneq ($(FETCH_PBUILDER_DIRECTORY),)
+$(ROOTDIR)/cache/native-base.tgz: $(FETCH_PBUILDER_DIRECTORY)/native-base.tgz | out-dirs
+	cp $< $(ROOTDIR)/cache
+else
+$(ROOTDIR)/cache/native-base.tgz: /usr/bin/qemu-aarch64-static /usr/bin/qemu-arm-static
+	mkdir -p $(ROOTDIR)/cache
+	sudo pbuilder create \
+		--basetgz $@ \
+		--othermirror "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-day main|deb [trusted=yes] http://packages.cloud.google.com/apt mendel-bsp-$(BOARD_NAME)-day main" \
+		--distribution buster \
+		--architecture arm64 \
+		--extrapackages "build-essential debhelper gnupg lintian" \
+		--aptcache ""
 	mkdir -p $(ROOTDIR)/cache/base-tmp
 	cd $(ROOTDIR)/cache/base-tmp; \
 	sudo tar xf $@; \
@@ -57,6 +73,7 @@ endef
 # $4: space separated list of external dependencies (may be empty)
 # $5: dpkg-buildpackage --build value (may be empty, defaults to full)
 # $6: repository which package belongs to (e.g. core or bsp)
+# $7: whether to use a cross or native pbuilder env (may be empty, defaults to cross)
 define make-pbuilder-package-target
 $1: $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
 PBUILDER_TARGETS += $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH)
@@ -68,7 +85,7 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 	$(foreach package,$3,$(PRODUCT_OUT)/.$(package)-pbuilder-$(USERSPACE_ARCH)) \
 	$$(shell find $(ROOTDIR)/packages/$1 -type f) \
 	$$(shell find $(ROOTDIR)/$2 -type f | sed -e 's/ /\\ /g') \
-	| out-dirs $(ROOTDIR)/cache/base.tgz \
+	| out-dirs $(ROOTDIR)/cache/$(if $7,$7,cross)-base.tgz \
 	$4
 
 	$(LOG) $1 pbuilder
@@ -96,8 +113,8 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 	$(LOG) $1 pbuilder pdebuild
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT)/packages/$(if $6,$6,core) -- \
-		--debbuildopts "--build=$(if $5,$5,full) -sa --check-command=lintian --check-option=--fail-on-warnings --check-option=--profile=mendel" \
-		--basetgz $(ROOTDIR)/cache/base.tgz \
+		--debbuildopts "--build=$(if $5,$5,full) -sa --check-command=true --check-option=--fail-on-warnings --check-option=--profile=mendel" \
+		--basetgz $(ROOTDIR)/cache/$(if $7,$7,cross)-base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
 		--host-arch $(USERSPACE_ARCH) --logfile $(PRODUCT_OUT)/$1-$(USERSPACE_ARCH).log
@@ -115,7 +132,7 @@ endef
 
 # Convenience macro to target a package to the bsp repo
 define make-pbuilder-bsp-package-target
-$(call make-pbuilder-package-target,$1,$2,$3,$4,$5,bsp)
+$(call make-pbuilder-package-target,$1,$2,$3,$4,$5,bsp,$6)
 endef
 
 $(eval $(call make-pbuilder-package-target,android-core,android-core))
@@ -129,7 +146,7 @@ $(eval $(call make-pbuilder-package-target,mendel-distro-info-data,packages/mend
 $(eval $(call make-pbuilder-package-target,mendel-keyring,packages/mendel-keyring))
 $(eval $(call make-pbuilder-package-target,runonce,packages/runonce))
 $(eval $(call make-pbuilder-package-target,usb-gadget,packages/usb-gadget))
-$(eval $(call make-pbuilder-package-target,vitalsd,packages/vitalsd))
+$(eval $(call make-pbuilder-package-target,vitalsd,packages/vitalsd,,,,,native))
 $(eval $(call make-pbuilder-package-target,meta-mendel,packages/meta-mendel))
 
 include $(ROOTDIR)/board/packages.mk
