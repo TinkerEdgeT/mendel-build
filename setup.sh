@@ -90,6 +90,24 @@ function m
     popd >/dev/null
 }
 
+function safe-abandon
+{
+    local branch="${1}"; shift
+
+    if [[ -z "${branch}" ]]; then
+        echo "Usage: safe-abandon <branchname>"
+        echo
+        echo "Abandons a repo branch in the current project only."
+        echo "This is much safer than using the actual 'repo abandon'"
+        echo "command, since it won't globally revert branches across"
+        echo "the entire project space."
+        echo
+        return 1
+    fi
+
+    repo abandon "${branch}" .
+}
+
 if [[ "${BASH_VERSINFO[0]}" -ge 4 ]]; then
     unset JUMP_TARGETS
     declare -Ax JUMP_TARGETS
