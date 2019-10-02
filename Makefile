@@ -30,7 +30,7 @@ out-dirs:
 	@mkdir -p $(PRODUCT_OUT)/obj
 	@mkdir -p $(ROOTDIR)/cache
 
-all: rootfs bootloader partition-table
+all: rootfs home bootloader partition-table
 
 lintian: packages
 	lintian $(PRODUCT_OUT)/packages/core/*.deb $(PRODUCT_OUT)/packages/bsp/*.deb
@@ -46,6 +46,7 @@ include $(ROOTDIR)/board/partition-table.mk
 include $(ROOTDIR)/build/img2simg.mk
 include $(ROOTDIR)/build/busybox.mk
 include $(ROOTDIR)/build/prereqs.mk
+include $(ROOTDIR)/build/home.mk
 include $(ROOTDIR)/build/rootfs.mk
 include $(ROOTDIR)/build/docker.mk
 include $(ROOTDIR)/build/packages.mk
