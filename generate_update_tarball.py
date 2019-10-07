@@ -65,15 +65,17 @@ def UpdateNeeded(package_name, package_version, apt_cache):
     else:
         return True
 
-def GetSourceDirectory(package):
-    proc = subprocess.run(['make', package + '-source-directory'], stdout=subprocess.PIPE, universal_newlines=True)
+def GetSourceDirectory(rootdir, package):
+    proc = subprocess.run(['make', '-f', os.path.join(rootdir, 'build', 'Makefile'),
+                          package + '-source-directory'],
+                          stdout=subprocess.PIPE, universal_newlines=True)
     proc.check_returncode()
     for line in proc.stdout.split(os.linesep):
         if line.startswith('Source directory: '):
             return line.split(': ')[1]
 
 def CheckVersionTags(rootdir, package, version):
-    source_dir = os.path.join(rootdir, GetSourceDirectory(package))
+    source_dir = os.path.join(rootdir, GetSourceDirectory(rootdir, package))
     debian_dir = os.path.join(rootdir, 'packages', package)
     source_repo = Repo(source_dir)
     debian_repo = Repo(debian_dir)
@@ -131,7 +133,8 @@ def main():
     for package in packages_to_update:
         print('make ' + package + '...')
         for arch in ARCHES:
-            proc = subprocess.run(["make", "USERSPACE_ARCH="+arch, package], stdout=sys.stdout, stderr=sys.stderr)
+            proc = subprocess.run(["make", "-f", os.path.join(args.rootdir, 'build', 'Makefile'),
+                                  "USERSPACE_ARCH="+arch, package], stdout=sys.stdout, stderr=sys.stderr)
             proc.check_returncode()
 
     # Find the set of output files corresponding to the packages we are going to upload.
