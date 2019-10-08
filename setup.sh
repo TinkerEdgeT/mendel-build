@@ -90,6 +90,27 @@ function m
     popd >/dev/null
 }
 
+function lint-package
+{
+    local packagename="${1}"; shift
+
+    if [[ -z "$packagename" ]]; then
+        echo "Usage: lint-package <packagename>"
+        return 1
+    fi
+
+    pushd "${ROOTDIR}/packages/$packagename" >/dev/null
+    dpkg-buildpackage -tc -us -ui -uc
+
+    echo; echo ===== lintian run below =====
+    lintian --include-dir=$ROOTDIR/build/lintian --fail-on-warnings --profile=mendel
+    local exitcode=$?
+
+    popd >/dev/null
+
+    return $?
+}
+
 function safe-abandon
 {
     local branch="${1}"; shift
