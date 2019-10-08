@@ -113,7 +113,7 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 	$(LOG) $1 pbuilder pdebuild
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT)/packages/$(if $6,$6,core) -- \
-		--debbuildopts "--build=$(if $5,$5,full) -sa --check-command=lintian --check-option=--fail-on-warnings --check-option=--profile=mendel" \
+		--debbuildopts "--build=$(if $5,$5,full) -sa --check-command=true --check-option=--fail-on-warnings --check-option=--profile=mendel" \
 		--basetgz $(ROOTDIR)/cache/$(if $7,$7,cross)-base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
