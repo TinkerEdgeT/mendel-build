@@ -15,13 +15,12 @@ from debian import deb822
 from git import Repo
 
 VERSION_MAP = {
-    'any': 'armhf arm64',
-    'linux-any': 'armhf arm64',
+    'any': 'arm64',
+    'linux-any': 'arm64',
 }
 
 ARCHES = [
     'arm64',
-    'armhf',
 ]
 
 def GetDebianDirectories(rootdir):
