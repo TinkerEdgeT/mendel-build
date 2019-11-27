@@ -13,6 +13,7 @@
 # limitations under the License.
 
 SHELL := $(shell which /bin/bash)
+INSIDE_DOCKER := $(shell [[ -f /.dockerenv ]] && echo yes)
 HAVE_QEMU := $(shell [[ -f /var/lib/binfmts/qemu-aarch64 ]] && echo yes)
 HAVE_FIXATED_QEMU := $(shell [[ -f /var/lib/binfmts/qemu-aarch64 ]] && tail -n1 /var/lib/binfmts/qemu-aarch64)
 
@@ -20,18 +21,20 @@ ifeq ($(ROOTDIR),)
 $(error $$ROOTDIR IS NOT DEFINED -- don\'t forget to source setup.sh)
 endif
 
-ifeq ($(HAVE_QEMU),)
-$(error qemu-user-static is either not installed or not configured properly.)
-endif
+ifeq ($(INSIDE_DOCKER),)
+  ifeq ($(HAVE_QEMU),)
+    $(error qemu-user-static is either not installed or not configured properly.)
+  endif
 
-ifeq ($(HAVE_FIXATED_QEMU),)
-$(warning Your version of qemu-user-static is too old and does not support)
-$(warning fixated binaries. On Debian-based systems, you can run)
-$(warning `build/fix_aarch64_binfmts.sh` to update your system binfmts)
-$(warning to fixate the aarch64 interpreter in kernel space.)
-$(warning )
-$(warning NOTE: This will modify the global state of your system!)
-$(error Build cannot continue)
+  ifeq ($(HAVE_FIXATED_QEMU),)
+    $(warning Your version of qemu-user-static is too old and does not support)
+    $(warning fixated binaries. On Debian-based systems, you can run)
+    $(warning `build/fix_aarch64_binfmts.sh` to update your system binfmts)
+    $(warning to fixate the aarch64 interpreter in kernel space.)
+    $(warning )
+    $(warning NOTE: This will modify the global state of your system!)
+    $(error Build cannot continue)
+  endif
 endif
 
 include $(ROOTDIR)/build/preamble.mk
