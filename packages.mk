@@ -18,7 +18,7 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
-pbuilder-base: $(ROOTDIR)/cache/cross-base.tgz $(ROOTDIR)/cache/native-base.tgz
+pbuilder-base: $(ROOTDIR)/cache/cross-base.tgz $(ROOTDIR)/cache/$(USERSPACE_ARCH)-base.tgz
 
 ifneq ($(FETCH_PBUILDER_DIRECTORY),)
 $(ROOTDIR)/cache/cross-base.tgz: $(FETCH_PBUILDER_DIRECTORY)/cross-base.tgz | out-dirs
@@ -36,23 +36,22 @@ $(ROOTDIR)/cache/cross-base.tgz:
 endif
 
 ifneq ($(FETCH_PBUILDER_DIRECTORY),)
-$(ROOTDIR)/cache/native-base.tgz: $(FETCH_PBUILDER_DIRECTORY)/native-base.tgz | out-dirs
+$(ROOTDIR)/cache/$(USERSPACE_ARCH)-base.tgz: $(FETCH_PBUILDER_DIRECTORY)/$(USERSPACE_ARCH)-base.tgz | out-dirs
 	cp $< $(ROOTDIR)/cache
 else
-$(ROOTDIR)/cache/native-base.tgz: /usr/bin/qemu-aarch64-static /usr/bin/qemu-arm-static
+$(ROOTDIR)/cache/$(USERSPACE_ARCH)-base.tgz: /usr/bin/qemu-$(QEMU_ARCH)-static
 	mkdir -p $(ROOTDIR)/cache
 	sudo pbuilder create \
 		--basetgz $@ \
 		--othermirror "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-day main|deb [trusted=yes] http://packages.cloud.google.com/apt mendel-bsp-$(BOARD_NAME)-day main" \
 		--distribution buster \
-		--architecture arm64 \
+		--architecture $(QEMU_ARCH) \
 		--extrapackages "build-essential debhelper gnupg lintian" \
 		--aptcache ""
 	mkdir -p $(ROOTDIR)/cache/base-tmp
 	cd $(ROOTDIR)/cache/base-tmp; \
 	sudo tar xf $@; \
-	sudo cp /usr/bin/qemu-arm-static usr/bin; \
-	sudo cp /usr/bin/qemu-aarch64-static usr/bin; \
+	sudo cp /usr/bin/qemu-$(QEMU_ARCH)-static usr/bin; \
 	sudo tar cf base.tar .; \
 	gzip base.tar; mv -f base.tar.gz $@
 	sudo rm -rf $(ROOTDIR)/cache/base-tmp
@@ -138,14 +137,14 @@ endef
 $(eval $(call make-pbuilder-package-target,android-core,android-core))
 $(eval $(call make-pbuilder-package-target,mendel-minimal,packages/mendel-minimal))
 $(eval $(call make-pbuilder-package-target,base-files,packages/base-files))
-$(eval $(call make-pbuilder-package-target,edgetpuvision,packages/edgetpuvision,,,,,native))
+$(eval $(call make-pbuilder-package-target,edgetpuvision,packages/edgetpuvision,,,,,$(USERSPACE_ARCH)))
 $(eval $(call make-pbuilder-package-target,edgetpudemo,packages/edgetpudemo))
 $(eval $(call make-pbuilder-package-target,mdt-services,packages/mdt-services))
 $(eval $(call make-pbuilder-package-target,mendel-distro-info-data,packages/mendel-distro-info-data))
 $(eval $(call make-pbuilder-package-target,mendel-keyring,packages/mendel-keyring))
 $(eval $(call make-pbuilder-package-target,runonce,packages/runonce))
 $(eval $(call make-pbuilder-package-target,usb-gadget,packages/usb-gadget))
-$(eval $(call make-pbuilder-package-target,vitalsd,packages/vitalsd,,,,,native))
+$(eval $(call make-pbuilder-package-target,vitalsd,packages/vitalsd,,,,,$(USERSPACE_ARCH)))
 $(eval $(call make-pbuilder-package-target,meta-mendel,packages/meta-mendel))
 
 include $(ROOTDIR)/board/packages.mk
