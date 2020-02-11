@@ -18,6 +18,7 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
+ifneq ($(HOME_SIZE_MB),)
 HOME_DIR := $(PRODUCT_OUT)/obj/HOME
 HOME_RAW_IMG := $(PRODUCT_OUT)/obj/HOME/home.raw.img
 HOME_IMG := $(PRODUCT_OUT)/home.img
@@ -48,3 +49,4 @@ targets::
 	@echo "home - creates the home partition image"
 
 .PHONY:: home home_raw
+endif
