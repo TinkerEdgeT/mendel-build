@@ -45,7 +45,7 @@ $(ROOTDIR)/cache/$(USERSPACE_ARCH)-base.tgz: /usr/bin/qemu-$(QEMU_ARCH)-static
 		--basetgz $@ \
 		--othermirror "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-day main|deb [trusted=yes] http://packages.cloud.google.com/apt mendel-bsp-$(BOARD_NAME)-day main" \
 		--distribution buster \
-		--architecture $(QEMU_ARCH) \
+		--architecture $(USERSPACE_ARCH) \
 		--extrapackages "build-essential debhelper gnupg lintian" \
 		--aptcache ""
 	mkdir -p $(ROOTDIR)/cache/base-tmp
