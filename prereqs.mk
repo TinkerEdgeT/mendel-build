@@ -37,6 +37,7 @@ REQUIRED_PACKAGES := \
 	device-tree-compiler \
 	dh-python \
 	fakeroot \
+	gdisk \
 	genext2fs \
 	git \
 	gnome-pkg-tools \
