@@ -34,17 +34,17 @@ home_raw: $(HOME_RAW_IMG)
 
 $(HOME_RAW_IMG): $(HOME_DIR)
 	$(LOG) home raw-build
-	ifneq ($(HOME_SIZE_MB),)
-		fallocate -l $(HOME_SIZE_MB)M $(HOME_RAW_IMG)
-		mkfs.ext4 -F -j $(HOME_RAW_IMG)
-	endif
+ifneq ($(HOME_SIZE_MB),)
+	fallocate -l $(HOME_SIZE_MB)M $(HOME_RAW_IMG)
+	mkfs.ext4 -F -j $(HOME_RAW_IMG)
+endif
 	$(LOG) home raw-build finished
 
 $(HOME_IMG): $(HOST_OUT)/bin/img2simg $(HOME_RAW_IMG)
 	$(LOG) home img2simg
-	ifneq ($(HOME_SIZE_MB),)
-		$(HOST_OUT)/bin/img2simg $(HOME_RAW_IMG) $(HOME_IMG)
-	endif
+ifneq ($(HOME_SIZE_MB),)
+	$(HOST_OUT)/bin/img2simg $(HOME_RAW_IMG) $(HOME_IMG)
+endif
 	$(LOG) rootfs img2simg finished
 
 clean::
