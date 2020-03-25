@@ -153,7 +153,9 @@ ALL_PACKAGE_TARGETS := $(PBUILDER_TARGETS)
 packages-tarball: $(ROOTDIR)/cache/packages.tgz
 $(ROOTDIR)/cache/packages.tgz: $(ALL_PACKAGE_TARGETS) | out-dirs
 	$(ROOTDIR)/build/update_packages.sh
-	tar -C $(PRODUCT_OUT) --overwrite -czf $@ packages
+	find $(PRODUCT_OUT)/packages -name '*.deb' -or -name 'Packages' | \
+		sed -e "s#$(PRODUCT_OUT)/##g" | \
+		tar -C $(PRODUCT_OUT) --overwrite -czf $@ -T -
 
 $(PRODUCT_OUT)/mendel.list: $(ROOTDIR)/build/mendel.list.template
 	sed -e "s;%BOARDNAME%;$(BOARD_NAME);g" $(ROOTDIR)/build/mendel.list.template > $(PRODUCT_OUT)/mendel.list
