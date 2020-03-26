@@ -160,6 +160,8 @@ endif
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get upgrade -y'
 	$(LOG) rootfs patch bsp finished
 
+	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get clean'
+
 # TODO(jtgans): Remove these when rapture is updated. Until then keeping the local repo
 # is the only way of installing locally built packages on device.
 # ifeq ($(FETCH_PACKAGES),false)
