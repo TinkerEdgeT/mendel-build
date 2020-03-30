@@ -142,7 +142,9 @@ $(ROOTFS_PATCHED_IMG): $(ROOTFS_PATCHED_DEPS) \
 	sudo cp $(ROOTDIR)/board/fstab.emmc $(ROOTFS_DIR)/etc/fstab
 
 	$(LOG) rootfs patch keyring
-	echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
+	# Use resolve.conf from the host since the nameserver 8.8.8.8 might not be reachable in some intranets.
+	#echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
+	sudo cp /etc/resolv.conf  $(ROOTFS_DIR)/etc/resolv.conf
 
 ifeq ($(FETCH_PACKAGES),false)
 	echo 'deb [trusted=yes] file:///opt/aiy/packages ./' | sudo tee $(ROOTFS_DIR)/etc/apt/sources.list.d/local.list
@@ -176,6 +178,8 @@ endif
 # 	sudo rm -rf $(ROOTFS_DIR)/opt/aiy
 # endif
 
+	# Reset resolve.conf to have the nameserver 8.8.8.8 only for the internet.
+	echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
 
 	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-$(QEMU_ARCH)-static
