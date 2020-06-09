@@ -66,7 +66,6 @@ PACKAGES_EXTRA := \
 	doc-debian \
 	ethtool \
 	file \
-	firmware-atheros \
 	gettext-base \
 	gnupg \
 	hdparm \
