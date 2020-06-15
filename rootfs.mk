@@ -76,7 +76,13 @@ $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/
 	-sudo umount $(ROOTFS_DIR)/dev
 	-sudo umount $(ROOTFS_DIR)
 	sudo mount -o loop $(ROOTFS_RAW_IMG) $(ROOTFS_DIR)
+
+ifeq ($(IS_JENKINS),)
 	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)
+else
+	cp $(ROOTDIR)/board/multistrap-jenkins.conf $(PRODUCT_OUT)/multistrap.conf
+endif
+
 	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA)/g' $(PRODUCT_OUT)/multistrap.conf
 	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap.conf
 

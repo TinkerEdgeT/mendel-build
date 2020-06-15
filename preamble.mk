@@ -17,6 +17,11 @@
 
 LOG := @$(ROOTDIR)/build/log.sh
 
+ifneq ($(IS_JENKINS),)
+  IS_EXTERNAL = true
+  FETCH_PACKAGES = true
+endif
+
 ifeq (,$(wildcard /etc/dpkg/origins/glinux))
 ifeq (,$(wildcard /google))
   IS_EXTERNAL ?= true

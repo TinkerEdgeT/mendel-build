@@ -1,7 +1,13 @@
 #!/bin/bash -xe
 sed -i '/^deb http:/ s/$/ contrib non-free/' /etc/apt/sources.list
 echo "deb [trusted=yes] file://$DEPSBASE ./" >> /etc/apt/sources.list
-echo "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-bsp-$BOARD_NAME-day main" >> /etc/apt/sources.list
+
+if [[ -z "${IS_JENKINS}" ]]; then
+    echo "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-bsp-$BOARD_NAME-day main" >> /etc/apt/sources.list
+else
+    echo "deb [arch=arm64] https://mendel-linux.org/apt unstable-bsp-$BOARD_NAME unstable" >> /etc/apt/sources.list
+fi
+
 echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" >> /etc/apt/sources.list
 
 echo 'Debug::pkgProblemResolver true;' > /etc/apt/apt.conf
@@ -15,6 +21,7 @@ install -D -m 644 -o root -g root \
 
 cat ${ROOTDIR}/build/bazel-release.pub.gpg | apt-key add -
 cat ${ROOTDIR}/packages/mendel-keyring/cloud-key.gpg | apt-key add -
+cat ${ROOTDIR}/packages/mendel-keyring/gke_signing_key.gpg | apt-key add -
 cat ${ROOTDIR}/packages/mendel-keyring/linux_signing_key.pub |apt-key add -
 dpkg --add-architecture arm64
 dpkg --add-architecture amd64

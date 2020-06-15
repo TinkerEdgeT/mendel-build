@@ -42,6 +42,7 @@ DOCKER_VOLUMES := \
 DOCKER_ENV := \
   -e "FETCH_PACKAGES=$(FETCH_PACKAGES)" \
   -e "HEADLESS_BUILD=$(HEADLESS_BUILD)" \
+  -e "IS_JENKINS=$(IS_JENKINS)" \
   -e "IS_EXTERNAL=$(IS_EXTERNAL)" \
   -e "http_proxy=$(http_proxy)" \
   -e "USERSPACE_ARCH=$(USERSPACE_ARCH)" \
