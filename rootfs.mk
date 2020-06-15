@@ -81,6 +81,7 @@ ifeq ($(IS_JENKINS),)
 	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)
 else
 	cp $(ROOTDIR)/board/multistrap-jenkins.conf $(PRODUCT_OUT)/multistrap.conf
+	sed -i -e 's/RELEASE_NAME/$(RELEASE_NAME)/g' $(PRODUCT_OUT)/multistrap.conf
 endif
 
 	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA)/g' $(PRODUCT_OUT)/multistrap.conf

@@ -44,6 +44,7 @@ DOCKER_ENV := \
   -e "HEADLESS_BUILD=$(HEADLESS_BUILD)" \
   -e "IS_JENKINS=$(IS_JENKINS)" \
   -e "IS_EXTERNAL=$(IS_EXTERNAL)" \
+  -e "RELEASE_NAME=$(RELEASE_NAME)" \
   -e "http_proxy=$(http_proxy)" \
   -e "USERSPACE_ARCH=$(USERSPACE_ARCH)" \
   -e "QEMU_ARCH=$(QEMU_ARCH)"

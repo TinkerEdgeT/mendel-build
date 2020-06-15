@@ -43,6 +43,7 @@ ifeq ($(IS_JENKINS),)
 	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)/multistrap
 else
 	cp $(ROOTDIR)/board/multistrap-jenkins.conf $(PRODUCT_OUT)/multistrap/multistrap.conf
+	sed -i -e 's/RELEASE_NAME/$(RELEASE_NAME)/g' $(PRODUCT_OUT)/multistrap/multistrap.conf
 endif
 
 	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap/multistrap.conf

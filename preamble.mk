@@ -20,6 +20,7 @@ LOG := @$(ROOTDIR)/build/log.sh
 ifneq ($(IS_JENKINS),)
   IS_EXTERNAL = true
   FETCH_PACKAGES = true
+  RELEASE_NAME ?= unstable
 endif
 
 ifeq (,$(wildcard /etc/dpkg/origins/glinux))
