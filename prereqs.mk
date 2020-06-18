@@ -62,6 +62,7 @@ REQUIRED_PACKAGES := \
 	rsync \
 	xz-utils \
 	wget \
+	zip \
 	zlib1g-dev
 
 prereqs:

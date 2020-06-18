@@ -51,6 +51,8 @@ out-dirs:
 
 all: rootfs home bootloader partition-table
 
+dist: package-images sign-images
+
 lintian: packages
 	lintian $(PRODUCT_OUT)/packages/core/*.deb $(PRODUCT_OUT)/packages/bsp/*.deb
 
@@ -72,6 +74,7 @@ include $(ROOTDIR)/build/packages.mk
 include $(ROOTDIR)/build/multistrap.mk
 
 include $(ROOTDIR)/board/bootloader.mk
+include $(ROOTDIR)/board/dist.mk
 -include $(ROOTDIR)/board/sdcard.mk
 -include $(ROOTDIR)/board/flashcard.mk
 -include $(ROOTDIR)/board/recovery.mk
