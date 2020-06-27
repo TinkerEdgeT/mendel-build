@@ -2,7 +2,7 @@
 
 if [ $VERSION_NUMBER ]; then
 	VERSION_NUMBER="$VERSION_NUMBER"-"$(date  +%Y%m%d)"
-	RELEASE_NAME=Tinker_Edge_T-Mendel-Chef-V"$VERSION_NUMBER"
+	RELEASE_NAME=Tinker_Edge_T-Mendel-Day-V"$VERSION_NUMBER"
 fi
 echo "VERSION_NUMBER: $VERSION_NUMBER"
 
