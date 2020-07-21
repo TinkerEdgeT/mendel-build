@@ -63,7 +63,7 @@ $(ROOTFS_RAW_IMG): $(ROOTFS_RAW_LOCAL_CACHE_PATH)
 	$(LOG) rootfs raw-cache
 	mkdir -p $(dir $(ROOTFS_RAW_IMG))
 	cp $(ROOTFS_RAW_LOCAL_CACHE_PATH) $(ROOTFS_RAW_IMG)
-	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
+	cd $(dir $(ROOTFS_RAW_IMG)); sha256sum $(notdir $(ROOTFS_RAW_IMG)) > $(ROOTFS_RAW_IMG).sha256sum
 	$(LOG) rootfs raw-cache finished
 else
 $(ROOTFS_RAW_IMG): $(ROOTDIR)/build/preamble.mk $(ROOTDIR)/build/rootfs.mk /usr/bin/qemu-$(QEMU_ARCH)-static /tmp/multistrap
@@ -111,7 +111,7 @@ endif
 	sudo rmdir $(ROOTFS_DIR)
 	sudo sync $(ROOTFS_RAW_IMG)
 	sudo chown ${USER} $(ROOTFS_RAW_IMG)
-	sha256sum $(ROOTFS_RAW_IMG) > $(ROOTFS_RAW_IMG).sha256sum
+	cd $(dir $(ROOTFS_RAW_IMG); sha256sum $(notdir $(ROOTFS_RAW_IMG)) > $(ROOTFS_RAW_IMG).sha256sum
 	$(LOG) rootfs raw-build finished
 endif
 
