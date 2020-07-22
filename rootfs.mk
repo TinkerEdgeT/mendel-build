@@ -111,7 +111,7 @@ endif
 	sudo rmdir $(ROOTFS_DIR)
 	sudo sync $(ROOTFS_RAW_IMG)
 	sudo chown ${USER} $(ROOTFS_RAW_IMG)
-	cd $(dir $(ROOTFS_RAW_IMG); sha256sum $(notdir $(ROOTFS_RAW_IMG)) > $(ROOTFS_RAW_IMG).sha256sum
+	cd $(dir $(ROOTFS_RAW_IMG)); sha256sum $(notdir $(ROOTFS_RAW_IMG)) > $(ROOTFS_RAW_IMG).sha256sum
 	$(LOG) rootfs raw-build finished
 endif
 
