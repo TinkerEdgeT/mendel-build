@@ -18,6 +18,7 @@ endif
 
 include $(ROOTDIR)/build/preamble.mk
 
+UBOOT_PACKAGE_DIR := $(ROOTDIR)/packages/uboot-imx/debian
 ROOTFS_DIR := $(PRODUCT_OUT)/obj/ROOTFS/rootfs
 ROOTFS_IMG := $(PRODUCT_OUT)/rootfs_$(USERSPACE_ARCH).img
 ROOTFS_RAW_IMG := $(PRODUCT_OUT)/obj/ROOTFS/rootfs_$(USERSPACE_ARCH).raw.img
@@ -181,6 +182,8 @@ endif
 	# Reset resolve.conf to have the nameserver 8.8.8.8 only for the internet.
 	echo 'nameserver 8.8.8.8' | sudo tee $(ROOTFS_DIR)/etc/resolv.conf
 	+make -f $(ROOTDIR)/build/rootfs.mk adjustments
+
+	sudo cp $(UBOOT_PACKAGE_DIR)/splash.bmp $(ROOTFS_DIR)/boot
 
 	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-$(QEMU_ARCH)-static
 	sudo umount $(ROOTFS_DIR)/dev
