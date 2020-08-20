@@ -129,6 +129,7 @@ PACKAGES_EXTRA := \
 	python3-reportbug \
 	python3-setuptools \
 	python3-wheel \
+	python3-svgwrite \
 	reportbug \
 	rsync \
 	rsyslog \
