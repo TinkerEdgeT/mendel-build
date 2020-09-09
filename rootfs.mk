@@ -187,6 +187,8 @@ endif
 	sudo cp $(PRODUCT_OUT)/u-boot.imx $(ROOTFS_DIR)/boot
 	sudo cp $(UBOOT_PACKAGE_DIR)/config.txt $(ROOTFS_DIR)/boot
 	sudo cp $(UBOOT_PACKAGE_DIR)/overlays.txt $(ROOTFS_DIR)/boot
+	sudo cp $(UBOOT_PACKAGE_DIR)/hifiberry-dacplus-overlay.dtbo $(ROOTFS_DIR)/boot
+	sudo cp $(UBOOT_PACKAGE_DIR)/hifiberry-dacplus-overlay.dts $(ROOTFS_DIR)/boot
 
 	sudo rm -f $(ROOTFS_DIR)/usr/bin/qemu-$(QEMU_ARCH)-static
 	sudo umount $(ROOTFS_DIR)/dev
