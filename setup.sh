@@ -80,6 +80,13 @@ function m
     pushd "${ROOTDIR}" >/dev/null
     log.sh "${target}" started m "$@"
 
+    for file in $ROOTDIR/packages/uboot-imx/debian/overlays/*.dts
+    do
+	    dts=${file##*/}
+	    dtbo=${dts%.*}
+	    dtc -@ -O dtb -o $ROOTDIR/packages/uboot-imx/debian/overlays/$dtbo.dtbo $ROOTDIR/packages/uboot-imx/debian/overlays/$dts
+    done
+
     make -f "${ROOTDIR}/build/Makefile" "$@"
 
     if [[ "$?" != 0 ]]; then
