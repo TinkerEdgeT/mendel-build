@@ -185,6 +185,7 @@ endif
 
 	sudo cp $(UBOOT_PACKAGE_DIR)/splash.bmp $(ROOTFS_DIR)/boot
 	sudo cp $(PRODUCT_OUT)/u-boot.imx $(ROOTFS_DIR)/boot
+	sudo cp $(UBOOT_PACKAGE_DIR)/boot.txt $(ROOTFS_DIR)/boot
 	sudo cp $(UBOOT_PACKAGE_DIR)/config.txt $(ROOTFS_DIR)/boot
 	sudo cp $(UBOOT_PACKAGE_DIR)/overlays.txt $(ROOTFS_DIR)/boot
 	sudo cp -rf $(UBOOT_PACKAGE_DIR)/overlays $(ROOTFS_DIR)/boot
