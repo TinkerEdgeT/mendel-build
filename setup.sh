@@ -103,7 +103,7 @@ function lint-package
     dpkg-buildpackage -tc -us -ui -uc
 
     echo; echo ===== lintian run below =====
-    lintian --include-dir=$ROOTDIR/build/lintian --fail-on-warnings --profile=mendel
+    lintian --include-dir=$ROOTDIR/build/lintian --profile=mendel
     local exitcode=$?
 
     popd >/dev/null
