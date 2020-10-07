@@ -3,9 +3,11 @@ sed -i '/^deb http:/ s/$/ contrib non-free/' /etc/apt/sources.list
 echo "deb [trusted=yes] file://$DEPSBASE ./" >> /etc/apt/sources.list
 
 if [[ -z "${IS_JENKINS}" ]]; then
-    echo "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-bsp-$BOARD_NAME-day main" >> /etc/apt/sources.list
+    echo "deb [arch=arm64] https://mendel-linux.org/apt/unstable unstable main" >> /etc/apt/sources.list
+    echo "deb [arch=arm64] https://mendel-linux.org/apt/unstable-bsp-$BOARD_NAME unstable main" >> /etc/apt/sources.list
 else
-    echo "deb [arch=arm64] https://mendel-linux.org/apt unstable-bsp-$BOARD_NAME unstable" >> /etc/apt/sources.list
+    echo "deb [arch=arm64] https://mendel-linux.org/apt/eagle eagle main" >> /etc/apt/sources.list
+    echo "deb [arch=arm64] https://mendel-linux.org/apt/eagle-bsp-$BOARD_NAME eagle main" >> /etc/apt/sources.list
 fi
 
 echo "deb [arch=amd64] http://storage.googleapis.com/bazel-apt stable jdk1.8" >> /etc/apt/sources.list
