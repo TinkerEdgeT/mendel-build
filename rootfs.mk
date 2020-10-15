@@ -171,6 +171,7 @@ endif
 	$(LOG) rootfs patch bsp finished
 
 	sudo chroot $(ROOTFS_DIR) bash -c 'apt-get clean'
+	sudo chroot $(ROOTFS_DIR) bash -c 'pip3 install $(PIP_PACKAGES_EXTRA)'
 
 # TODO(jtgans): Remove these when rapture is updated. Until then keeping the local repo
 # is the only way of installing locally built packages on device.

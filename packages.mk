@@ -28,10 +28,9 @@ $(ROOTDIR)/cache/cross-base.tgz:
 	mkdir -p $(ROOTDIR)/cache
 	sudo pbuilder create \
 		--basetgz $@ \
-		--othermirror "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-day main" \
 		--distribution buster \
 		--architecture amd64 \
-		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg lintian qemu-user-static" \
+		--extrapackages "crossbuild-essential-armhf crossbuild-essential-arm64 debhelper gnupg lintian qemu-user-static ca-certificates" \
 		--aptcache ""
 endif
 
@@ -43,10 +42,9 @@ $(ROOTDIR)/cache/$(USERSPACE_ARCH)-base.tgz: /usr/bin/qemu-$(QEMU_ARCH)-static
 	mkdir -p $(ROOTDIR)/cache
 	sudo pbuilder create \
 		--basetgz $@ \
-		--othermirror "deb [trusted=yes] http://packages.cloud.google.com/apt mendel-day main" \
 		--distribution buster \
 		--architecture $(USERSPACE_ARCH) \
-		--extrapackages "build-essential debhelper gnupg lintian" \
+		--extrapackages "build-essential debhelper gnupg lintian ca-certificates" \
 		--aptcache ""
 	mkdir -p $(ROOTDIR)/cache/base-tmp
 	cd $(ROOTDIR)/cache/base-tmp; \
@@ -112,7 +110,7 @@ $(PRODUCT_OUT)/.$1-pbuilder-$(USERSPACE_ARCH): \
 	$(LOG) $1 pbuilder pdebuild
 	cd $(PRODUCT_OUT)/obj/$1; pdebuild \
 		--buildresult $(PRODUCT_OUT)/packages/$(if $6,$6,core) -- \
-		--debbuildopts "--build=$(if $5,$5,full) -sa --check-command=lintian --check-option=--fail-on-warnings --check-option=--profile=mendel" \
+		--debbuildopts "--build=$(if $5,$5,full) -sa --check-command=lintian --check-option=--profile=mendel" \
 		--basetgz $(ROOTDIR)/cache/$(if $7,$7,cross)-base.tgz \
 		--configfile $(ROOTDIR)/build/pbuilderrc \
 		--hookdir $(ROOTDIR)/build/pbuilder-hooks \
