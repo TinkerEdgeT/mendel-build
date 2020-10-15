@@ -23,8 +23,7 @@ if [ "$VERSION_NUMBER" ]; then
 	cp -rp $TOP_DIR/board/flash/. $STUB_PATH/$RELEASE_NAME
 	cp $TOP_DIR/board/flash_uboot_and_force_fastboot_mode.cmd $STUB_PATH/.
         cd $IMAGE_PATH
-	cp sdcard_arm64.img $STUB_PATH
-	cp boot_arm64.img partition-table-16gb.img partition-table-64gb.img partition-table-8gb.img home.img recovery.img rootfs_arm64.img u-boot.imx $STUB_PATH/$RELEASE_NAME
+	cp boot_arm64.img partition-table-16gb.img partition-table-64gb.img partition-table-8gb.img home.img recovery.img rootfs_arm64.img u-boot.imx sdcard_arm64.img  $STUB_PATH/$RELEASE_NAME
 	cd -
 	cd $STUB_PATH
 	zip -r $RELEASE_NAME.zip $RELEASE_NAME
