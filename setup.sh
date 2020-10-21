@@ -80,6 +80,8 @@ function m
     pushd "${ROOTDIR}" >/dev/null
     log.sh "${target}" started m "$@"
 
+    rm -f $ROOTDIR/packages/uboot-imx/debian/overlays/*.dtbo
+
     for file in $ROOTDIR/packages/uboot-imx/debian/overlays/*.dts
     do
 	    dts=${file##*/}
