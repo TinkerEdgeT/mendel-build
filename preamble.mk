@@ -73,6 +73,7 @@ PACKAGES_EXTRA := \
 	ethtool \
 	file \
 	gettext-base \
+	git \
 	gnupg \
 	hdparm \
 	i2c-tools \
