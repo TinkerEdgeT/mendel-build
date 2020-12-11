@@ -16,6 +16,6 @@
 
 (
 	flock -e 200
-	( cd $PRODUCT_OUT/packages; apt-ftparchive -o APT::FTPArchive::SHA512=false packages bsp > Packages )
-	( cd $PRODUCT_OUT/packages; apt-ftparchive -o APT::FTPArchive::SHA512=false packages core >> Packages )
+	( cd $PRODUCT_OUT/packages; apt-ftparchive packages bsp > Packages )
+	( cd $PRODUCT_OUT/packages; apt-ftparchive packages core >> Packages )
 ) 200>$PRODUCT_OUT/obj/packages-lock
