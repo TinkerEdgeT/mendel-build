@@ -39,12 +39,8 @@ $(PRODUCT_OUT)/multistrap/rootfs_$(USERSPACE_ARCH).img: $(PRODUCT_OUT)/multistra
 	sudo mkdir -p $(MULTISTRAP_WORK_DIR)/boot $(MULTISTRAP_WORK_DIR)/dev
 	sudo mount -o loop $(PRODUCT_OUT)/multistrap/boot_$(USERSPACE_ARCH).img $(MULTISTRAP_WORK_DIR)/boot
 
-ifeq ($(IS_JENKINS),)
-	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)/multistrap
-else
-	cp $(ROOTDIR)/board/multistrap-jenkins.conf $(PRODUCT_OUT)/multistrap/multistrap.conf
+	cp $(ROOTDIR)/board/multistrap.conf $(PRODUCT_OUT)/multistrap/multistrap.conf
 	sed -i -e 's/RELEASE_NAME/$(RELEASE_NAME)/g' $(PRODUCT_OUT)/multistrap/multistrap.conf
-endif
 
 	sed -i -e 's/USERSPACE_ARCH/$(USERSPACE_ARCH)/g' $(PRODUCT_OUT)/multistrap/multistrap.conf
 	sed -i -e 's/MAIN_PACKAGES/$(PACKAGES_EXTRA) $(BOARD_NAME)-core/g' $(PRODUCT_OUT)/multistrap/multistrap.conf

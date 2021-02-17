@@ -51,7 +51,7 @@ out-dirs:
 
 all: rootfs home bootloader partition-table
 
-dist: package-images sign-images
+dist: package-images sign-images package-sd-image sign-sd-image
 
 lintian: packages
 	lintian $(PRODUCT_OUT)/packages/core/*.deb $(PRODUCT_OUT)/packages/bsp/*.deb
